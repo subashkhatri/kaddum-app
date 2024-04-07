@@ -1,0 +1,23 @@
+<!-- examplepage/templates/pages/post_index.html -->
+
+{% extends "base.html" %}
+
+{% block page_content %}
+<h1>Posts</h1>
+<div class="row">
+{% for post in posts %}
+    <div class="col-md-4">
+        <div class="card mb-2">
+            <div class="card-body">
+                <h5 class="card-title">{{ post.name }}</h5>
+                <p class="card-text">{{ post.description }}</p>
+                <a href="{% url 'post_detail' post.pk %}"
+                   class="btn btn-primary">
+                    Read More
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
