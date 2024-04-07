@@ -1,3 +1,6 @@
+# Database environment file
+kaddumapp/.env
+projectenv/*
 kaddumapp/.env
 projectenv/*
 kaddumapp/examplepage/__pycache__/*
