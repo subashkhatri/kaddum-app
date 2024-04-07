@@ -9,3 +9,4 @@ kaddumapp/kaddumapp/__pycache__/*
 kaddumapp/asert/*
 kaddumapp/dashboard/__pycache__/*
 kaddumapp/dashboard/migrations/__pycache__/*
+kaddumapp/dashboard/management/commands/__pycache__/*
