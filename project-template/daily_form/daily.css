@@ -1,0 +1,40 @@
+:root {
+    --form-background-color: #fff;
+    --form-border-color: #000;
+    --form-section-background-color: #dc3545;
+    --form-section-text-color: #fff;
+  }
+  
+  .form-section-header {
+    background-color: var(--form-section-background-color);
+    color: var(--form-section-text-color);
+    padding: 10px;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .form-control, .form-control:focus {
+    border-color: var(--form-border-color);
+    box-shadow: none;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .table-sm th,
+.table-sm td {
+  padding: 0.3rem; /* Smaller padding for table cells */
+  font-size: 0.875rem; /* Smaller font size for table content */
+}
+
+/* Make sure this comes after the Bootstrap CSS link */
+.table-sm {
+  width: auto; /* Shrink the table width to fit its contents */
+  margin: 0 auto; /* Center the table on the page */
+}
+
+.table td input[type="number"] {
+    width: 100%; /* Full width of the cell */
+    box-sizing: border-box; /* Include padding and borders in the width */
+  }
