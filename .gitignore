@@ -3,3 +3,7 @@ projectenv/*
 kaddumapp/examplepage/__pycache__/*
 kaddumapp/examplepage/migrations/*
 kaddumapp/kaddumapp/__pycache__/*
+
+# Mac folder view configuration files
+.DS_Store
+Desktop.ini
