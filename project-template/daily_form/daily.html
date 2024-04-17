@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Record and Diary</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="daily.css">
+</head>
+<body>
+    
+<div class="container mt-4">
+    <h1 class="text-left mb-4 h4">Daily Record and Diary</h1> 
+</div>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <form>
+        <div class="form-section-header">Shift Information</div>
+
+        <div class="form-group">
+          <label for="jobName">Job Name</label>
+          <input type="text" class="form-control" id="jobName" placeholder="Job Name" pattern="[A-Za-z0-9\s]+" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="day">Day</label>
+            <select id="day" class="form-control">
+              <option selected>Choose...</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+          </div>
+
+          <div class="form-group col-md-4">
+            <label for="date">Date</label>
+            <input type="date" class="form-control" id="date" placeholder="Date">
+          </div>
+
+          <div class="form-group col-md-4">
+            <label for="shift">Shift</label>
+            <select id="shift" class="form-control">
+              <option selected>Choose...</option>
+              <option value="Dayshift">Dayshift</option>
+              <option value="Nightshift">Nightshift</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="client">Client</label>
+              <input type="text" class="form-control" id="client" placeholder="Client Name" required>
+            </div>
+          
+            <div class="form-group col-md-6">
+              <label for="supervisor">Supervisor</label>
+              <input type="text" class="form-control" id="supervisor" placeholder="Supervisor Name" required>
+            </div>
+          </div>
+          
+
+        <div class="form-section-header">Day's Activities Discussed</div>
+        <div class="form-group">
+          <textarea class="form-control" id="activitiesDiscussed" rows="3"></textarea>
+        </div>
+
+        <div class="form-section-header">Safety Issues Discussed</div>
+        <div class="form-group">
+          <textarea class="form-control" id="safetyIssuesDiscussed" rows="3"></textarea>
+        </div>
+
+        <div class="form-section-header">Have Delays Occurred Today As a Result of the Following</div>
+        
+        <div class="form-row">
+        <div class="col-md-6">
+            <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="access">
+            <label class="form-check-label" for="access">Access</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="drawings">
+            <label class="form-check-label" for="drawings">Lack of Drawings</label>
+            </div>
+        </div>
+        </div>
+        
+        <div class="form-row">
+        <div class="col-md-6">
+            <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="awaitingDecision">
+            <label class="form-check-label" for="awaitingDecision">Awaiting Decision from Client</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="poorWeather">
+            <label class="form-check-label" for="poorWeather">Poor Weather</label>
+            </div>
+        </div>
+        </div>
+
+        <div class="form-row">
+        <div class="col-md-6">
+            <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="industrialMatters">
+            <label class="form-check-label" for="industrialMatters">Industrial Matters</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="awaitingInstruction">
+            <label class="form-check-label" for="awaitingInstruction">Awaiting Instruction from Client</label>
+            </div>
+        </div>
+        </div>
+
+        <div class="form-row">
+        <div class="col-md-6">
+            <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="subcontractors">
+            <label class="form-check-label" for="subcontractors">Subcontractors</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="awaitingMaterials">
+            <label class="form-check-label" for="awaitingMaterials">Awaiting Materials</label>
+            </div>
+        </div>
+        </div>
+
+        <div class="form-row">
+        <div class="col-md-6">
+            <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="reWork">
+            <label class="form-check-label" for="reWork">Re-Work</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="others">
+            <label class="form-check-label" for="others">Others</label>
+            </div>
+        </div>
+        </div>
+
+
+        <div class="form-section-header">Details of Delays</div>
+        <div class="form-group">
+          <textarea class="form-control" id="delayDetails" rows="3"></textarea>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+              <div class="form-section-header">Instruction received from client</div>
+              <div class="form-group">
+                <textarea class="form-control" id="instructionReceived" rows="3"></textarea>
+              </div>
+            </div>
+          
+        <div class="col-md-6">
+            <div class="form-section-header">Visitors on the site</div>
+              <div class="form-group">
+                <textarea class="form-control" id="siteVisitor" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+
+        <div class="form-section-header">Daily Progress and Description of work Performed</div>
+          <div class="form-group">
+            <textarea class="form-control" id="workDescription" rows="3"></textarea>
+          </div>
+        
+        <div class="form-section-header">Notes or Comments</div>
+          <div class="form-group">
+            <textarea class="form-control" id="notes" rows="2"></textarea>
+          </div>
+
+        <div class="form-section-header">Handover Notes</div>
+          <div class="form-group">
+            <textarea class="form-control" id="handoverNotes" rows="3"></textarea>
+          </div>
+
+          <div class="form-section-header">Number of Safety Items Completed</div>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Category</th>
+                <th scope="col">Number Completed Today</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>JHA</td>
+                <td><input type="number" class="form-control" id="jha" name="jha"></td>
+              </tr>
+              <tr>
+                <td>CCC</td>
+                <td><input type="number" class="form-control" id="ccc" name="ccc"></td>
+              </tr>
+              <tr>
+                <td>Take 5</td>
+                <td><input type="number" class="form-control" id="take5" name="take5"></td>
+              </tr>
+              <tr>
+                <td>Stop Seek</td>
+                <td><input type="number" class="form-control" id="stopSeek" name="stopSeek"></td>
+              </tr>
+
+              <thead>
+                <tr>
+                  <th scope="col">Category</th>
+                  <th scope="col">Number of Personal Onsite</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Mobilised</td>
+                  <td><input type="number" class="form-control" id="mobilised" name="mobilised"></td>
+                </tr>
+                <tr>
+                  <td>Non-Manual</td>
+                  <td><input type="number" class="form-control" id="non-manual" name="non-manual"></td>
+                </tr>
+                <tr>
+                  <td>Manual</td>
+                  <td><input type="number" class="form-control" id="manual" name="manual"></td>
+                </tr>
+                <tr>
+                  <td>Sub-contractor</td>
+                  <td><input type="number" class="form-control" id="sub-contractor" name="sub-contractor"></td>
+                </tr>
+                <tr>
+                    <td>Environmental Incidents</td>
+                    <td><input type="number" class="form-control" id="environmental incidents" name="environmental incidents"></td>
+                  </tr>
+                  <tr>
+                    <td>Near Misses</td>
+                    <td><input type="number" class="form-control" id="near misses" name="near misses"></td>
+                  </tr>
+                  <tr>
+                    <td>First Aid</td>
+                    <td><input type="number" class="form-control" id="first aid" name="first aid"></td>
+                  </tr>
+                  <tr>
+                    <td>Medically Treated Injury</td>
+                    <td><input type="number" class="form-control" id="medically treated injury" name="medically treated injury"></td>
+                  </tr>
+                  <tr>
+                    <td>Loss Time Injury</td>
+                    <td><input type="number" class="form-control" id="loss time injury" name="loss time injury"></td>
+                  </tr>
+            </tbody>
+          </table>
+          
+
+          
+          
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
