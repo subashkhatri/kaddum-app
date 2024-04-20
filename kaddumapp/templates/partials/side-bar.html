@@ -8,12 +8,13 @@
     <img src="{% static '/images/logo.jpg' %}" alt="Kaddum Logo" class="logo">
   </a>
 
-  <a href="#" class="d-flex align-items-center menu-item active">
+
+  <a href="{% url 'index' %}" class="d-flex align-items-center menu-item active">
     <i class="bi bi-grid-fill"></i>
     <span class="txt">Dashboard</span>
   </a>
 
-  <a href="#" class="d-flex align-items-center">
+  <a href="{% url 'dairy_record' %}" class="d-flex align-items-center">
     <i class="bi bi-file-earmark"></i>
     <span class="txt">Daily Record</span>
   </a>

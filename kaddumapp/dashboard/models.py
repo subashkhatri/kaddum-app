@@ -27,3 +27,5 @@ class DairyRecord(models.Model):
     first_aid = models.IntegerField(null=True, blank=True)
     medically_treated_injury = models.IntegerField(null=True, blank=True)
     loss_time_injury = models.IntegerField(null=True, blank=True)
+    # draft save
+    is_draft = models.BooleanField(default=True)
