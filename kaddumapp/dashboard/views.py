@@ -10,7 +10,9 @@ from datetime import date
 logger = logging.getLogger(__name__)
 
 def index(request):
-    return render(request, "dashboard/index.html")
+  dairy_records = DairyRecord.objects.order_by('-record_created_date')
+  return render(request, 'dashboard/index.html', {'records': dairy_records})
+
 
 def dairy_record(request):
     if request.method == 'POST':
