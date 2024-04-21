@@ -28,3 +28,6 @@ class DairyRecord(models.Model):
     loss_time_injury = models.IntegerField(null=True, blank=True)
     # draft save
     is_draft = models.BooleanField(default=True)
+    class Meta:
+        app_label = 'dashboard'
+
