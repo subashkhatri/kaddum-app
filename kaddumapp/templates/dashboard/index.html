@@ -1,5 +1,95 @@
 {% extends "partials/base.html" %}
 
 {% block page_content %}
-  <h3>Main Dashboard</h3>
+<div class="p-2 px-3 d-flex justify-content-between topbar">
+  <h4 class="header">Dashboard</h4>
+  <div class="profile-settings">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      <i class="bi bi-person-fill"></i>
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#">Action</a>
+      <a class="dropdown-item" href="#">Another action</a>
+      <a class="dropdown-item" href="#">Something else here</a>
+    </div>
+  </div>
+</div>
+<div class="p-4 main-content">
+  <div class="row">
+    <div class="col-12 col-sm-4">
+      <div class="card">
+        <h3 class="my-3 pt-3 text-center card-icon">
+          <i class="p-3 bi bi-file-earmark"></i>
+        </h3>
+        <div class="card-body">
+          <h5 class="text-center card-title"><a href="{% url 'create_dairy_record' %}"
+              style="text-decoration: none; color: black;">Daily Record</a></h5>
+          <a href="{% url 'create_dairy_record' %}" class="btn card-text">+ Add New</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-4">
+      <div class="card">
+        <h3 class="my-3 pt-3 text-center card-icon">
+          <i class="p-3 bi bi-file-earmark-text-fill"></i>
+        </h3>
+        <div class="card-body">
+          <h5 class="text-center card-title">Day Tracking</h5>
+          <button class="btn card-text">+ Add New</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-4">
+      <div class="card">
+        <h3 class="my-3 pt-3 text-center card-icon">
+          <i class="p-3 bi bi-calculator"></i>
+        </h3>
+        <div class="card-body">
+          <h5 class="text-center card-title">Daily Costing</h5>
+          <button class="btn card-text">+ Add New</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row my-4">
+    <div class="col">
+      <div class="card">
+        <h4 class="card-header bg-white border-0">History</h4>
+        <div class="p-3 table-container">
+          <div class="table-header p-1 px-2">
+            <div class="row">
+              <div class="col-2">Record Date</div>
+              <div class="col-4">Job Name</div>
+              <div class="col-4">Client</div>
+              <div class="col-2">Action</div>
+            </div>
+          </div>
+          <div class="table-data p-1 px-2">
+            {% for dairy_record in records %}
+            <div class="my-1 row">
+              <div class="col-2 d-flex align-items-center">{{ dairy_record.record_date|date:"d/m/Y" }}</div>
+              <div class="col-4 d-flex align-items-center">{{ dairy_record.job_name }}</div>
+              <div class="col-4 d-flex align-items-center">{{ dairy_record.client }}</div>
+              <div class="col-2 d-flex align-items-center justify-content-end">
+                <a href="#" class="btn py-1 px-2 view-btn">View</a>
+              </div>
+            </div>
+            {% empty %}
+            <div class="my-1 row">
+              <div class="col-12 text-center">No records found.</div>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="table-bottom text-center" role="button">
+            <i class="bi bi-caret-down-fill"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock page_content %}

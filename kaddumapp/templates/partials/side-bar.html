@@ -1,2 +1,52 @@
+{% load static %}
 <!-- # all the side navbar codes come here -->
-<h1>Side Bar of Our Project</h1>
+<div class="p-2 pt-0 sidenav" id="sidebar">
+  <a href="#" class="close-btn d-flex justify-content-end" onclick="toggleSideBar()">
+    <h2><i class="bi bi-filter-right"></i></h2>
+  </a>
+  <a href="{% url 'index' %}" class="justify-content-center mb-5">
+    <img src="{% static '/images/logo.jpg' %}" alt="Kaddum Logo" class="logo">
+  </a>
+
+
+  <a href="{% url 'index' %}" class="d-flex align-items-center menu-item active">
+    <i class="bi bi-grid-fill"></i>
+    <span class="txt">Dashboard</span>
+  </a>
+
+  <a href="{% url 'all_dairy_record' %}" class="d-flex align-items-center">
+    <i class="bi bi-file-earmark"></i>
+    <span class="txt">Daily Record</span>
+  </a>
+
+  <a href="#" class="d-flex align-items-center">
+    <i class="bi bi-file-earmark-text-fill"></i>
+    <span class="txt">Day Tracking</span>
+  </a>
+
+  <a href="#" class="d-flex align-items-center">
+    <i class="bi bi-calculator"></i>
+    <span class="txt">Daily Costing</span>
+  </a>
+
+  <a href="#" class="d-flex align-items-center">
+    <i class="bi bi-briefcase"></i>
+    <span class="txt">Projects</span>
+  </a>
+
+  <a href="#" class="d-flex align-items-center">
+    <i class="bi bi-tools"></i>
+    <span class="txt">Equipment</span>
+  </a>
+
+  <a href="#" class="d-flex align-items-center">
+    <i class="bi bi-people-fill"></i>
+    <span class="txt">Employees</span>
+  </a>
+
+  <a href="#" class="d-flex align-items-center">
+    <i class="bi bi-people-fill"></i>
+    <span class="txt">Settings</span>
+  </a>
+
+</div>
