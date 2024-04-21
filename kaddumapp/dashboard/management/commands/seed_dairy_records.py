@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
         records =  [
             {
-                'diary_record_id': 'DR00001',
+                'job_name': 'DR00001',
                 'project_no': '2425',
                 'record_date': date.today(),
                 'record_shift': 'Day',
@@ -52,7 +52,7 @@ class Command(BaseCommand):
                 'file_status_code': 'FS01',
             },
             {
-                'diary_record_id': 'DR00002',
+                'job_name': 'DR00002',
                 'project_no': '2425',
                 'record_date': date.today(),
                 'record_shift': 'Day',
@@ -93,7 +93,7 @@ class Command(BaseCommand):
                 'file_status_code': 'FS02',
             },
             {
-                'diary_record_id': 'DR00003',
+                'job_name': 'DR00003',
                 'project_no': '2425',
                 'record_date': date.today(),
                 'record_shift': 'Night',
