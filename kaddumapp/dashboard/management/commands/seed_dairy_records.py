@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
         records = [
             {
-                'diary_record_id': 'REC001',
+                'job_name': 'Day1',
                 'record_date': date.today(),
                 'record_shift': 'Morning',
                 'activity_discussion': 'Discussed daily activities.',
@@ -23,7 +23,7 @@ class Command(BaseCommand):
                 'handover_note': 'Handed over to next shift.',
             },
              {
-                'diary_record_id': 'REC002',
+                'job_name': 'Day2',
                 'record_date': date.today(),
                 'record_shift': 'afternoon',
                 'activity_discussion': 'Discussed daily activities.',

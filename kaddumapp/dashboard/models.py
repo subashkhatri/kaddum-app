@@ -1,7 +1,6 @@
 from django.db import models
 
 class DairyRecord(models.Model):
-    diary_record_id = models.CharField(max_length=10, primary_key=True)
     job_name = models.CharField(max_length=255, null=True, blank=True)
     client = models.CharField(max_length=255, null=True, blank=True)
     supervisor = models.CharField(max_length=255, null=True, blank=True)

@@ -16,6 +16,16 @@
 <body class="container">
   {% include 'partials/side-bar.html'%}
   <div id="main">
+  {% if messages %}
+  <div class="container mt-3">
+      {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+              {{ message }}
+          </div>
+      {% endfor %}
+  </div>
+  {% endif %}
+
     {% block page_content %}{% endblock page_content %}
   </div>
   <script>

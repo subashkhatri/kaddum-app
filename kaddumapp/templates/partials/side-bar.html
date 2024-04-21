@@ -4,7 +4,7 @@
   <a href="#" class="close-btn d-flex justify-content-end" onclick="toggleSideBar()">
     <h2><i class="bi bi-filter-right"></i></h2>
   </a>
-  <a href="#" class="justify-content-center mb-5">
+  <a href="{% url 'index' %}" class="justify-content-center mb-5">
     <img src="{% static '/images/logo.jpg' %}" alt="Kaddum Logo" class="logo">
   </a>
 
@@ -14,7 +14,7 @@
     <span class="txt">Dashboard</span>
   </a>
 
-  <a href="{% url 'dairy_record' %}" class="d-flex align-items-center">
+  <a href="{% url 'all_dairy_record' %}" class="d-flex align-items-center">
     <i class="bi bi-file-earmark"></i>
     <span class="txt">Daily Record</span>
   </a>
