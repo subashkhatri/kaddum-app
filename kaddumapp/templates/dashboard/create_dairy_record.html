@@ -1,0 +1,17 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+<div class="container mt-4">
+  <h1 class="text-left mb-4 h4">Daily Record and Diary</h1>
+</div>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      {% url 'create_dairy_record' as form_action %}
+      {% include 'dashboard/_form.html' with form_action=form_action %}
+
+    </div>
+  </div>
+</div>
+{% endblock page_content %}
