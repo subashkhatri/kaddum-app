@@ -41,14 +41,14 @@ class UserAccountManager(BaseUserManager):
 
 # User Account
 class UserAccount(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=5, unique=True, primary_key=True)
+    username = models.CharField(max_length=6, unique=True, primary_key=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     full_name = models.CharField(max_length=255, blank=True)
     indigenous = models.BooleanField(default=False)
     local = models.BooleanField(default=False)
     position = models.CharField(max_length=50)  # job position
-    roles = models.CharField(max_length=20)  # Role permission to access the system
+    roles = models.CharField(max_length=50)  # Role permission to access the system
 
     # we don't change to False because when we create superuser, i won't be able to log in.
     is_active = models.BooleanField(default=True)  # whether user is employeed or not
@@ -72,10 +72,19 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     ]  # when registering, requried fileds
 
     def save(self, *args, **kwargs):
-        self.full_name = (
-            f"{self.first_name} {self.last_name}"  # Combine first and last names
-        )
+        self.full_name = (f"{self.first_name} {self.last_name}") # Combine first and last names
+
+        if not self.username:
+            last_record = UserAccount.objects.order_by('-username').first()
+            if last_record:
+                last_number = int(last_record.username[2:])
+                new_number = last_number + 1
+                self.username = f"KD{new_number:04d}"
+            else:
+                self.username = "KD0001"
+
         super().save(*args, **kwargs)
+
 
     def __str__(self):
         return self.username
