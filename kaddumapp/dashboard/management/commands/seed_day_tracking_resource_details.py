@@ -11,8 +11,7 @@ class Command(BaseCommand):
 
         records = [
         {
-            'line_item_no': 1,
-            'day_tracking_no': 'DT0001',
+            'day_tracking_no': 1,
             'item_type': 'car',
             'item_name': 'Toyata Hilux Dual Cab',
             'item_rate': 15.00,
@@ -22,8 +21,7 @@ class Command(BaseCommand):
             'work_description': 'Toyata Hilux Dual Cab',
         },
         {
-            'line_item_no': 2,
-            'day_tracking_no': 'DT0001',
+            'day_tracking_no': 1,
             'item_type': 'truck',
             'item_name': 'Isuzu 10m Body Tipper',
             'item_rate': 45.00,

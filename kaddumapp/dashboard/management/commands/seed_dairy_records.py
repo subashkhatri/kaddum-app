@@ -11,7 +11,6 @@ class Command(BaseCommand):
 
         records =  [
             {
-                'dairy_record_no': 'DR00001',
                 'project_no': '2425',
                 'record_date': date(2024, 4, 22),
                 'record_shift': 'dayshift',
@@ -52,7 +51,6 @@ class Command(BaseCommand):
                 'is_draft':False,
             },
             {
-                'dairy_record_no': 'DR00002',
                 'project_no': '2425',
                 'record_date': date(2024, 4, 22),
                 'record_shift': 'nightshift',
@@ -93,7 +91,6 @@ class Command(BaseCommand):
                 'is_draft':False,
             },
             {
-                'dairy_record_no': 'DR00003',
                 'project_no': '2429',
                 'record_date': date(2024, 4, 22),
                 'record_shift': 'nightshift',

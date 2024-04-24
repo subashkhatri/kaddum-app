@@ -11,8 +11,7 @@ class Command(BaseCommand):
 
         records = [
         {
-            'line_item_no': 1,
-            'day_tracking_no': 'DT0001',
+            'day_tracking_no': 1,
             'employee_name': 'Melissa Pettersson',
             'position': 'ERA Supervisor',
             'item_rate': 12.00,
@@ -22,8 +21,7 @@ class Command(BaseCommand):
             'work_description': 'supervisor',
         },
         {
-            'line_item_no': 2,
-            'day_tracking_no': 'DT0001',
+            'day_tracking_no': 1,
             'employee_name': 'Joseph Jeffries',
             'position': 'ERA Allrounder',
             'item_rate': 9.50,
@@ -33,8 +31,7 @@ class Command(BaseCommand):
             'work_description': 'ERA Allrounder',
         },
         {
-            'line_item_no': 3,
-            'day_tracking_no': 'DT0001',
+            'day_tracking_no': 1,
             'employee_name': 'Rik Erkelens',
             'position': 'ERA Moxy Operator',
             'item_rate': 8.70,
