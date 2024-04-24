@@ -1,11 +1,68 @@
 from django.db import models
 
+class Project(models.Model):
+    project_no = models.CharField(max_length=5)
+    purchase_order_no = models.CharField(max_length=100, null=True, blank=True)
+    project_name = models.CharField(max_length=255)
+    client = models.CharField(max_length=100)
+    project_start_date = models.DateField(null=True, blank=True)
+    project_end_date = models.DateField(null=True, blank=True)
+    project_budget = models.FloatField(null=True, blank=True)
+    project_total_cost = models.FloatField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if not self.project_no:
+            last_record = Project.objects.order_by('-project_no').first()
+            if last_record:
+                last_number = int(last_record.project_no[2:])
+                new_number = last_number + 1
+                self.project_no = f"DT{new_number:04d}"
+            else:
+                self.project_no = "DT0001"
+        super(Project, self).save(*args, **kwargs)
+        
+    class Meta:
+        app_label = 'dashboard'
+
+    def __str__(self):
+        return f"Project No: {self.project_no}, Job Name: {self.project_name}"
+
+class ResourceCost(models.Model):
+    resource_item_no = models.CharField(max_length=10)
+    item_type = models.CharField(max_length=50)
+    item_name = models.CharField(max_length=255)
+    item_id = models.CharField(max_length=10, null=True, blank=True)
+    item_location = models.CharField(max_length=30, null=True, blank=True)
+    item_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    unit_of_measure = models.CharField(max_length=10)
+    mobilisation_desc = models.CharField(max_length=50, null=True, blank=True)
+    last_update_date = models.DateField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+            if not self.resource_item_no:
+                last_record = ResourceCost.objects.order_by('-resource_item_no').first()
+                if last_record:
+                    last_number = int(last_record.resource_item_no[2:])
+                    new_number = last_number + 1
+                    self.resource_item_no = f"RC{new_number:04d}"
+                else:
+                    self.resource_item_no = "RC0001"
+            super(ResourceCost, self).save(*args, **kwargs)
+
+    class Meta:
+        app_label = 'dashboard'
+
+    def __str__(self):
+        return f"Resource: {self.resource_item_no}, name: {self.item_name} cost rate: {self.item_rate}"
+    
+
 class DairyRecord(models.Model):
-    job_name = models.CharField(max_length=255, null=True, blank=True)
-    client = models.CharField(max_length=255, null=True, blank=True)
-    supervisor = models.CharField(max_length=255, null=True, blank=True)
+    dairy_record_no = models.CharField(max_length=10)
+    project_no = models.CharField(max_length=5)
     record_date = models.DateField()
     record_shift = models.CharField(max_length=10)
+    supervisor = models.CharField(max_length=100)
     activity_discussion = models.TextField(null=True, blank=True)
     safety_issue_discussion = models.TextField(null=True, blank=True)
     instruction_from_client = models.TextField(null=True, blank=True)
@@ -16,18 +73,121 @@ class DairyRecord(models.Model):
     record_created_date = models.DateField(auto_now_add=True)
     record_submitted_date = models.DateField(null=True, blank=True, auto_now=True)
 
-    # New numeric fields
-    mobilised = models.IntegerField(null=True, blank=True)
-    non_manual = models.IntegerField(null=True, blank=True)
-    manual = models.IntegerField(null=True, blank=True)
-    subcontractor = models.IntegerField(null=True, blank=True)
-    environmental_incidents = models.IntegerField(null=True, blank=True)
-    near_misses = models.IntegerField(null=True, blank=True)
-    first_aid = models.IntegerField(null=True, blank=True)
-    medically_treated_injury = models.IntegerField(null=True, blank=True)
-    loss_time_injury = models.IntegerField(null=True, blank=True)
+    #numeric fields
+    delay_access = models.BooleanField(default=False)
+    delay_lack_of_drawing = models.BooleanField(default=False)
+    delay_await_client_decision = models.BooleanField(default=False)
+    delay_poor_weather = models.BooleanField(default=False)
+    delay_industrial_matters = models.BooleanField(default=False)
+    delay_await_client_instruction = models.BooleanField(default=False)
+    delay_subcontractors = models.BooleanField(default=False)
+    delay_await_materials = models.BooleanField(default=False)
+    delay_rework = models.BooleanField(default=False)
+    delay_other = models.CharField(max_length=255, null=True, blank=True)
+    delay_details = models.TextField(null=True, blank=True)
+    
+    jha_qty = models.IntegerField(default=0)
+    ccc_qty = models.IntegerField(default=0)
+    take5_qty = models.IntegerField(default=0)
+    stop_seek_qty = models.IntegerField(default=0)
+    mobilised_qty = models.IntegerField(default=0)
+    non_manual_qty = models.IntegerField(default=0)
+    manual_qty = models.IntegerField(default=0)
+    subcontractor_qty = models.IntegerField(default=0)
+    incident_qty = models.IntegerField(default=0)
+    near_miss_qty = models.IntegerField(default=0)
+    first_aid_qty = models.IntegerField(default=0)
+    medically_treated_injury_qty = models.IntegerField(default=0)
+    loss_time_injury_qty = models.IntegerField(default=0)
+    
     # draft save
     is_draft = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if not self.dairy_record_no:
+            last_record = DairyRecord.objects.order_by('-dairy_record_no').first()
+            if last_record:
+                last_number = int(last_record.dairy_record_no[2:])
+                new_number = last_number + 1
+                self.dairy_record_no = f"DR{new_number:04d}"
+            else:
+                self.dairy_record_no = "DR0001"
+        super(DairyRecord, self).save(*args, **kwargs)
+
     class Meta:
         app_label = 'dashboard'
 
+    def __str__(self):
+        return f"Daily Record: {self.id}, Project No: {self.project_no}, Date: {self.record_date}"
+
+class DayTracking(models.Model):
+    day_tracking_no = models.CharField(max_length=50)
+    project_no = models.CharField(max_length=5)
+    record_date = models.DateField()
+    record_day = models.CharField(max_length=10)
+    record_shift = models.CharField(max_length=50)
+    work_area = models.CharField(max_length=255)
+    client_representative = models.CharField(max_length=100)
+    weather = models.TextField()
+    comments = models.TextField(null=True, blank=True)
+    kaddum_name = models.CharField(max_length=100, blank=True, null=True)
+    kaddum_sign = models.ImageField(upload_to='kaddum_signs/', blank=True, null=True)
+    kaddum_sign_date = models.DateField(blank=True, null=True)
+    client_name = models.CharField(max_length=100, blank=True, null=True)
+    client_sign = models.ImageField(upload_to='client_signs/', blank=True, null=True)
+    client_sign_date = models.DateField(blank=True, null=True)
+    record_created_date = models.DateField(auto_now_add=True)
+    record_submitted_date = models.DateField(null=True, blank=True, auto_now=True)
+    is_draft = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if not self.day_tracking_no:
+            last_record = DayTracking.objects.order_by('-day_tracking_no').first()
+            if last_record:
+                last_number = int(last_record.day_tracking_no[2:])
+                new_number = last_number + 1
+                self.day_tracking_no = f"DT{new_number:04d}"
+            else:
+                self.day_tracking_no = "DT0001"
+        super(DayTracking, self).save(*args, **kwargs)
+
+    class Meta:
+        app_label = 'dashboard'
+
+    def __str__(self):
+        return f"Day Tracking:{self.day_tracking_no} "
+    
+class DayTrackingEmployeeDetails(models.Model):
+    line_item_no = models.AutoField(primary_key=True)
+    day_tracking_no = models.CharField(max_length=50)
+    employee_name = models.CharField(max_length=255)
+    position = models.CharField(max_length=50)  # job position
+    item_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    total_hours = models.FloatField()
+    work_description = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        app_label = 'dashboard'
+
+    def __str__(self):
+        return f"Day Tracking Employee Details: {self.day_tracking_no}"
+    
+class DayTrackingResourceDetails(models.Model):
+    line_item_no = models.AutoField(primary_key=True)
+    day_tracking_no = models.CharField(max_length=50)
+    item_type = models.CharField(max_length=50)
+    item_name = models.CharField(max_length=255)
+    item_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    total_hours = models.FloatField()
+    work_description = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        app_label = 'dashboard'
+
+    def __str__(self):
+        return f"Day Tracking Resource Details: {self.day_tracking_no}"
+    

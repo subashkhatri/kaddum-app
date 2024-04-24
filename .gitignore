@@ -6,8 +6,14 @@ projectenv/*
 kaddumapp/examplepage/__pycache__/*
 kaddumapp/examplepage/migrations/*
 kaddumapp/kaddumapp/__pycache__/*
+kaddumapp/kaddumapp/__init__.py
 kaddumapp/asert/*
 kaddumapp/dashboard/__pycache__/*
-kaddumapp/dashboard/migrations/__pycache__/*
+kaddumapp/dashboard/__init__.py
+kaddumapp/dashboard/migrations/*
 kaddumapp/dashboard/management/commands/__pycache__/*
 kaddumapp/static/images/logo.jpg
+
+kaddumapp/users/__pycache__/*
+kaddumapp/users/__init__.py
+kaddumapp/users/migrations/*
