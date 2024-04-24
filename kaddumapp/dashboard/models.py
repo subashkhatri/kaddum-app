@@ -1,7 +1,7 @@
 from django.db import models
 
 class Project(models.Model):
-    project_no = models.CharField(max_length=5, primary_key=True)
+    project_no = models.AutoField(primary_key= True)
     purchase_order_no = models.CharField(max_length=100, null=True, blank=True)
     project_name = models.CharField(max_length=255)
     client = models.CharField(max_length=100)
@@ -10,17 +10,6 @@ class Project(models.Model):
     project_budget = models.FloatField(null=True, blank=True)
     project_total_cost = models.FloatField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
-
-    def save(self, *args, **kwargs):
-        if not self.project_no:
-            last_record = Project.objects.order_by('-project_no').first()
-            if last_record:
-                last_number = int(last_record.project_no[2:])
-                new_number = last_number + 1
-                self.project_no = f"DT{new_number:04d}"
-            else:
-                self.project_no = "DT0001"
-        super(Project, self).save(*args, **kwargs)
         
     class Meta:
         app_label = 'dashboard'
