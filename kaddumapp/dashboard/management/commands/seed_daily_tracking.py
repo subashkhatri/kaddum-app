@@ -11,7 +11,6 @@ class Command(BaseCommand):
 
         records = [
             {
-                'day_tracking_no': 'DT0001',
                 'project_no': '2439',
                 'record_date': date(2024, 2, 5),
                 'record_day': 'dayshift',
@@ -31,7 +30,6 @@ class Command(BaseCommand):
                 'is_draft': False,
             },
             {
-                'day_tracking_no': 'DT0002',
                 'project_no': '2439',
                 'record_date': date(2024, 2, 5),
                 'record_day': 'nightshift',

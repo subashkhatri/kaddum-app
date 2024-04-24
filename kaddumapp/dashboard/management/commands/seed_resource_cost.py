@@ -11,7 +11,6 @@ class Command(BaseCommand):
 
         records = [
             {
-                'resource_item_no': 1,
                 'item_type': 'personel',
                 'item_name': 'ERA Supervisor',
                 'item_id': None,
@@ -22,7 +21,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 2,
                 'item_type': 'personel',
                 'item_name': 'ERA Allrounder',
                 'item_id': None,
@@ -33,7 +31,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 3,
                 'item_type': 'personel',
                 'item_name': 'ERA Moxy Operator',
                 'item_id': None,
@@ -44,7 +41,7 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 4,
+
                 'item_type': 'personel',
                 'item_name': 'ERA Amex Operator',
                 'item_id': None,
@@ -55,7 +52,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 5,
                 'item_type': 'personel',
                 'item_name': 'ERA Trade Assistant Dayshift',
                 'item_id': None,
@@ -66,7 +62,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 6,
                 'item_type': 'personel',
                 'item_name': 'ERA Trade Assistant Nightshift',
                 'item_id': None,
@@ -77,7 +72,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 7,
                 'item_type': 'personel',
                 'item_name': 'ERA Deck Hand',
                 'item_id': None,
@@ -88,7 +82,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 8,
                 'item_type': 'personel',
                 'item_name': 'ERA Master 5',
                 'item_id': None,
@@ -99,7 +92,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 9,
                 'item_type': 'personel',
                 'item_name': 'ERA Mechanical Fitter / Operator',
                 'item_id': None,
@@ -110,7 +102,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 10,
                 'item_type': 'personel',
                 'item_name': 'Supervisor',
                 'item_id': None,
@@ -121,7 +112,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 11,
                 'item_type': 'personel',
                 'item_name': 'All Rounder',
                 'item_id': None,
@@ -132,7 +122,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 12,
                 'item_type': 'personel',
                 'item_name': 'Operator',
                 'item_id': None,
@@ -143,7 +132,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 13,
                 'item_type': 'personel',
                 'item_name': 'Plumber',
                 'item_id': None,
@@ -154,7 +142,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 14,
                 'item_type': 'personel',
                 'item_name': 'Electrician',
                 'item_id': None,
@@ -165,7 +152,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 15,
                 'item_type': 'personel',
                 'item_name': 'Electricain HV',
                 'item_id': None,
@@ -176,7 +162,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 16,
                 'item_type': 'personel',
                 'item_name': 'General Labourer',
                 'item_id': None,
@@ -187,7 +172,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 17,
                 'item_type': 'personel',
                 'item_name': 'Structual Draftsman',
                 'item_id': None,
@@ -198,7 +182,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 18,
                 'item_type': 'personel',
                 'item_name': 'Structual Engineer',
                 'item_id': None,
@@ -209,7 +192,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 19,
                 'item_type': 'car',
                 'item_name': 'Toyota Landcruiser Ute Trayback',
                 'item_id': 'KV01',
@@ -220,7 +202,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 20,
                 'item_type': 'car',
                 'item_name': 'Toyota Landcruiser Ute Trayback',
                 'item_id': 'KV02',
@@ -231,7 +212,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 21,
                 'item_type': 'car',
                 'item_name': 'Toyata Hilux Dual Cab',
                 'item_id': 'KV03',
@@ -242,7 +222,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 22,
                 'item_type': 'car',
                 'item_name': 'Toyata Hilux Dual Cab',
                 'item_id': 'KV04',
@@ -253,7 +232,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 23,
                 'item_type': 'car',
                 'item_name': 'Mitsubishi Triton Dual Cab',
                 'item_id': 'KV05',
@@ -264,7 +242,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 24,
                 'item_type': 'car',
                 'item_name': 'Toyota Troop Carrier',
                 'item_id': 'KV06',
@@ -275,7 +252,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 25,
                 'item_type': 'truck',
                 'item_name': 'Isuzu 10m Body Tipper',
                 'item_id': 'KM01',
@@ -286,7 +262,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
                 {
-                'resource_item_no': 26,
                 'item_type': 'truck',
                 'item_name': 'Rigid 16m Tipper',
                 'item_id': None,
@@ -297,7 +272,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 27,
                 'item_type': 'truck',
                 'item_name': 'Isuzu beavertail 14t with 4t Hiab 9 tonne winch',
                 'item_id': 'KM02',
@@ -308,7 +282,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 28,
                 'item_type': 'truck',
                 'item_name': 'Rigid 14000L Water Cart',
                 'item_id': None,
@@ -319,7 +292,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 29,
                 'item_type': 'truck',
                 'item_name': 'Hino FS 700 Series 10m Tipper includes trailer',
                 'item_id': None,
@@ -330,7 +302,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 30,
                 'item_type': 'truck',
                 'item_name': 'Isuzu FY FTR Bucket Truck',
                 'item_id': None,
@@ -341,7 +312,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 31,
                 'item_type': 'truck',
                 'item_name': 'Isuzu Hydroexcavation Unit',
                 'item_id': None,
@@ -352,7 +322,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 32,
                 'item_type': 'truck',
                 'item_name': 'Hino 500 Series Flat Bed',
                 'item_id': None,
@@ -363,7 +332,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 33,
                 'item_type': 'truck',
                 'item_name': 'Hino FDIJLPA Tipper 4m',
                 'item_id': None,
@@ -374,7 +342,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 34,
                 'item_type': 'truck',
                 'item_name': 'Slip on 5,000L water tank with dribble bar',
                 'item_id': 'KM03',
@@ -385,7 +352,6 @@ class Command(BaseCommand):
                 'last_update_date': date(2024, 4, 22),
             },
             {
-                'resource_item_no': 35,
                 'item_type': 'truck',
                 'item_name': 'Slip on 10,000L water tank with dribble bar',
                 'item_id': 'KM04',

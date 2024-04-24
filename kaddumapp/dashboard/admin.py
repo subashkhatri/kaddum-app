@@ -5,10 +5,10 @@ from .models import *
 admin.site.site_header = 'Kaddum App Dashboard'
 
 class DairyRecordAdmin(admin.ModelAdmin):
-  list_display = ('dairy_record_no', 'project_no', 'record_date', 'record_shift','supervisor','is_draft')
+  list_display = ('project_no', 'record_date', 'record_shift','supervisor','is_draft')
 
 class DayTrackingAdmin(admin.ModelAdmin):
-  list_display = ('day_tracking_no', 'project_no', 'record_date', 'record_shift','kaddum_name','is_draft')
+  list_display = ( 'project_no', 'record_date', 'record_shift','kaddum_name','is_draft')
 
 class ShowAllAdmin(admin.ModelAdmin):
     def get_list_display(self, request):

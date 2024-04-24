@@ -1,7 +1,7 @@
 from django.db import models
 
 class Project(models.Model):
-    project_no = models.CharField(max_length=5)
+    project_no = models.CharField(max_length=5, primary_key=True)
     purchase_order_no = models.CharField(max_length=100, null=True, blank=True)
     project_name = models.CharField(max_length=255)
     client = models.CharField(max_length=100)
@@ -29,7 +29,6 @@ class Project(models.Model):
         return f"Project No: {self.project_no}, Job Name: {self.project_name}"
 
 class ResourceCost(models.Model):
-    resource_item_no = models.CharField(max_length=10)
     item_type = models.CharField(max_length=50)
     item_name = models.CharField(max_length=255)
     item_id = models.CharField(max_length=10, null=True, blank=True)
@@ -39,17 +38,6 @@ class ResourceCost(models.Model):
     mobilisation_desc = models.CharField(max_length=50, null=True, blank=True)
     last_update_date = models.DateField(auto_now=True)
 
-    def save(self, *args, **kwargs):
-            if not self.resource_item_no:
-                last_record = ResourceCost.objects.order_by('-resource_item_no').first()
-                if last_record:
-                    last_number = int(last_record.resource_item_no[2:])
-                    new_number = last_number + 1
-                    self.resource_item_no = f"RC{new_number:04d}"
-                else:
-                    self.resource_item_no = "RC0001"
-            super(ResourceCost, self).save(*args, **kwargs)
-
     class Meta:
         app_label = 'dashboard'
 
@@ -58,7 +46,6 @@ class ResourceCost(models.Model):
     
 
 class DairyRecord(models.Model):
-    dairy_record_no = models.CharField(max_length=10)
     project_no = models.CharField(max_length=5)
     record_date = models.DateField()
     record_shift = models.CharField(max_length=10)
@@ -103,17 +90,6 @@ class DairyRecord(models.Model):
     # draft save
     is_draft = models.BooleanField(default=True)
 
-    def save(self, *args, **kwargs):
-        if not self.dairy_record_no:
-            last_record = DairyRecord.objects.order_by('-dairy_record_no').first()
-            if last_record:
-                last_number = int(last_record.dairy_record_no[2:])
-                new_number = last_number + 1
-                self.dairy_record_no = f"DR{new_number:04d}"
-            else:
-                self.dairy_record_no = "DR0001"
-        super(DairyRecord, self).save(*args, **kwargs)
-
     class Meta:
         app_label = 'dashboard'
 
@@ -121,7 +97,6 @@ class DairyRecord(models.Model):
         return f"Daily Record: {self.id}, Project No: {self.project_no}, Date: {self.record_date}"
 
 class DayTracking(models.Model):
-    day_tracking_no = models.CharField(max_length=50)
     project_no = models.CharField(max_length=5)
     record_date = models.DateField()
     record_day = models.CharField(max_length=10)
@@ -140,17 +115,6 @@ class DayTracking(models.Model):
     record_submitted_date = models.DateField(null=True, blank=True, auto_now=True)
     is_draft = models.BooleanField(default=True)
 
-    def save(self, *args, **kwargs):
-        if not self.day_tracking_no:
-            last_record = DayTracking.objects.order_by('-day_tracking_no').first()
-            if last_record:
-                last_number = int(last_record.day_tracking_no[2:])
-                new_number = last_number + 1
-                self.day_tracking_no = f"DT{new_number:04d}"
-            else:
-                self.day_tracking_no = "DT0001"
-        super(DayTracking, self).save(*args, **kwargs)
-
     class Meta:
         app_label = 'dashboard'
 
@@ -158,7 +122,6 @@ class DayTracking(models.Model):
         return f"Day Tracking:{self.day_tracking_no} "
     
 class DayTrackingEmployeeDetails(models.Model):
-    line_item_no = models.AutoField(primary_key=True)
     day_tracking_no = models.CharField(max_length=50)
     employee_name = models.CharField(max_length=255)
     position = models.CharField(max_length=50)  # job position
@@ -175,7 +138,6 @@ class DayTrackingEmployeeDetails(models.Model):
         return f"Day Tracking Employee Details: {self.day_tracking_no}"
     
 class DayTrackingResourceDetails(models.Model):
-    line_item_no = models.AutoField(primary_key=True)
     day_tracking_no = models.CharField(max_length=50)
     item_type = models.CharField(max_length=50)
     item_name = models.CharField(max_length=255)
