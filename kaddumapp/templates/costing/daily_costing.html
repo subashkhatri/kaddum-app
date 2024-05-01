@@ -10,14 +10,18 @@
             <form>
                 <div class="form-section-header">Shift Information</div>
                 <div class="form-group">
-                    <label for="jobName">Job Name</label>
-                    <input type="text" class="form-control" id="jobName" placeholder="Job Name" pattern="[A-Za-z0-9\s]+"
-                        required>
+                    <label for="projectName">Project Name</label>
+                    <select class="form-control" id="projectName" name="projectName" onchange="updateCostingFields()" required>
+                        <option value="">Select a Project</option>
+                        {% for project in projects %}
+                        <option value="{{ project.project_name }}">{{ project.project_name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-                <div class="form-row">
+                <div class="row">
                     <div class="form-group col-md-6">
                         <label for="date">Date</label>
-                        <input type="date" class="form-control" id="date" placeholder="Date">
+                        <input type="date" class="form-control" id="date" placeholder="Date" name="date" onchange="updateCostingFields()">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="day">Day</label>
@@ -28,51 +32,44 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Role</th>
-                            <th scope="col" width="15%">Total Hours</th>
-                            <th scope="col" width="15%">Rate</th>
-                            <th scope="col" width="10%">Total Amount</th>
-                            <th scope="col" width="10%">Indigenous</th>
-                            <th scope="col" width="10%">Local</th>
+                            <th scope="col" class="align-middle">Name</th>
+                            <th scope="col" class="align-middle">Position</th>
+                            <th scope="col" class="align-middle" width="13%">Hours</th>
+                            <th scope="col" class="align-middle" width="13%">Rate</th>
+                            <th scope="col" class="align-middle" width="10%">Total Amount</th>
+                            <th scope="col" class="align-middle" width="10%">Indigenous</th>
+                            <th scope="col" class="align-middle" width="10%">Local</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="employeeTableBody">
                         <tr>
-                            <td class="align-middle">Melissa Pettersson</td>
-                            <td class="align-middle">Amex Operator</td>
-                            <td><input type="number" class="form-control" id="melissaHours" name="melissaHours"
-                                    value="8" min="0"></td>
-                            <td><input type="number" class="form-control" id="melissaRate" name="melissaRate"
-                                    step="0.01" value="30" min="0"></td>
-                            <td id="melissaTotal" class="align-middle text-right">$240.00</td>
-                            <td class="align-middle text-center">⭕</td> <!-- Space for "No" -->
-                            <td class="align-middle text-center">⭕</td> <!-- Circle for "Yes" -->
-                        </tr>
-                        <tr>
-                            <td class="align-middle">David Cook</td>
-                            <td class="align-middle">Dozer Operator</td>
-                            <td><input type="number" class="form-control" id="melissaHours" name="melissaHours"
-                                    value="8" min="0"></td>
-                            <td><input type="number" class="form-control" id="melissaRate" name="melissaRate"
-                                    step="0.01" value="30" min="0"></td>
-                            <td id="melissaTotal" class="align-middle text-right">$240.00</td>
-                            <td class="align-middle text-center"> </td> <!-- Space for "No" -->
-                            <td class="align-middle text-center"> </td> <!-- Circle for "Yes" -->
-                        </tr>
-                        <tr>
-                            <td class="align-middle">Tipene Shepherd</td>
-                            <td class="align-middle">Deck Hand</td>
-                            <td><input type="number" class="form-control" id="melissaHours" name="melissaHours"
-                                    value="8" min="0"></td>
-                            <td><input type="number" class="form-control" id="melissaRate" name="melissaRate"
-                                    step="0.01" value="30" min="0"></td>
-                            <td id="melissaTotal" class="align-middle text-right">$240.00</td>
-                            <td class="align-middle text-center">⭕</td> <!-- Space for "No" -->
-                            <td class="align-middle text-center"> </td> <!-- Circle for "Yes" -->
-                        </tr>
+                            <td class="align-middle">
+                                <select class="form-control" name="name[]">
+                                    <option value="">Select Name</option>
+                                    {% for name in employee_names %}
+                                    <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td class="align-middle">
+                                <select class="form-control" name="position[]">
+                                    <option value="">Select Position</option>
+                                    {% for position in positions %}
+                                    <option value="{{ position }}">{{ position }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td><input type="number" class="form-control" name="hours[]" min="0"></td>
+                            <td><input type="number" class="form-control" name="rate[]" step="0.01" min="0"></td>
+                            <td class="align-middle text-right"></td> <!-- Total Amount -->
+                            <td class="align-middle text-center"></td> <!-- Indigenous -->
+                            <td class="align-middle text-center"></td> <!-- Local -->
+                        </tr>                        
                     <tbody>
                 </table>
+                <div class="link-container">
+                    <a href="#" class="add-link" onclick="addEmployeeRow(); return false;">+ Add New Row</a>
+                </div>
                 <div class="form-section-header">Daily Costing Summary</div>
                 <table class="table table-bordered">
                     <thead>
@@ -104,10 +101,11 @@
                         </tr>
                     </tbody>
                 </table>
-
-                <button type="submit" class="btn btn-danger">Submit</button>
+                <button type="submit" class="form-group btn btn-success col-2" value="submit">Create</button>
+                <a href="{% url 'index' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
             </form>
         </div>
     </div>
 </div>
+
 {% endblock page_content %}

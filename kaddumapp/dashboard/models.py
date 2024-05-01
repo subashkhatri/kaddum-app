@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 class Project(models.Model):
     project_no = models.AutoField(primary_key= True)
@@ -31,7 +32,7 @@ class ResourceCost(models.Model):
         app_label = 'dashboard'
 
     def __str__(self):
-        return f"Resource: {self.resource_item_no}, name: {self.item_name} cost rate: {self.item_rate}"
+        return f"Resource: {self.id}, name: {self.item_name} cost rate: {self.item_rate}"
     
 
 class DairyRecord(models.Model):
@@ -108,7 +109,7 @@ class DayTracking(models.Model):
         app_label = 'dashboard'
 
     def __str__(self):
-        return f"Day Tracking:{self.day_tracking_no} "
+        return f"Day Tracking:{self.id} {self.project_no} {self.record_date}"
     
 class DayTrackingEmployeeDetails(models.Model):
     day_tracking_no = models.CharField(max_length=50)
@@ -141,4 +142,58 @@ class DayTrackingResourceDetails(models.Model):
 
     def __str__(self):
         return f"Day Tracking Resource Details: {self.day_tracking_no}"
+
+class CostTracking(models.Model):
+    project_no = models.CharField(max_length=5)
+    record_date = models.DateField()
+    record_day = models.CharField(max_length=10)
+    year_week = models.CharField(max_length=6, null= True, blank=True)
+    total_hours = models.FloatField(null= True, blank=True)
+    local_hours = models.FloatField(null= True, blank=True)
+    indigenous_hours = models.FloatField(null= True, blank=True)
+    total_amount = models.FloatField(null= True, blank=True)
+    local_amount = models.FloatField(null= True, blank=True)
+    indigenous_amount = models.FloatField(null= True, blank=True)
+    record_created_date = models.DateField(auto_now_add=True)
+    record_submitted_date = models.DateField(null=True, blank=True, auto_now=True)
+    is_draft = models.BooleanField(default=True)
     
+    class Meta:
+        app_label = 'dashboard'
+
+    def save(self, *args, **kwargs):
+        if not self.year_week and self.record_date:
+            year, week, _ = self.record_date.isocalendar()  # Get ISO year and week
+            self.year_week = f"{year}{week:02d}"  # Combine year and week, zero-padded
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Day Tracking Resource Details: {self.id}"
+
+class CostingEmployeeDetails(models.Model):
+    cost_tracking_no = models.CharField(max_length=50)
+    employee_name = models.CharField(max_length=255)
+    position = models.CharField(max_length=50)  # job position
+    item_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    total_hours = models.FloatField(null=True, blank=True)
+    total_amount = models.FloatField(null=True, blank=True)
+
+    class Meta:
+        app_label = 'dashboard'
+
+    def __str__(self):
+        return f"Cost Tracking Employee Details: {self.cost_tracking_no}"
+    
+class CostingResourceDetails(models.Model):
+    cost_tracking_no = models.CharField(max_length=50)
+    item_type = models.CharField(max_length=50)
+    item_name = models.CharField(max_length=255)
+    item_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    total_hours = models.FloatField(null=True, blank=True)
+    total_amount = models.FloatField(null=True, blank=True)
+
+    class Meta:
+        app_label = 'dashboard'
+
+    def __str__(self):
+        return f"Cost Tracking Resource Details: {self.cost_tracking_no}"
