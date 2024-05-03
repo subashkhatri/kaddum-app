@@ -4,6 +4,7 @@ from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
 )
+from dashboard.models_resource_cost import ResourceCost
 
 # Create your models here.
 
@@ -45,19 +46,16 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     full_name = models.CharField(max_length=255, blank=True)
-    indigenous = models.BooleanField(default=False)
-    local = models.BooleanField(default=False)
-    position = models.CharField(max_length=50)  # job position
-    roles = models.CharField(max_length=50)  # Role permission to access the system
+    email = models.CharField(max_length=255, blank=True, null=True)
+    is_indigenous = models.BooleanField(default=False)
+    is_local = models.BooleanField(default=False)
+    position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT)  # job position 
+    roles = models.CharField(max_length=50)  # Role permission to access the system super_admin, supervisor, restricted user
 
     # we don't change to False because when we create superuser, i won't be able to log in.
     is_active = models.BooleanField(default=True)  # whether user is employeed or not
-    is_staff = models.BooleanField(
-        default=False
-    )  # whether user is allowed to log in the system or not
-    is_superuser = models.BooleanField(
-        default=False
-    )  # whether user is superuser or not
+    is_staff = models.BooleanField(default=False)  # whether user is allowed to log in the system or not
+    is_superuser = models.BooleanField(default=False)  # whether user is superuser or not
 
     objects = UserAccountManager()
 
@@ -65,11 +63,15 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = [
         "first_name",
         "last_name",
+        'email'
         "indigenous",
         "local",
         "position",
         "roles",
     ]  # when registering, requried fileds
+    class Meta:
+        app_label = 'users'
+        db_table = 'users-UserAccount'
 
     def save(self, *args, **kwargs):
         self.full_name = (f"{self.first_name} {self.last_name}") # Combine first and last names

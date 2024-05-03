@@ -1,0 +1,46 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+<div class="container mt-4">
+    <h1 class="text-left mb-4 h4">Employee List</h1>     
+    <a href="{% url 'employees_add' %}"  class="form-group btn btn-danger col-2 float-right" >Add</a>
+    {% comment %} <div>
+        <button type="submit" class="btn btn-danger btn-lg float-right">Save</button>
+    </div> {% endcomment %}
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-section-header">Employee List</div>            
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col" class="align-middle"><small> ID</small></th>
+                        <th scope="col" class="align-middle" width=><small>Full Name</small></th>
+                        <th scope="col" class="align-middle" ><small>Email</small></th>
+                        <th scope="col" class="align-middle" width="8%"><small>Indigenous</small></th>
+                        <th scope="col" class="align-middle" width="8%"><small>Local</small></th>
+                        <th scope="col" class="align-middle"><small>Position</small></th>
+                        <th scope="col" class="align-middle"><small>Role</small></th>
+                        <th scope="col" class="align-middle" ><small>Status</small></th>
+                    </tr>
+                </thead>
+                <tbody id="employeeTableBody">
+                    {% for employee in employee_list %}
+                    <tr>
+                        <td class="align-middle"><small>{{employee.username}}</small></td>
+                        <td class="align-middle"><small>{{employee.full_name}}</small></td>
+                        <td class="align-middle"><small>{{employee.email}}</small></td>
+                        <td class="align-middle"><small>{{employee.indigenous}}</small></td>
+                        <td class="align-middle"><small>{{employee.local}}</small></td>
+                        <td class="align-middle"><small>{{employee.position}}</small></td>
+                        <td class="align-middle"><small>{{employee.roles}}</small></td>
+                        <td class="align-middle"><small>{{employee.is_active}}</small></td>    
+                    </tr>
+                    {% endfor%}
+                <tbody>
+            </table>
+           
+    </div>
+</div>
+{% endblock page_content %}

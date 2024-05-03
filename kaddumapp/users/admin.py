@@ -9,7 +9,7 @@ class ShowAllAdmin(admin.ModelAdmin):
         return field_names # Return the list of field names
 
 class UserAccountAdmin(admin.ModelAdmin):
-  list_display = ('username', 'first_name', 'last_name','position','roles','indigenous','local','is_active','is_staff','is_superuser')
+  list_display = ('username', 'first_name', 'last_name','position_id','roles','is_indigenous','is_local','is_active','is_staff','is_superuser')
 
 
 admin.site.register(UserAccount, UserAccountAdmin)
