@@ -1,61 +1,80 @@
 {% extends "partials/base.html" %}
 
 {% block page_content %}
-<div class="p-2 px-3 d-flex justify-content-between topbar">
-  <h4 class="header">Dashboard</h4>
-  <div class="profile-settings">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-      aria-haspopup="true" aria-expanded="false">
-      <i class="bi bi-person-fill"></i>
-    </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <a class="dropdown-item" href="#">Action</a>
-      <a class="dropdown-item" href="#">Another action</a>
-      <a class="dropdown-item" href="#">Something else here</a>
-    </div>
-  </div>
-</div>
-<div class="p-4 main-content">
-  <div class="row">
-    <div class="table-container">
-      <div class="table-header">
-        <div class="row">
-          <div class="col-2">Record Date</div>
-          <div class="col-2">Job Name</div>
-          <div class="col-2">Client</div>
-          <div class="col-2">Supervisor</div>
-          <div class="col-2">Client</div>
-          <div class="col-2">Action</div>
-        </div>
-      </div>
-      <div class="table-data p-1 px-2">
-        {% for dairy_record in records %}
-        <div class="my-1 row">
-          <div class="col-2 d-flex align-items-center">{{ dairy_record.record_date|date:"d/m/Y" }}</div>
-          <div class="col-2 d-flex align-items-center">{{ dairy_record.job_name }}</div>
-          <div class="col-2 d-flex align-items-center">{{ dairy_record.client }}</div>
-          <div class="col-2 d-flex align-items-center">{{ dairy_record.supervisor }}</div>
-          <div class="col-2 d-flex align-items-center">{{ dairy_record.record_shift }}</div>
-          <div class="col-2 d-flex">
-            <a href="#" class="btn py-1 px-2 view-btn">View</a>
-            {% if dairy_record.id %}
-            <a href="{% url 'edit_dairy_record' dairy_record.id %}" class="btn py-1 px-2 view-btn">Edit</a>
-            {% else %}
-            <span>ID Missing</span>
-            {% endif %}
-          </div>
-        </div>
-        {% empty %}
-        <div class="my-1 row">
-          <div class="col-12 text-center">No records found.</div>
-        </div>
-        {% endfor %}
 
-      </div>
-      <div class="table-bottom text-center" role="button">
-        <i class="bi bi-caret-down-fill"></i>
-      </div>
+<div class="container mt-4 d-flex align-items-center">
+    <div class="me-auto p-2">
+        <h1 class="text-left mb-4 h4">Costing Tracking</h1>
     </div>
-  </div>
+    <div class="input-group p-2" style="width: 250px;">
+        <input type="text" class="form-control" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-secondary border border-none" type="button" style="background-color: #dee2e6;"><i class="bi bi-search"></i></button>
+    </div>
 </div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <form>            
+                <div class="form-section-header">Draft Forms</div>
+                <table class="table table-bordered" style="border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="14%">Record Date</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="13%">Day</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="13%">Week</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Project Name</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="20%">Modification</th>       
+                            <th scope="col" class="align-middle" style="border-left-style: inset;" width="17%"></th>       
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        <tr>
+                            <td class="align-middle" style="border-right-style: hidden;">02/05/2024</td>
+                            <td class="align-middle" style="border-right-style: hidden;">Thursday</td>
+                            <td class="align-middle" style="border-right-style: hidden;">202417</td>
+                            <td class="align-middle" style="border-right-style: hidden;">ERA General Civil Works</td>
+                            <td class="align-middle" style="border-right-style: hidden;">02/05/2024 16:30</td>
+                            <td class="align-middle" style="border-left-style: inset;">                           
+                                <div class="row justify-content-evenly">
+                                    <a href="daily_costing" class="btn btn-outline-success btn-sm col-5">Edit</a>
+                                </div>
+                            </td>          
+                        </tr>                        
+                    <tbody>
+                </table>
+               
+                <div class="form-section-header" style="margin-top: 80px;">Completed Forms</div>
+              
+                <table class="table table-bordered" style="border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="14%">Record Date</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="13%">Day</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="13%">Week</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Project Name</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="20%">Modification</th>       
+                            <th scope="col" class="align-middle" style="border-left-style: inset;" width="17%"></th>       
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        <tr>
+                            <td class="align-middle" style="border-right-style: hidden;">01/05/2024</td>
+                            <td class="align-middle" style="border-right-style: hidden;">Wednesday</td>
+                            <td class="align-middle" style="border-right-style: hidden;">202417</td>
+                            <td class="align-middle" style="border-right-style: hidden;">Pit 3 Dewatering Filters</td>
+                            <td class="align-middle" style="border-right-style: hidden;">01/05/2024 17:00</td>
+                            <td class="align-middle" style="border-left-style: inset;">
+                                <div class="row justify-content-evenly">
+                                    <a href="#" class="btn btn-outline-success btn-sm col-5">Edit</a>
+                                    <a href="#" class="btn btn-outline-primary btn-sm col-5">View</a>
+                                </div>
+                            </td>          
+                        </tr>                        
+                    <tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock page_content %}

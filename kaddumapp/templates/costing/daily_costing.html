@@ -29,28 +29,21 @@
                     </div>
                 </div>
                 <div class="form-section-header">Costing Breakdown</div>
-                <table class="table table-bordered">
+                <table class="table table-bordered table-responsive">
                     <thead>
                         <tr>
-                            <th scope="col" class="align-middle">Name</th>
-                            <th scope="col" class="align-middle">Position</th>
-                            <th scope="col" class="align-middle" width="13%">Hours</th>
+                            <th scope="col" class="align-middle" width="23%">Name</th>
+                            <th scope="col" class="align-middle" width="28%">Position</th>
                             <th scope="col" class="align-middle" width="13%">Rate</th>
-                            <th scope="col" class="align-middle" width="10%">Total Amount</th>
-                            <th scope="col" class="align-middle" width="10%">Indigenous</th>
-                            <th scope="col" class="align-middle" width="10%">Local</th>
+                            <th scope="col" class="align-middle" width="9%">Total Hours</th>
+                            <th scope="col" class="align-middle" width="9%">Total Amount</th>
+                            <th scope="col" class="align-middle" width="9%">Indigenous</th>
+                            <th scope="col" class="align-middle" width="9%">Local</th>
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
                         <tr>
-                            <td class="align-middle">
-                                <select class="form-control" name="name[]">
-                                    <option value="">Select Name</option>
-                                    {% for name in employee_names %}
-                                    <option value="{{ name }}">{{ name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
+                            <td class="align-middle"></td>
                             <td class="align-middle">
                                 <select class="form-control" name="position[]">
                                     <option value="">Select Position</option>
@@ -59,50 +52,73 @@
                                     {% endfor %}
                                 </select>
                             </td>
-                            <td><input type="number" class="form-control" name="hours[]" min="0"></td>
-                            <td><input type="number" class="form-control" name="rate[]" step="0.01" min="0"></td>
-                            <td class="align-middle text-right"></td> <!-- Total Amount -->
+                            <td><input type="number" class="form-control" name="rate[]" min="0"></td>
+                            <td class="align-middle"></td>
+                            <td class="align-middle"></td> <!-- Total Amount -->
                             <td class="align-middle text-center"></td> <!-- Indigenous -->
                             <td class="align-middle text-center"></td> <!-- Local -->
-                        </tr>                        
+                        </tr> 
                     <tbody>
+                    <tfoot>
+                        <tr>
+                            <th scope="row" colspan="3">Total</th>
+                            <td></td>
+                            <td></td>
+                            <td scope="row" colspan="3"></td>
+                        </tr>
+                    </tfoot>
                 </table>
-                <div class="link-container">
-                    <a href="#" class="add-link" onclick="addEmployeeRow(); return false;">+ Add New Row</a>
-                </div>
-                <div class="form-section-header">Daily Costing Summary</div>
+                <div class="form-section-header">Indigenous and Local Participation</div>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th scope="col"></th> <!-- Empty top-left corner cell -->
-                            <th scope="col">Indigenous</th>
-                            <th scope="col">Local</th>
-                            <th scope="col">Total</th>
+                            <th scope="col">Total Hours</th>
+                            <th scope="col">Total Hours %</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">Hours</th> <!-- Row header -->
-                            <td class="align-middle text-right">8</td> <!-- Example data -->
-                            <td class="align-middle text-right">7</td> <!-- Example data -->
-                            <td class="align-middle text-right">15</td> <!-- Example data -->
+                            <th scope="row">Indigenous</th> <!-- Row header -->
+                            <td class="align-middle text-right">80.55</td> <!-- Example data -->
+                            <td class="align-middle text-right">50.00%</td> <!-- Example data -->
                         </tr>
                         <tr>
-                            <th scope="row">Percentage</th> <!-- Row header -->
+                            <th scope="row">Local</th> <!-- Row header -->
+                            <td class="align-middle text-right">80.55</td> <!-- Example data -->
                             <td class="align-middle text-right">50.00%</td> <!-- Example data -->
-                            <td class="align-middle text-right">50.00%</td> <!-- Example data -->
-                            <td class="align-middle text-right">100.00%</td> <!-- Example data -->
-                        </tr>
-                        <tr>
-                            <th scope="row">Cost</th> <!-- Row header -->
-                            <td class="align-middle text-right">$100.00</td> <!-- Example data -->
-                            <td class="align-middle text-right">$100.00</td> <!-- Example data -->
-                            <td class="align-middle text-right">$200.00</td> <!-- Example data -->
-                        </tr>
+                        </tr>       
                     </tbody>
                 </table>
-                <button type="submit" class="form-group btn btn-success col-2" value="submit">Create</button>
-                <a href="{% url 'index' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+                <div class="form-section-header">Equipment Cost</div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Type</th>
+                            <th scope="col">Equipment</th>
+                            <th scope="col">Day Rate</th>
+                            <th scope="col">Total Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>                        
+                            <td class="align-middle">Car</td> <!-- Example data -->
+                            <td class="align-middle">Toyata Hilux Dual Cab</td> <!-- Example data -->
+                            <td class="align-middle">15.00</td> <!-- Example data -->
+                            <td class="align-middle">12.00</td> <!-- Example data -->
+                        </tr>       
+                        <tr>                        
+                            <td class="align-middle">Truck</td> <!-- Example data -->
+                            <td class="align-middle">Isuzu 10m Body Tipper</td> <!-- Example data -->
+                            <td class="align-middle">45.00</td> <!-- Example data -->
+                            <td class="align-middle">12.00</td> <!-- Example data -->
+                        </tr>       
+                    </tbody>
+                </table>
+                <button type="submit" class="form-group btn btn-success col-2" value="complete">Complete</button>
+                <button type="submit" class="form-group btn btn-outline-success col-2" value="draft">Save as Draft</button>
+                <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+
             </form>
         </div>
     </div>

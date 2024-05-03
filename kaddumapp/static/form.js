@@ -2,9 +2,20 @@ var employeeNames = []; // This should be populated with actual data
 var positions = []; // This should be populated with actual data
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize calculations
+  const tbody = document.querySelector('#employeeTableBody');
+  // Add event listener for input changes on rate fields
+  tbody.addEventListener('input', function(event) {
+    if (event.target.matches('input[name="itemRate[]"], input[name="hours[]"]')) {
+      const row = event.target.closest('tr');
+      updateRowTotal(row);  // Update the row total based on input
+      calculateTotalAmounts();  // Recalculate the total amounts for all rows
+    }
+  });
   initializeCalculations();
+  calculateTotalHours();
+  calculateTotalAmounts();
 });
+
 
 function toggleSideBar() {
     const sidebar = document.getElementById("sidebar");
@@ -18,6 +29,7 @@ function toggleSideBar() {
     }
   }
 
+
 document.getElementById('date').addEventListener('change', function() {
     var input = this.value;
     var date = new Date(input);
@@ -29,17 +41,14 @@ document.getElementById('date').addEventListener('change', function() {
     select.value = dayName;
 });
 
+
 function updateCostingFields() {
   var projectName = document.getElementById('projectName').value;
   var date = document.getElementById('date').value;
-  console.log("Project Name:", projectName);  // Debugging output
-  console.log("Date Selected:", date);        // Debugging output
-
   if (projectName && date) {
       fetch(`/check_day_tracking/?projectName=${encodeURIComponent(projectName)}&date=${encodeURIComponent(date)}`)
           .then(response => response.json())
           .then(data => {
-              console.log("Received Data:", data);  // Debugging output
               if (data.success) {
                   updateEmployeeTable(data.employees);
               } else {
@@ -53,43 +62,43 @@ function updateCostingFields() {
     }
 }
 
+
 function updateEmployeeTable(employees) {
   const tbody = document.getElementById('employeeTableBody');
   tbody.innerHTML = ''; // Clear existing entries
   employees.forEach(emp => {
       const row = tbody.insertRow();
 
-      const nameSelect = createDropdown('employeeName[]', [emp.name]); // assuming emp.name is valid
-      row.insertCell(0).appendChild(nameSelect);
+      const nameCell = row.insertCell(0);
+      nameCell.textContent = emp.name;
+      nameCell.className = 'align-middle'; 
 
-      const positionSelect = createDropdown('employeePosition[]', [emp.position]); // assuming emp.position is valid
+      const positionSelect = createDropdown('employeePosition[]', [emp.position]); 
       row.insertCell(1).appendChild(positionSelect);
 
-      // Create input for hours with text-right alignment for the number input
-      const hoursCell = row.insertCell(2);
-      const hoursInput = document.createElement('input');
-      hoursInput.type = 'number';
-      hoursInput.className = 'form-control align-middle text-right'; // Apply text-right for numbers
-      hoursInput.value = emp.total_hours;
-      hoursInput.min = '0';
-      hoursInput.name = 'totalHours[]';
-      hoursInput.oninput = () => calculateTotal(hoursInput, rateInput, totalCell);
-      hoursCell.appendChild(hoursInput);
-
       // Create input for rate
-      const rateCell = row.insertCell(3);
+      const rateCell = row.insertCell(2);
       const rateInput = document.createElement('input');
       rateInput.type = 'number';
-      rateInput.className = 'form-control align-middle text-right'; // Apply text-right for numbers
+      rateInput.className = 'form-control align-middle text-right';
       rateInput.value = emp.rate;
-      rateInput.step = '0.01';
       rateInput.name = 'itemRate[]';
-      rateInput.oninput = () => calculateTotal(hoursInput, rateInput, totalCell);
       rateCell.appendChild(rateInput);
+
+      // Create input for hours with text-right alignment for the number input
+      const hoursCell = row.insertCell(3);
+      hoursCell.textContent = emp.total_hours;
+      hoursCell.className = 'align-middle text-right';
 
       // Total amount cell with text-right to align numbers
       const totalCell = row.insertCell(4);
       totalCell.className = 'align-middle text-right'; // Ensure numbers are right-aligned
+
+      // Ensure that hours are passed as a number
+      calculateTotal(emp.total_hours, rateInput, totalCell);
+
+      // Setup the event listener after totalCell is defined
+      rateInput.oninput = () => calculateTotal(emp.total_hours, rateInput, totalCell);
 
       // Indigenous and Local columns, ensure text is centered
       const indigenousCell = row.insertCell(5);
@@ -100,79 +109,40 @@ function updateEmployeeTable(employees) {
       localCell.innerHTML = emp.local ? '⭕' : '';
       localCell.className = 'align-middle text-center'; // Center text for indicators
 
-      // Initial calculation for total amount
-      calculateTotal(hoursInput, rateInput, totalCell);
+      // Call calculation functions after the table is populated    
+      calculateTotalHours();
+      calculateTotalAmounts();
   });
 }
 
-// Function to calculate total amount dynamically
-function calculateTotal(hoursInput, rateInput, totalCell) {
-  const totalAmount = Number(hoursInput.value) * Number(rateInput.value);
-  totalCell.textContent = `$${totalAmount.toFixed(2)}`;
-  totalCell.className = 'align-middle text-right'; // Ensure alignment and text formatting
+
+function calculateTotal(hours, rateInput, totalCell) {
+  const hoursNumber = Number(hours); 
+  const rateValue = Number(rateInput.value); 
+  const totalAmount = hoursNumber * rateValue; 
+  if (!isNaN(totalAmount)) { 
+    totalCell.textContent = `$${totalAmount.toFixed(2)}`;
+  } else {
+    totalCell.textContent = "$0.00"; // Default to $0.00 if calculation fails
+  }
+  totalCell.className = 'align-middle text-right'; 
 }
+
 
 function initializeCalculations() {
   const rows = document.querySelectorAll('#employeeTableBody tr');
   rows.forEach(row => {
-      const hoursInput = row.cells[2].querySelector('input');
-      const rateInput = row.cells[3].querySelector('input');
+      const rateInput = row.cells[2].querySelector('input');
+      const hours = row.cells[3].textContent.trim();// Trim any whitespace
       const totalCell = row.cells[4];
-
       // Ensure input fields exist before attaching events and calculating totals
-      if (hoursInput && rateInput && totalCell) {
-          hoursInput.oninput = () => calculateTotal(hoursInput, rateInput, totalCell);
-          rateInput.oninput = () => calculateTotal(hoursInput, rateInput, totalCell);
-          calculateTotal(hoursInput, rateInput, totalCell); // Initial calculation for each row
+      if (rateInput && totalCell) {          
+          rateInput.oninput = () => calculateTotal(hours, rateInput, totalCell);
+          calculateTotal(hours, rateInput, totalCell); // Initial calculation for each row
       }
   });
 }
 
-function addEmployeeRow() {
-  const tbody = document.getElementById('employeeTableBody');
-  const row = tbody.insertRow();
-
-  // Name dropdown
-  const nameCell = row.insertCell(0);
-  const nameDropdown = createDropdown('employeeName[]', employeeNames);
-  nameCell.appendChild(nameDropdown);
-
-  // Position dropdown
-  const positionCell = row.insertCell(1);
-  const positionDropdown = createDropdown('employeePosition[]', positions);
-  positionCell.appendChild(positionDropdown);
-
-  // Hours input
-  const hoursInput = createInput('number', 'totalHours[]', '0', 'form-control align-middle text-right');
-  const hoursCell = row.insertCell(2);
-  hoursCell.appendChild(hoursInput);
-
-  // Rate input
-  const rateInput = createInput('number', 'itemRate[]', '0.00', 'form-control align-middle text-right');
-  const rateCell = row.insertCell(3);
-  rateCell.appendChild(rateInput);
-
-  // Total amount cell
-  const totalCell = row.insertCell(4);
-  totalCell.className = 'align-middle text-right';
-  totalCell.textContent = '$0.00';
-
-  // Indigenous and Local indicators
-  const indigenousCell = row.insertCell(5);
-  indigenousCell.className = 'align-middle text-center';
-  indigenousCell.textContent = '⭕'; // Default value, make editable as needed
-
-  const localCell = row.insertCell(6);
-  localCell.className = 'align-middle text-center';
-  localCell.textContent = ''; // Assuming false by default
-
-  // Attach event listeners for dynamic calculation
-  hoursInput.oninput = () => calculateTotal(hoursInput, rateInput, totalCell);
-  rateInput.oninput = () => calculateTotal(hoursInput, rateInput, totalCell);
-
-  // Initial calculation
-  calculateTotal(hoursInput, rateInput, totalCell);
-}
 
 function createDropdown(name, options) {
   const select = document.createElement('select');
@@ -187,6 +157,7 @@ function createDropdown(name, options) {
   return select;
 }
 
+
 function createInput(type, name, value, className) {
   const input = document.createElement('input');
   input.type = type;
@@ -196,9 +167,48 @@ function createInput(type, name, value, className) {
   return input;
 }
 
-// Function to calculate total amount
-function calculateTotal(hoursInput, rateInput, totalCell) {
-  const totalAmount = Number(hoursInput.value) * Number(rateInput.value);
-  totalCell.textContent = `$${totalAmount.toFixed(2)}`;
+
+function calculateTotalHours() {
+  const rows = document.querySelectorAll('#employeeTableBody tr');
+  let totalHours = 0;
+  rows.forEach((row) => {
+      let hoursText = row.cells[3].textContent.trim();
+      hoursText = hoursText || '0'; // Set default to '0' if empty
+      const hours = parseFloat(hoursText);
+      totalHours += hours;     
+  });
+  // Update the footer
+  const footerTotalHoursCell = document.querySelector('tfoot tr td:nth-child(2)');
+  footerTotalHoursCell.textContent = totalHours.toFixed(2);
 }
 
+
+function updateRowTotal(row) {
+  const rateInput = row.querySelector('input[name="itemRate[]"]');
+  if (rateInput) {
+    const hoursCell = row.cells[3];
+    const hours = parseFloat(hoursCell.textContent.trim() || "0");
+    const rate = parseFloat(rateInput.value.trim() || "0");
+    const totalCell = row.cells[4];
+    const totalAmount = hours * rate;
+    totalCell.textContent = `$${totalAmount.toFixed(2)}`;
+    calculateTotalAmounts(); // Recalculate totals for all rows whenever a row is updated
+  }
+}
+
+
+function calculateTotalAmounts() {
+  const rows = document.querySelectorAll('#employeeTableBody tr');
+  let totalAmount = 0;
+  rows.forEach((row) => {
+    const amountText = row.cells[4].textContent.replace('$', '').trim();
+    const amount = parseFloat(amountText);
+    if (!isNaN(amount)) {
+      totalAmount += amount;
+    }
+  });
+  const footerTotalAmountCell = document.querySelector('tfoot tr td:nth-child(3)');
+  if (footerTotalAmountCell) {
+    footerTotalAmountCell.textContent = `$${totalAmount.toFixed(2)}`;
+  }
+}

@@ -10,5 +10,5 @@ urlpatterns = [
   path('edit_dairy_record/<int:dairy_record_id>/', views.edit_dairy_record, name='edit_dairy_record'),
   path('all_dairy_records', views.all_dairy_record, name='all_dairy_record'),
   path('all_daily_costing', views.all_daily_costing, name='all_daily_costing'),
-  path('ajax/check_day_tracking/', views.check_day_tracking, name='check_day_tracking'),
+  path('check_day_tracking/', views.check_day_tracking, name='check_day_tracking'),
 ]
