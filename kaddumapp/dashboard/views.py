@@ -19,7 +19,7 @@ def dairy_record(request):
   return render(request, 'dashboard/dairy_record.html')
 
 def all_dairy_record(request):
-    dairy_records = DairyRecord.objects.order_by('-record_created_date')
+    dairy_records = DairyRecord.objects.order_by('-created_date')
     return render(request, 'dashboard/all_dairy_record.html', {'records': dairy_records})
 
 def create_dairy_record(request):
