@@ -30,10 +30,10 @@ class Project(models.Model):
 
 class DairyRecord(models.Model):
     dairy_record_id = models.CharField(max_length=10, primary_key= True)
-    project_no = models.ForeignKey(Project, on_delete=models.PROTECT) # FK from project table
+    project_no = models.ForeignKey(Project, on_delete=models.PROTECT, db_column='project_no') # FK from project table
     record_date = models.DateField()
     record_shift = models.CharField(max_length=30)  # value = Day shift or Night shift
-    supervisor_id = models.ForeignKey(UserAccount, on_delete=models.PROTECT)  # FK supervisor_id = Useraccount.username
+    supervisor_id = models.ForeignKey(UserAccount, on_delete=models.PROTECT, db_column ='supervisor_id')  # FK supervisor_id = Useraccount.username
     activity_discussion = models.TextField(null=True, blank=True)
     safety_issue_discussion = models.TextField(null=True, blank=True)
     instruction_from_client = models.TextField(null=True, blank=True)
@@ -97,7 +97,7 @@ class DairyRecord(models.Model):
 
 class CostTracking(models.Model):
     cost_tracking_id = models.CharField(max_length=10, primary_key=True)  
-    project_no = models.ForeignKey(Project, on_delete=models.PROTECT)   #generated automatically
+    project_no = models.ForeignKey(Project, on_delete=models.PROTECT, db_column='project_no')   #generated automatically
     record_date = models.DateField()                                    #generated automatically   
     year_week = models.CharField(max_length=6, null= True, blank=True)  #generated automatically
 
@@ -141,8 +141,8 @@ class CostTracking(models.Model):
 
 class DayTracking(models.Model):
     day_tracking_id = models.CharField(max_length=10, primary_key= True)
-    cost_tracking_id = models.ForeignKey(CostTracking, on_delete=models.CASCADE, blank=True, null=True)
-    project_no = models.ForeignKey(Project, on_delete=models.PROTECT) 
+    cost_tracking_id = models.ForeignKey(CostTracking, on_delete=models.CASCADE, blank=True, null=True, db_column='cost_tracking_id')
+    project_no = models.ForeignKey(Project, on_delete=models.PROTECT, db_column='project_no') 
     record_date = models.DateField()
     record_shift = models.CharField(max_length=30)
     work_area = models.CharField(max_length=255)
@@ -197,9 +197,9 @@ class DayTracking(models.Model):
 
 class DayTrackingEmployeeDetails(models.Model):
     id = models.AutoField(primary_key= True)
-    day_tracking_id = models.ForeignKey(DayTracking, on_delete=models.PROTECT)
-    employee_id = models.ForeignKey(UserAccount, on_delete=models.PROTECT)
-    position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, related_name='daytracking_employee_details_position')
+    day_tracking_id = models.ForeignKey(DayTracking, on_delete=models.PROTECT, db_column='day_tracking_id')
+    employee_id = models.ForeignKey(UserAccount, on_delete=models.PROTECT, db_column='employee_id')
+    position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, related_name='daytracking_employee_details_position', db_column='position_id')
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
     total_hours = models.FloatField(null=True, blank=True)
@@ -208,7 +208,7 @@ class DayTrackingEmployeeDetails(models.Model):
     # the below is for cost tracking sheet
     hour_rate = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
     total_amount = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
-    confirmed_position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, null=True, blank=True, related_name='daytracking_employee_details_confirmed_position')
+    confirmed_position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, null=True, blank=True, related_name='daytracking_employee_details_confirmed_position', db_column='confirmed_position_id')
 
     class Meta:
         app_label = 'dashboard'
@@ -232,8 +232,8 @@ class DayTrackingEmployeeDetails(models.Model):
     
 class DayTrackingEquipmentDetails(models.Model):
     id = models.AutoField(primary_key= True)
-    day_tracking_id = models.ForeignKey(DayTracking, on_delete=models.PROTECT)
-    resource_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT)
+    day_tracking_id = models.ForeignKey(DayTracking, on_delete=models.PROTECT, db_column='day_tracking_id')
+    resource_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, db_column='resource_id')
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
     total_hours = models.FloatField(null=True, blank=True)
