@@ -1,0 +1,79 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+<div class="container mt-4">
+    <h1 class="text-left mb-4 h4">Create New Employee</h1>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <form method="POST">
+                {% csrf_token %} 
+                {% comment %} <div class="form-group">
+                    <label>Employee ID</label>
+                    <input type="text" class="form-control" id="employee_id" placeholder="employee_id" name="employee_id" >
+
+                </div> {% endcomment %}
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" class="form-control" id="first_name" placeholder="first name" name="first_name" required>
+
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" class="form-control" id="last_name" placeholder="last name" name="last_name" required>
+
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="email" name="email" required>
+
+                </div>
+                <div class="form-group">
+                    <label>Indigenous: </label>
+                    <select id="is_indigenous" name="is_indigenous" class="form-control" required>
+                        <option value="">Choose...</option>
+                        <option value="True">Yes</option>
+                        <option value="False">No</option>                        
+                    </select>
+
+                </div>
+                <div class="form-group">
+                    <label>Local: </label>
+                    <select id="is_local" name="is_local" class="form-control" required>
+                        <option value="">Choose...</option>
+                        <option value="True" {% if UserAccount.is_local %}selected{% endif %}>Yes</option>
+                        <option value="False" {% if UserAccount.is_local %}selected{% endif %}>No</option>
+                        
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="positions">Position</label>
+                    <select class="form-control" name="position" required>
+                        <option value="">Choose...</option>
+                        {% for position in position_list %}
+                        <option value="{{ position }}">{{ position }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="roles">Role</label>
+                    <select id="shift" name="role" class="form-control" required>
+                        <option value="">Choose...</option>
+                        <option value="super admin" >Super Admin</option>
+                        <option value="supervisor" >Supervisor</option>
+                        <option value="restricted user" >Restricted User</option>
+                    </select>
+                </div>                   
+
+                <!-- <button type="submit" class="btn btn-danger btn-lg">Save</button> -->
+                <!-- <button type="button" class="btn btn-secondary btn-lg" onclick="location.href='{% url 'all_daily_costing' %}';">Cancel</button> -->
+                <button type="submit" class="form-group btn btn-success col-2" value="submit">Create</button>
+                <a href="{% url 'employees' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock page_content %}

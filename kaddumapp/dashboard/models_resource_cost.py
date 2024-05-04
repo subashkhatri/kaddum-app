@@ -1,0 +1,22 @@
+from django.db import models
+
+
+class ResourceCost(models.Model):
+    resource_id = models.AutoField(primary_key= True)
+    item_type = models.CharField(max_length=30)
+    item_name = models.CharField(max_length=255)
+    item_id = models.CharField(max_length=10, null=True, blank=True)
+    item_location = models.CharField(max_length=30, null=True, blank=True)
+    item_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    unit_of_measure = models.CharField(max_length=10)
+    mobilisation_desc = models.CharField(max_length=50, null=True, blank=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    last_modification_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = 'dashboard'
+        db_table = 'dashboard-ResourceCost'
+
+    def __str__(self):
+        return f"Resource: {self.resource_id}, name: {self.item_name} cost rate: {self.item_rate}"
+ 

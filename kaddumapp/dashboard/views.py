@@ -9,7 +9,6 @@ from datetime import date
 from django.http import JsonResponse
 import datetime
 
-
 logger = logging.getLogger(__name__)
 
 def index(request):
