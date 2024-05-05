@@ -35,12 +35,14 @@ python manage.py migrate
 
 # Seed the database
 Write-Host "Seeding the database..."
-python manage.py seed_dairy_records
-python manage.py seed_dairy_records
-python manage.py seed_day_tracking_emp_details
-python manage.py seed_day_tracking_resource_details
+
 python manage.py seed_project
 python manage.py seed_resource_cost
 python manage.py seed_useraccount
+python manage.py seed_dairy_records
+python manage.py seed_cost_tracking
+python manage.py seed_daily_tracking
+python manage.py seed_day_tracking_emp_details
+python manage.py seed_day_tracking_resource_details
 
 Write-Host "Database reset and seeded successfully!"
