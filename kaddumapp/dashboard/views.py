@@ -6,6 +6,8 @@ from users.models import UserAccount
 from django.utils.dateparse import parse_date
 from django.contrib import messages
 import logging
+from django.core.paginator import Paginator
+
 from datetime import date
 from django.http import JsonResponse
 import datetime
@@ -20,7 +22,10 @@ def dairy_record(request):
   return render(request, 'dashboard/dairy_record.html')
 
 def all_dairy_record(request):
-    dairy_records = DairyRecord.objects.order_by('-created_date')
+    records_list = DairyRecord.objects.order_by('-created_date')
+    paginator = Paginator(records_list, 10)  # Show 10 records per page.
+    page_number = request.GET.get('page')
+    dairy_records = paginator.get_page(page_number)
     return render(request, 'dashboard/all_dairy_record.html', {'records': dairy_records})
 
 def create_dairy_record(request):
@@ -33,46 +38,20 @@ def create_dairy_record(request):
           return redirect('index')
     else:
         form = DairyRecordForm()
-        projects = Project.objects.all()  # Assuming Project model has all projects
-        return render(request, 'dashboard/create_dairy_record.html', {'form': form, 'projects': projects, 'form_action': form_action})
+        return render(request, 'dashboard/create_dairy_record.html', {'form': form, 'form_action': form_action})
 
 def edit_dairy_record(request, dairy_record_id):
-    dairy_record = get_object_or_404(DairyRecord, id=dairy_record_id)
+    form_action = reverse('edit_dairy_record', args=[dairy_record_id])
+    record = get_object_or_404(DairyRecord, pk=dairy_record_id)
     if request.method == 'POST':
-        form_data = request.POST
-        try:
-            dairy_record.job_name = form_data.get('job_name', '')
-            dairy_record.client = form_data.get('client', '')
-            dairy_record.supervisor = form_data.get('supervisor', '')
-            dairy_record.record_date = parse_date(form_data.get('record_date')) if form_data.get('record_date') else None
-            dairy_record.record_shift = form_data.get('record_shift', '')
-            dairy_record.activity_discussion = form_data.get('activities_discussed', '')
-            dairy_record.safety_issue_discussion = form_data.get('safety_issues_discussed', '')
-            dairy_record.instruction_from_client = form_data.get('instruction_received', '')
-            dairy_record.visitor_on_site = form_data.get('site_visitor', '')
-            dairy_record.daily_progress_description = form_data.get('work_description', '')
-            dairy_record.record_comment = form_data.get('notes', '')
-            dairy_record.handover_note = form_data.get('handover_notes', '')
-            dairy_record.mobilised = int(form_data.get('mobilised', 0))
-            dairy_record.non_manual = int(form_data.get('non_manual', 0))
-            dairy_record.manual = int(form_data.get('manual', 0))
-            dairy_record.subcontractor = int(form_data.get('sub_contractor', 0))
-            dairy_record.environmental_incidents = int(form_data.get('environmental_incidents', 0))
-            dairy_record.near_misses = int(form_data.get('near_misses', 0))
-            dairy_record.first_aid = int(form_data.get('first_aid', 0))
-            dairy_record.medically_treated_injury = int(form_data.get('medically_treated_injury', 0))
-            dairy_record.loss_time_injury = int(form_data.get('loss_time_injury', 0))
-            dairy_record.created_date = date.today()
-
-            dairy_record.save()
-            messages.success(request, 'Dairy record updated successfully')
-            return redirect('index')
-        except Exception as e:
-            logger.error('Error updating form data:', exc_info=True)
-            messages.error(request, 'Error updating dairy record: {}'.format(e))
-            return render(request, 'dashboard/edit_dairy_record.html', {'dairy_record': dairy_record}, status=400)
+        form = DairyRecordForm(request.POST, instance=record)
+        if form.is_valid():
+          form.save()
+          messages.success(request, 'Dairy record updated successfully.')
+          return redirect('index')
     else:
-        return render(request, 'dashboard/edit_dairy_record.html', {'dairy_record': dairy_record})
+        form = DairyRecordForm(instance=record)
+        return render(request, 'dashboard/edit_dairy_record.html', {'form': form, 'dairy_record': record, 'form_action': form_action})
 
 
 def daily_costing(request):
