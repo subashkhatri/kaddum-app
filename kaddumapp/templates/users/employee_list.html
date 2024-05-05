@@ -28,18 +28,14 @@
                 <tbody id="employeeTableBody">
                     {% for employee in employee_list %}
                     <tr>
-                        <td class="align-middle">
-                            <small>
-                                <a href="{% url 'employees_edit' employee.username %}">{{ employee.username }}</a>
-                            </small>
-                        </td>
+                        <td class="align-middle"><a href="{% url 'employees_edit' employee.username %}">{{ employee.username }}</a></td>
                         <td class="align-middle"><small>{{employee.full_name}}</small></td>
                         <td class="align-middle"><small>{{employee.email}}</small></td>
                         <td class="align-middle"><small>{% if employee.is_indigenous %}Yes{% else %}No{% endif %}</small></td>
                         <td class="align-middle"><small>{% if employee.is_local %}Yes{% else %}No{% endif %}</small></td>
                         <td class="align-middle"><small>{{employee.position_id.item_name}}</small></td>
-                        <td class="align-middle"><small>{{employee.roles}}</small></td>
-                        <td class="align-middle"><small>{{employee.is_active}}</small></td>    
+                        <td class="align-middle"><small>{{employee.roles}}</small></td> 
+                        <td class="align-middle"><small>{% if employee.is_active %}Active{% else %} Inactive {% endif%}</small></td>    
                     </tr>
                     {% endfor%}
                 <tbody>

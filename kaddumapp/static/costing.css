@@ -38,3 +38,7 @@
     width: 100%; /* Full width of the cell */
     box-sizing: border-box; /* Include padding and borders in the width */
   }
+
+.small-font{
+  font-size: smaller;
+}
