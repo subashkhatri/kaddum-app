@@ -54,6 +54,16 @@ def edit_dairy_record(request, dairy_record_id):
         form = DairyRecordForm(instance=record)
         return render(request, 'dashboard/edit_dairy_record.html', {'form': form, 'dairy_record': record, 'form_action': form_action})
 
+def delete_dairy_record(request, dairy_record_id):
+    record = get_object_or_404(DairyRecord, pk=dairy_record_id)
+
+    if request.method == 'POST':
+        record.delete()
+        messages.success(request, "Dairy record deleted successfully.")
+        return redirect('all_dairy_record')
+
+    return render(request, 'dashboard/confirm_delete.html', {'record': record})
+
 
 def daily_costing(request):
     projects = Project.objects.filter(is_active=True).order_by('project_name')
