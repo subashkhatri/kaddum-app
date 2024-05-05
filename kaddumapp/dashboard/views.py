@@ -11,6 +11,8 @@ from django.core.paginator import Paginator
 from datetime import date
 from django.http import JsonResponse
 import datetime
+from django.db.models import F
+
 
 logger = logging.getLogger(__name__)
 
@@ -22,20 +24,37 @@ def view_dairy_record(request, dairy_record_id):
     record = get_object_or_404(DairyRecord, pk=dairy_record_id)
     return render(request, 'dashboard/view_dairy_record.html', {'record': record})
 
-def daily_costing(request):
+def create_daily_costing(request):
     projects = Project.objects.filter(is_active=True).order_by('project_name')
     employee_names = UserAccount.objects.filter(is_active=True).values_list('full_name', flat=True).distinct()
     positions = ResourceCost.objects.filter(item_type='personel').values_list('item_name', flat=True).distinct()
 
-    return render(request, 'costing/daily_costing.html', {
+    return render(request, 'costing/create_daily_costing.html', {
         'projects': projects,
         'employee_names': employee_names,
         'positions': positions
     })
 
+
 def all_daily_costing(request):
-    daily_costing = CostTracking.objects.order_by('-record_created_date')
-    return render(request, 'costing/all_daily_costing.html', {'records': daily_costing})
+    daily_costing = CostTracking.objects.order_by('-created_date').annotate(
+        day_of_week=F('record_date__week_day'),
+        modification_time=F('last_modification_date')
+    )
+    daily_costing_data = []
+    for cost in daily_costing:
+        record = {
+            'record_date': cost.record_date.strftime('%d/%m/%Y'),
+            'day': cost.record_date.strftime('%A'),
+            'week': cost.year_week,
+            'project_name': cost.project_no.project_name,
+            'modification': cost.modification_time.strftime('%d/%m/%Y %H:%M'),
+            'is_draft': cost.is_draft,
+            'id': cost.id
+        }
+        daily_costing_data.append(record)
+    return render(request, 'costing/all_daily_costing.html', {'daily_costing': daily_costing_data})
+
 
 def all_dairy_record(request):
     records_list = DairyRecord.objects.order_by('-created_date')
