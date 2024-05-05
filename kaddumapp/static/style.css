@@ -211,22 +211,7 @@
   box-sizing: border-box;
   /* Include padding and borders in the width */
 }
-
-.link-container {
-  display: flex;           /* Enables flexbox */
-  justify-content: center; /* Centers content horizontally in the flex container */
-  margin-top: 20px;        /* Optional: Adds some space above the link */
-  margin-bottom: 20px;     /* Optional: Adds some space below the link */
-}
-
-a.add-link {
-  color: #bf0a03;             /* Link color, e.g., blue */
-  text-decoration: underline; /* Underline to emphasize it's a link */
-  cursor: pointer;            /* Cursor changes to pointer to indicate it's clickable */
-}
-
-a.add-link:hover,
-a.add-link:focus {
-  color: #ec6964;             /* Darker blue on hover/focus */
-  text-decoration: none;      /* Removes underline on hover/focus for visual feedback */
+/* Validation error message */
+.errorlist {
+  color: red;
 }
