@@ -21,8 +21,8 @@
       <div class="table-header">
         <div class="row">
           <div class="col-2">Record Date</div>
-          <div class="col-2">Job Name</div>
-          <div class="col-2">Client</div>
+          <div class="col-2">Project Name</div>
+          <div class="col-2">Comment</div>
           <div class="col-2">Supervisor</div>
           <div class="col-2">Client</div>
           <div class="col-2">Action</div>
@@ -32,17 +32,13 @@
         {% for dairy_record in records %}
         <div class="my-1 row">
           <div class="col-2 d-flex align-items-center">{{ dairy_record.record_date|date:"d/m/Y" }}</div>
-          <div class="col-2 d-flex align-items-center">{{ dairy_record.job_name }}</div>
-          <div class="col-2 d-flex align-items-center">{{ dairy_record.client }}</div>
+          <div class="col-2 d-flex align-items-center">{{ dairy_record.project_no.project_name }}</div>
+          <div class="col-2 d-flex align-items-center">{{ dairy_record.record_comment }}</div>
           <div class="col-2 d-flex align-items-center">{{ dairy_record.supervisor }}</div>
           <div class="col-2 d-flex align-items-center">{{ dairy_record.record_shift }}</div>
-          <div class="col-2 d-flex">
+          <div class="col-2">
             <a href="#" class="btn py-1 px-2 view-btn">View</a>
-            {% if dairy_record.id %}
-            <a href="{% url 'edit_dairy_record' dairy_record.id %}" class="btn py-1 px-2 view-btn">Edit</a>
-            {% else %}
-            <span>ID Missing</span>
-            {% endif %}
+            <a href="{% url 'edit_dairy_record' dairy_record.dairy_record_id %}" class="btn py-1 px-2 view-btn">Edit</a>
           </div>
         </div>
         {% empty %}
@@ -52,8 +48,20 @@
         {% endfor %}
 
       </div>
-      <div class="table-bottom text-center" role="button">
-        <i class="bi bi-caret-down-fill"></i>
+      <div class="pagination">
+        <span class="step-links">
+            {% if records.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ records.previous_page_number }}">previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{ records.number }} of {{ records.paginator.num_pages }}.
+            </span>
+            {% if records.has_next %}
+                <a href="?page={{ records.next_page_number }}">next</a>
+                <a href="?page={{ records.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
       </div>
     </div>
   </div>
