@@ -26,28 +26,7 @@ class Project(models.Model):
         db_table = 'dashboard-Project'
 
     def __str__(self):
-<<<<<<< HEAD
-        return f"Project No: {self.project_no}, Job Name: {self.project_name}"
-
-class ResourceCost(models.Model):
-    item_type = models.CharField(max_length=50)
-    item_name = models.CharField(max_length=255)
-    item_id = models.CharField(max_length=10, null=True, blank=True)
-    item_location = models.CharField(max_length=30, null=True, blank=True)
-    item_rate = models.DecimalField(max_digits=10, decimal_places=2)
-    unit_of_measure = models.CharField(max_length=10)
-    mobilisation_desc = models.CharField(max_length=50, null=True, blank=True)
-    last_update_date = models.DateField(auto_now=True)
-
-    class Meta:
-        app_label = 'dashboard'
-
-    def __str__(self):
-        return f"Resource: {self.id}, name: {self.item_name} cost rate: {self.item_rate}"
-    
-=======
         return f"Project No: {self.project_no}, project Name: {self.project_name}"
->>>>>>> origin/feature/daily-record-models-add-foreign-key
 
 class DairyRecord(models.Model):
     dairy_record_id = models.CharField(max_length=10, primary_key= True)
@@ -212,15 +191,10 @@ class DayTracking(models.Model):
 
 
     def __str__(self):
-<<<<<<< HEAD
-        return f"Day Tracking:{self.id} {self.project_no} {self.record_date}"
-    
-=======
         return f"Day Tracking:{self.day_tracking_id} {self.project_no} {self.record_date}"
 
 
 
->>>>>>> origin/feature/daily-record-models-add-foreign-key
 class DayTrackingEmployeeDetails(models.Model):
     id = models.AutoField(primary_key= True)
     day_tracking_id = models.ForeignKey(DayTracking, on_delete=models.PROTECT)
@@ -289,61 +263,3 @@ class DayTrackingEquipmentDetails(models.Model):
         
     def __str__(self):
         return f"Day Tracking Resource Details: {self.day_tracking_no}"
-<<<<<<< HEAD
-
-class CostTracking(models.Model):
-    project_no = models.CharField(max_length=5)
-    record_date = models.DateField()
-    record_day = models.CharField(max_length=10)
-    year_week = models.CharField(max_length=6, null= True, blank=True)
-    total_hours = models.FloatField(null= True, blank=True)
-    local_hours = models.FloatField(null= True, blank=True)
-    indigenous_hours = models.FloatField(null= True, blank=True)
-    total_amount = models.FloatField(null= True, blank=True)
-    local_amount = models.FloatField(null= True, blank=True)
-    indigenous_amount = models.FloatField(null= True, blank=True)
-    record_created_date = models.DateField(auto_now_add=True)
-    record_submitted_date = models.DateField(null=True, blank=True, auto_now=True)
-    is_draft = models.BooleanField(default=True)
-    
-    class Meta:
-        app_label = 'dashboard'
-
-    def save(self, *args, **kwargs):
-        if not self.year_week and self.record_date:
-            year, week, _ = self.record_date.isocalendar()  # Get ISO year and week
-            self.year_week = f"{year}{week:02d}"  # Combine year and week, zero-padded
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"Day Tracking Resource Details: {self.id}"
-
-class CostingEmployeeDetails(models.Model):
-    cost_tracking_no = models.CharField(max_length=50)
-    employee_name = models.CharField(max_length=255)
-    position = models.CharField(max_length=50)  # job position
-    item_rate = models.DecimalField(max_digits=10, decimal_places=2)
-    total_hours = models.FloatField(null=True, blank=True)
-    total_amount = models.FloatField(null=True, blank=True)
-
-    class Meta:
-        app_label = 'dashboard'
-
-    def __str__(self):
-        return f"Cost Tracking Employee Details: {self.cost_tracking_no}"
-    
-class CostingResourceDetails(models.Model):
-    cost_tracking_no = models.CharField(max_length=50)
-    item_type = models.CharField(max_length=50)
-    item_name = models.CharField(max_length=255)
-    item_rate = models.DecimalField(max_digits=10, decimal_places=2)
-    total_hours = models.FloatField(null=True, blank=True)
-    total_amount = models.FloatField(null=True, blank=True)
-
-    class Meta:
-        app_label = 'dashboard'
-
-    def __str__(self):
-        return f"Cost Tracking Resource Details: {self.cost_tracking_no}"
-=======
->>>>>>> origin/feature/daily-record-models-add-foreign-key
