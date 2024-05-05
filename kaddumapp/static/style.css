@@ -211,3 +211,7 @@
   box-sizing: border-box;
   /* Include padding and borders in the width */
 }
+/* Validation error message */
+.errorlist {
+  color: red;
+}
