@@ -18,6 +18,7 @@
             <p class="card-text"><strong>Handover Notes:</strong> {{ record.handover_note }}</p>
             <div class="flex-container">
               <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="form-group btn btn-danger col-2">Edit</a>
+              <a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="form-group btn btn-danger col-2">Edit</a>
               <a href="{% url 'index' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
             </div>
         </div>
