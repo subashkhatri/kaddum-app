@@ -1,10 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib import messages 
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required #allow login user to access certain page
 from .models import UserAccount
 from dashboard.models import *
+from .forms import UserAccountForm
 
 User = get_user_model()
 
@@ -70,27 +72,54 @@ def employees_list(request):
     employee_list = UserAccount.objects.order_by('username')
     return render(request, 'users/employee_list.html', {'employee_list':employee_list})
 
-def employees_add(request):
-    positions = ResourceCost.objects.filter(item_type='personel').values_list('item_name', flat=True).distinct()
+# def employees_add(request):
+#     positions = ResourceCost.objects.filter(item_type='personel').values_list('item_name', flat=True)
+#     if request.method == 'POST':
+#         first_name = request.POST['first_name']
+#         last_name = request.POST['last_name']
+#         email = request.POST['email']
+#         indigenous = request.POST['is_indigenous']
+#         local = request.POST['is_local']
+#         position = request.POST['position']
+#         roles = request.POST['role']
+
+#         new_employee = UserAccount.objects.create(
+#             first_name = first_name,
+#             last_name = last_name,
+#             email = email,
+#             indigenous = indigenous,
+#             local = local,
+#             position = position,
+#             roles = roles,
+#         )
+#         new_employee.save()
+#         return redirect('employees')
+
+#     return render(request, 'users/employee_add.html',{'position_list': positions})
+
+def employee_add(request):
     if request.method == 'POST':
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        email = request.POST['email']
-        indigenous = request.POST['is_indigenous']
-        local = request.POST['is_local']
-        position = request.POST['position']
-        roles = request.POST['role']
+        form = UserAccountForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('employees')
+    else:
+        form = UserAccountForm()
+    
+    return render(request, 'users/employee_add.html', {'form': form})
 
-        new_employee = UserAccount.objects.create(
-            first_name = first_name,
-            last_name = last_name,
-            email = email,
-            indigenous = indigenous,
-            local = local,
-            position = position,
-            roles = roles,
-        )
-        new_employee.save()
-        return redirect('employees')
+def employee_edit(request, employee_id):
+    employee = get_object_or_404(UserAccount, username=employee_id)
+    if request.method == 'POST':
+        # Create a form instance and populate it with data from the request:
+        form = UserAccountForm(request.POST, instance=employee)
+        if form.is_valid():
+            # Save the updated employee details
+            form.save()
+            # Redirect to a success page or display a success message
+            return redirect('employees_list')  # Assuming you have a URL name for the employees list page
+    else:
+        # Create a form instance and populate it with the existing employee data
+        form = UserAccountForm(instance=employee)
 
-    return render(request, 'users/employee_add.html',{'position_list': positions})
+    return render(request, 'users/employee_edit.html', {'form': form})

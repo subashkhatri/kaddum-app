@@ -47,9 +47,9 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255)
     full_name = models.CharField(max_length=255, blank=True)
     email = models.CharField(max_length=255, blank=True, null=True)
-    is_indigenous = models.BooleanField(default=False)
-    is_local = models.BooleanField(default=False)
-    position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT)  # job position 
+    is_indigenous = models.BooleanField(null=False, blank=False)
+    is_local = models.BooleanField(null=False, blank=False)
+    position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, db_column='position_id')  # job position 
     roles = models.CharField(max_length=50)  # Role permission to access the system super_admin, supervisor, restricted user
 
     # we don't change to False because when we create superuser, i won't be able to log in.
@@ -64,9 +64,9 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         "first_name",
         "last_name",
         'email'
-        "indigenous",
-        "local",
-        "position",
+        "is_indigenous",
+        "is_local",
+        "position_id",
         "roles",
     ]  # when registering, requried fileds
     class Meta:

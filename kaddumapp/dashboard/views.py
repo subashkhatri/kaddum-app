@@ -34,7 +34,7 @@ def all_daily_costing(request):
     return render(request, 'costing/all_daily_costing.html', {'records': daily_costing})
 
 def all_dairy_record(request):
-    dairy_records = DairyRecord.objects.order_by('-record_created_date')
+    dairy_records = DairyRecord.objects.order_by('-created_date')
     return render(request, 'dashboard/all_dairy_record.html', {'records': dairy_records})
 
 def create_dairy_record(request):
