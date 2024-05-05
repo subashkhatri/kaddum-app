@@ -34,7 +34,7 @@
                         <td class="align-middle"><small>{% if employee.is_indigenous %}Yes{% else %}No{% endif %}</small></td>
                         <td class="align-middle"><small>{% if employee.is_local %}Yes{% else %}No{% endif %}</small></td>
                         <td class="align-middle"><small>{{employee.position_id.item_name}}</small></td>
-                        <td class="align-middle"><small>{{employee.roles}}</small></td> 
+                        <td class="align-middle"><small>{{employee.roles}}</small></td>
                         <td class="align-middle"><small>{% if employee.is_active %}Active{% else %} Inactive {% endif%}</small></td>    
                     </tr>
                     {% endfor%}

@@ -21,3 +21,4 @@ kaddumapp/users/migrations/*
 __pycache__/
 backupfiles
 .env
+.gitignore
