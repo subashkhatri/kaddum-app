@@ -1,0 +1,26 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+<div class="container mt-4">
+    <h2>Dairy Record Details</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ record.project_no.project_name }}</h5>
+            <p class="card-text"><strong>Date:</strong> {{ record.record_date|date:"Y-m-d" }}</p>
+            <p class="card-text"><strong>Shift:</strong> {{ record.record_shift }}</p>
+            <p class="card-text"><strong>Supervisor:</strong> {{ record.supervisor_id.username }}</p>
+            <p class="card-text"><strong>Activity Discussion:</strong> {{ record.activity_discussion }}</p>
+            <p class="card-text"><strong>Safety Issue Discussion:</strong> {{ record.safety_issue_discussion }}</p>
+            <p class="card-text"><strong>Instructions from Client:</strong> {{ record.instruction_from_client }}</p>
+            <p class="card-text"><strong>Visitors on Site:</strong> {{ record.visitor_on_site }}</p>
+            <p class="card-text"><strong>Daily Progress Description:</strong> {{ record.daily_progress_description }}</p>
+            <p class="card-text"><strong>Comments:</strong> {{ record.record_comment }}</p>
+            <p class="card-text"><strong>Handover Notes:</strong> {{ record.handover_note }}</p>
+            <div class="flex-container">
+              <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="form-group btn btn-danger col-2">Edit</a>
+              <a href="{% url 'index' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

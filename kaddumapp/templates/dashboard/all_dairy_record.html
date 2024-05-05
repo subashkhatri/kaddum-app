@@ -37,7 +37,7 @@
           <div class="col-2 d-flex align-items-center">{{ dairy_record.supervisor }}</div>
           <div class="col-2 d-flex align-items-center">{{ dairy_record.record_shift }}</div>
           <div class="col-2">
-            <a href="#" class="btn py-1 px-2 view-btn">View</a>
+            <a href="{% url 'view_dairy_record' dairy_record.dairy_record_id %}" class="btn py-1 px-2 view-btn">View</a>
             <a href="{% url 'edit_dairy_record' dairy_record.dairy_record_id %}" class="btn py-1 px-2 view-btn">Edit</a>
           </div>
         </div>
