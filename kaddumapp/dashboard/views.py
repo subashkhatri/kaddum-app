@@ -18,8 +18,9 @@ def index(request):
   dairy_records = DairyRecord.objects.order_by('-created_date')
   return render(request, 'dashboard/index.html', {'records': dairy_records})
 
-def dairy_record(request):
-  return render(request, 'dashboard/dairy_record.html')
+def view_dairy_record(request, dairy_record_id):
+    record = get_object_or_404(DairyRecord, pk=dairy_record_id)
+    return render(request, 'dashboard/view_dairy_record.html', {'record': record})
 
 def all_dairy_record(request):
     records_list = DairyRecord.objects.order_by('-created_date')
