@@ -1,0 +1,70 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+<div class="container mt-4">
+    <h1 class="text-left mb-4 h4">Create Project</h1>
+</div>
+<div class="form-section-header">*Required Fields</div>          
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <form method="POST">
+                {% csrf_token %} 
+                {{ form.non_field_errors }}
+
+                <div class="form-group">
+                    {{ form.project_name.label_tag }}
+                    {{ form.project_name }}
+                    {{ form.project_name.errors }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.purchase_order_no.label_tag }}
+                    {{ form.purchase_order_no }}
+                    {{ form.purchase_order_no.errors }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.client.label_tag }}
+                    {{ form.client }}
+                    {{ form.client.errors }}                   
+
+                </div>
+
+                <div class="form-group">
+                    {{ form.project_start_date.label_tag }}
+                    {{ form.project_start_date }}
+                    {{ form.project_start_date.errors }}
+
+                </div> 
+
+                <div class="form-group">
+                    {{ form.project_end_date.label_tag }}
+                    {{ form.project_end_date }}
+                    {{ form.project_end_date.errors }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form.project_budget.label_tag }}
+                    {{ form.project_budget }}
+                    {{ form.project_budget.errors }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form.is_active.label_tag }}
+                    {{ form.is_active }}
+                    {{ form.is_active.errors }}
+
+                </div>
+
+                <button type="submit" class="form-group btn btn-success col-2" value="submit">Create</button>
+                <a href="{% url 'project_list' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock page_content %}
