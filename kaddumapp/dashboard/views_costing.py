@@ -7,26 +7,36 @@ import datetime
 from .costing_forms import CostTrackingForm
 from django.urls import reverse
 from django.contrib import messages
+from django.utils import timezone
+from django.http import HttpResponseRedirect
 
 
 
 def edit_daily_costing(request, cost_tracking_id):
     instance = get_object_or_404(CostTracking, cost_tracking_id=cost_tracking_id)
     employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=instance).select_related('position_id', 'employee_id')
-    positions = ResourceCost.objects.filter(item_type='personel').order_by('item_name')
     equipment_details = DayTrackingEquipmentDetails.objects.filter(day_tracking_id__cost_tracking_id=instance)
+    positions = ResourceCost.objects.filter(item_type='personel').order_by('item_name')
+  
+    total_hours = 0
+    total_amount = 0
+    total_hours_indigenous = 0
+    total_hours_local = 0
 
     if request.method == 'POST':
         form = CostTrackingForm(request.POST, instance=instance)
         if form.is_valid():
-            total_hours = 0
-            total_amount = 0
-            total_hours_indigenous = 0
-            total_hours_local = 0
-
-            # Calculate totals from employee details
+            
             for employee in employee_details:
+                # Handle hour_rate and confirmed_position_id
+                # rate_key = f'rate_{employee.id}'
+                # confirmed_position_key = f'confirmed_position_{employee.id}'
+                # employee.hour_rate = request.POST.get(rate_key)
+                # employee.confirmed_position_id = request.POST.get(confirmed_position_key)
+
+                # Calculate totals from employee details
                 employee_rate = request.POST.get(f'rate_{employee.id}', 0)
+                print(employee_rate)
                 total = float(employee_rate) * employee.total_hours
                 total_hours += employee.total_hours
                 total_amount += total
@@ -40,30 +50,44 @@ def edit_daily_costing(request, cost_tracking_id):
                 equipment_rate = request.POST.get(f'rate_{equipment.id}', 0)
                 total = float(equipment_rate) * equipment.total_hours
 
-
             # Save aggregated data to CostTracking instance
             instance.total_hours = total_hours
             instance.total_hours_local = total_hours_local
             instance.total_hours_indigenous = total_hours_indigenous
             instance.total_amount = total_amount
-            instance.is_draft = False  # Assuming you want to finalize the entry
+
+            # Check which button was clicked and update is_draft field accordingly
+            if 'complete' in request.POST:
+                instance.is_draft = False
+            elif 'draft' in request.POST:
+                instance.is_draft = True
+            
+            # Update the last modification date
+            instance.last_modification_date = timezone.now()
+            
             form.save()
-            print("saved")
 
             return redirect('all_daily_costing')
-        else:
-            # Handle form errors
-            pass
     else:
         form = CostTrackingForm(instance=instance)
 
-    return render(request, 'costing/edit_daily_costing.html', {
+    # Calculate percentage of indigenous and local participation
+    indigenous_percentage = (total_hours_indigenous / total_hours * 100) if total_hours > 0 else 0
+    local_percentage = (total_hours_local / total_hours * 100) if total_hours > 0 else 0
+
+    context = {
         'form': form,
         'employee_details': employee_details,
         'equipment_details': equipment_details,
-        'positions': positions
-    })
-
+        'positions': positions,
+        'indigenous_percentage': indigenous_percentage,
+        'local_percentage': local_percentage,
+        'total_hours_indigenous': total_hours_indigenous,
+        'total_hours_local': total_hours_local,
+        'total_hours': total_hours,
+        'total_amount': total_amount,
+    }
+    return render(request, 'costing/edit_daily_costing.html', context)
 
 
 def all_daily_costing(request):

@@ -31,10 +31,10 @@
                         <tr>
                             <th scope="col" class="align-middle" width="23%">Name</th>
                             <th scope="col" class="align-middle" width="28%">Position</th>
-                            <th scope="col" class="align-middle" width="13%">Rate</th>
+                            <th scope="col" class="align-middle" width="17%">Rate($)</th>
                             <th scope="col" class="align-middle" width="9%">Total Hours</th>
-                            <th scope="col" class="align-middle" width="9%">Total Amount</th>
-                            <th scope="col" class="align-middle" width="9%">Indigenous</th>
+                            <th scope="col" class="align-middle" width="9%">Total Amount($)</th>
+                            <th scope="col" class="align-middle" width="2%">Indigenous</th>
                             <th scope="col" class="align-middle" width="9%">Local</th>
                         </tr>
                     </thead>
@@ -48,15 +48,14 @@
                                     {% for position in positions %}
                                     <option value="{{ position.resource_id }}" {% if position.resource_id == employee.position_id.resource_id %}selected{% endif %}>
                                         {{ position.item_name }}
-                                    </option>
                                     {% endfor %}
                                 </select>
                             </td>
-                            <td><input type="number" class="form-control rate-input" name="rate[]" min="0" value="{{ employee.hour_rate }}"></td>
+                            <td><input type="number" class="form-control rate-input" name="rate_{{ employee.id }}" min="0" value="{{ employee.hour_rate }}"></td>
                             <td class="align-middle hours-input">{{ employee.total_hours }}</td>
                             <td class="align-middle total-amount"></td> <!-- Total Amount -->
-                            <td class="align-middle text-center">{{ employee.employee_id.is_indigenous | yesno:"Yes,No" }}</td> <!-- Indigenous -->
-                            <td class="align-middle text-center">{{ employee.employee_id.is_local | yesno:"Yes,No" }}</td> <!-- Local -->
+                            <td class="align-middle text-center">{{ employee.employee_id.is_indigenous | yesno:"Yes, " }}</td> <!-- Indigenous -->
+                            <td class="align-middle text-center">{{ employee.employee_id.is_local | yesno:"Yes, " }}</td> <!-- Local -->
                         </tr> 
                         {% endfor %}
                     </tbody>
@@ -81,13 +80,13 @@
                     <tbody>
                         <tr>
                             <th scope="row">Indigenous</th> <!-- Row header -->
-                            <td class="align-middle text-right">{{ form.instance.project_no.project_no }}</td> <!-- Example data -->
-                            <td class="align-middle text-right">50.00%</td> <!-- Example data -->
+                            <td class="align-middle text-right">{{ total_hours_indigenous }}</td> <!-- Example data -->
+                            <td class="align-middle text-right">{{ indigenous_percentage }}%</td> <!-- Example data -->
                         </tr>
                         <tr>
                             <th scope="row">Local</th> <!-- Row header -->
-                            <td class="align-middle text-right">80.55</td> <!-- Example data -->
-                            <td class="align-middle text-right">50.00%</td> <!-- Example data -->
+                            <td class="align-middle text-right">{{ total_hours_local }}</td> <!-- Example data -->
+                            <td class="align-middle text-right">{{ local_percentage }}%</td> <!-- Example data -->
                         </tr>       
                     </tbody>
                 </table>
@@ -97,38 +96,38 @@
                         <tr>
                             <th scope="col">Type</th>
                             <th scope="col">Equipment</th>
-                            <th scope="col">Day Rate</th>
-                            <th scope="col">Total Hours</th>
-                            <th scope="col">Total Amount</th>
+                            <th scope="col">Day Rate($)</th>                          
                         </tr>
                     </thead>
                     <tbody id="equipmentTableBody">
                         {% for equipment in equipment_details %}
                         <tr>                        
-                            <td class="align-middle">{{ equipment.resource_id.item_type }}</td>
+                            <td class="align-middle">{{ equipment.resource_id.item_type|capfirst }}</td>
                             <td class="align-middle">{{ equipment.resource_id.item_name }}</td>
                             <td class="align-middle">
                                 <input type="number" class="form-control rate-input" value="{{ equipment.resource_id.item_rate }}" >
                             </td>
-                            <td class="align-middle hours-input">{{ equipment.total_hours }}</td>
-                            <td class="align-middle total-amount"></td>
                         </tr>
                         {% endfor %}
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th scope="row" colspan="3">Total</th>
-                            <td id="total-equipment-hours">0</td>
-                            <td id="total-equipment-amount">0</td>
+                            <th scope="row" colspan="2">Total</th>
+                            <td id="total-day-rate">0</td>
                         </tr>
                     </tfoot>
                 </table>
                 <input type="hidden" name="total_hours" id="input-total-hours" value="0">
                 <input type="hidden" name="total_amount" id="input-total-amount" value="0">
-                <button type="submit" class="form-group btn btn-success col-2" value="complete">Complete</button>
+                <!-- <button type="submit" class="form-group btn btn-success col-2" value="complete">Complete</button>
                 <button type="submit" class="form-group btn btn-outline-success col-2" value="draft">Save as Draft</button>
-                <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
-
+                <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a> -->
+                <form method="POST" novalidate>
+                    {% csrf_token %}                    
+                    <button type="submit" name="complete" class="form-group btn btn-success col-2">Complete</button>
+                    <button type="submit" name="draft" class="form-group btn btn-outline-success col-2">Save as Draft</button>
+                    <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+                </form>
             </form>
         </div>
     </div>
