@@ -1,17 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .dairy_record_forms import DairyRecordForm
-from .models import DairyRecord, CostTracking, Project, DayTracking, DayTrackingEmployeeDetails, ResourceCost
-from users.models import UserAccount
-from django.utils.dateparse import parse_date
+from .models import DairyRecord
 from django.contrib import messages
 import logging
 from django.core.paginator import Paginator
-
-from datetime import date
-from django.http import JsonResponse
-import datetime
-from django.db.models import F
 
 
 logger = logging.getLogger(__name__)
@@ -23,38 +16,6 @@ def index(request):
 def view_dairy_record(request, dairy_record_id):
     record = get_object_or_404(DairyRecord, pk=dairy_record_id)
     return render(request, 'dashboard/view_dairy_record.html', {'record': record})
-
-def create_daily_costing(request):
-    projects = Project.objects.filter(is_active=True).order_by('project_name')
-    employee_names = UserAccount.objects.filter(is_active=True).values_list('full_name', flat=True).distinct()
-    positions = ResourceCost.objects.filter(item_type='personel').values_list('item_name', flat=True).distinct()
-
-    return render(request, 'costing/create_daily_costing.html', {
-        'projects': projects,
-        'employee_names': employee_names,
-        'positions': positions
-    })
-
-
-def all_daily_costing(request):
-    daily_costing = CostTracking.objects.order_by('-created_date').annotate(
-        day_of_week=F('record_date__week_day'),
-        modification_time=F('last_modification_date')
-    )
-    daily_costing_data = []
-    for cost in daily_costing:
-        record = {
-            'record_date': cost.record_date.strftime('%d/%m/%Y'),
-            'day': cost.record_date.strftime('%A'),
-            'week': cost.year_week,
-            'project_name': cost.project_no.project_name,
-            'modification': cost.modification_time.strftime('%d/%m/%Y %H:%M'),
-            'is_draft': cost.is_draft,
-            'id': cost.id
-        }
-        daily_costing_data.append(record)
-    return render(request, 'costing/all_daily_costing.html', {'daily_costing': daily_costing_data})
-
 
 def all_dairy_record(request):
     records_list = DairyRecord.objects.order_by('-created_date')
@@ -97,58 +58,3 @@ def delete_dairy_record(request, dairy_record_id):
         return redirect('all_dairy_record')
 
     return render(request, 'dashboard/confirm_delete.html', {'record': record})
-
-
-def daily_costing(request):
-    projects = Project.objects.filter(is_active=True).order_by('project_name')
-    employee_names = UserAccount.objects.filter(is_active=True).values_list('full_name', flat=True).distinct()
-    positions = ResourceCost.objects.filter(item_type='personel').values_list('item_name', flat=True).distinct()
-
-    return render(request, 'costing/daily_costing.html', {
-        'projects': projects,
-        'employee_names': employee_names,
-        'positions': positions
-    })
-
-def all_daily_costing(request):
-    daily_costing = CostTracking.objects.order_by('-created_date')
-    return render(request, 'costing/all_daily_costing.html', {'records': daily_costing})
-
-
-def check_day_tracking(request):
-    project_name = request.GET.get('projectName')
-    date_input = request.GET.get('date')
-
-    try:
-        input_date = datetime.datetime.strptime(date_input, '%Y-%m-%d').date()
-    except ValueError:
-        return JsonResponse({'success': False, 'message': 'Invalid date format'})
-
-    project = Project.objects.filter(project_name=project_name, is_active=True).first()
-    if not project:
-        return JsonResponse({'success': False, 'message': 'Project not found or not active'})
-
-    day_tracking = DayTracking.objects.filter(record_date=input_date, project_no=project.project_no).first()
-    if not day_tracking:
-        return JsonResponse({'success': False, 'message': 'No matching day tracking record found'})
-
-    employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_no=day_tracking.id).values(
-        'employee_name', 'position', 'item_rate', 'total_hours'
-    )
-    employee_data = [
-        {
-            'name': emp['employee_name'],
-            'position': emp['position'],
-            'total_hours': emp['total_hours'],
-            'rate': emp['item_rate'],
-            'total_amount': float(emp['item_rate']) * float(emp['total_hours']),
-            'indigenous': '⭕',  # Assuming all are indigenous for example
-            'local': ''  # Assuming all are non-local for example
-        }
-        for emp in employee_details
-    ]
-
-    return JsonResponse({
-        'success': True,
-        'employees': employee_data
-    })

@@ -28,18 +28,20 @@
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
+                        {% for costing_record in draft_records %}
                         <tr>
-                            <td class="align-middle" style="border-right-style: hidden;">02/05/2024</td>
-                            <td class="align-middle" style="border-right-style: hidden;">Thursday</td>
-                            <td class="align-middle" style="border-right-style: hidden;">202417</td>
-                            <td class="align-middle" style="border-right-style: hidden;">ERA General Civil Works</td>
-                            <td class="align-middle" style="border-right-style: hidden;">02/05/2024 16:30</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.record_date|date:"d/m/Y" }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.day_of_week }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.year_week }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.project_no.project_name }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.last_modification_date|date:"d/m/Y H:i" }}</td>                            
                             <td class="align-middle" style="border-left-style: inset;">                           
                                 <div class="row justify-content-evenly">
-                                    <a href="create_daily_costing" class="btn btn-outline-success btn-sm col-5">Edit</a>
+                                    <a href="{% url 'edit_daily_costing' costing_record.cost_tracking_id %}" class="btn btn-outline-success btn-sm col-5">Edit</a>
                                 </div>
                             </td>          
                         </tr>                        
+                        {% endfor %}
                     <tbody>
                 </table>
                
@@ -57,19 +59,21 @@
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
+                        {% for costing_record in completed_records %}
                         <tr>
-                            <td class="align-middle" style="border-right-style: hidden;">01/05/2024</td>
-                            <td class="align-middle" style="border-right-style: hidden;">Wednesday</td>
-                            <td class="align-middle" style="border-right-style: hidden;">202417</td>
-                            <td class="align-middle" style="border-right-style: hidden;">Pit 3 Dewatering Filters</td>
-                            <td class="align-middle" style="border-right-style: hidden;">01/05/2024 17:00</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.record_date|date:"d/m/Y" }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.day_of_week }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.year_week }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.project_no.project_name }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.last_modification_date|date:"d/m/Y H:i" }}</td>
                             <td class="align-middle" style="border-left-style: inset;">
                                 <div class="row justify-content-evenly">
                                     <a href="#" class="btn btn-outline-success btn-sm col-5">Edit</a>
                                     <a href="#" class="btn btn-outline-primary btn-sm col-5">View</a>
                                 </div>
                             </td>          
-                        </tr>                        
+                        </tr>      
+                        {% endfor %}                  
                     <tbody>
                 </table>
             </form>
