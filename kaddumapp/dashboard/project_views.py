@@ -52,6 +52,6 @@ def project_delete(request, project_no):
         messages.success(request, "Project deleted successfully.")
         return redirect('project_list')
 
-    return render(request, 'project/delete_confirm.html', {'record': record})
+    return render(request, 'project/project_delete_confirm.html', {'record': record})
 
 
