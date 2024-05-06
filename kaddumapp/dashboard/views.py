@@ -3,6 +3,6 @@ from .models import DairyRecord
 
 
 def index(request):
-  dairy_records = DairyRecord.objects.order_by('-created_date')
+  dairy_records = DairyRecord.objects.order_by('-created_date')[:5]
   return render(request, 'dashboard/index.html', {'records': dairy_records})
 
