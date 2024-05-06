@@ -8,9 +8,8 @@
 <div class="container mt-4">
   <div class="row">
     <div class="col-md-12">
-      {% url 'create_dairy_record' as form_action %}
-      {% include 'dashboard/_form.html' with form_action=form_action %}
-
+      {% url 'edit_dairy_record' dairy_record.id as form_action %}
+      {% include 'dairy_record/_form.html' with form_action=form_action dairy_record=dairy_record %}
     </div>
   </div>
 </div>
