@@ -12,7 +12,8 @@ from django.contrib import messages
 
 def edit_daily_costing(request, cost_tracking_id):
     instance = get_object_or_404(CostTracking, cost_tracking_id=cost_tracking_id)
-    employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=instance)
+    employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=instance).select_related('position_id', 'employee_id')
+    positions = ResourceCost.objects.filter(item_type='personel').order_by('item_name')
     equipment_details = DayTrackingEquipmentDetails.objects.filter(day_tracking_id__cost_tracking_id=instance)
 
     if request.method == 'POST':
@@ -60,6 +61,7 @@ def edit_daily_costing(request, cost_tracking_id):
         'form': form,
         'employee_details': employee_details,
         'equipment_details': equipment_details,
+        'positions': positions
     })
 
 
