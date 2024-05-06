@@ -72,7 +72,7 @@ def employees_list(request):
     employee_list = UserAccount.objects.order_by('username')
     return render(request, 'users/employee_list.html', {'employee_list':employee_list})
 
-def employee_add(request):
+def employee_create(request):
     if request.method == 'POST':
         form = UserAccountForm(request.POST)
         if form.is_valid():
@@ -81,9 +81,9 @@ def employee_add(request):
     else:
         form = UserAccountForm()
     
-    return render(request, 'users/employee_add.html', {'form': form})
+    return render(request, 'users/employee_create.html', {'form': form})
 
-def employee_edit(request, employee_id):
+def employee_update(request, employee_id):
     employee = get_object_or_404(UserAccount, username=employee_id)
     if request.method == 'POST':
         # Create a form instance and populate it with data from the request:
@@ -97,4 +97,4 @@ def employee_edit(request, employee_id):
         # Create a form instance and populate it with the existing employee data
         form = UserAccountForm(instance=employee)
 
-    return render(request, 'users/employee_edit.html', {'form': form})
+    return render(request, 'users/employee_update.html', {'form': form})
