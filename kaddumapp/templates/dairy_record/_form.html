@@ -1,0 +1,257 @@
+{% load static %}
+<form method="POST" action="{{ form_action }}">
+  {% csrf_token %}
+  <div class="form-section-header">Shift Information</div>
+
+  <div class="form-group">
+    {{ form.project_no.label_tag }}
+    {{ form.project_no }}
+    {{ form.project_no.errors }}
+  </div>
+
+  <div class="form-group">
+    {{ form.record_date.label_tag }}
+    {{ form.record_date }}
+    {{ form.record_date.errors }}
+  </div>
+
+  <div class="flex-container form-group">
+    <div class="col-md-6">
+      {{ form.record_shift.label_tag }}
+      {{ form.record_shift }}
+      {{ form.record_shift.errors }}
+    </div>
+
+
+    <div class="col-md-6">
+      {{ form.supervisor_id.label_tag }}
+      {{ form.supervisor_id }}
+      {{ form.supervisor_id.errors }}
+    </div>
+  </div>
+
+  <div class="form-group">
+    {{ form.activity_discussion.label_tag }}
+    {{ form.activity_discussion }}
+    {{ form.activity_discussion.errors }}
+  </div>
+
+  <div class="form-group">
+    {{ form.safety_issue_discussion.label_tag }}
+    {{ form.safety_issue_discussion }}
+    {{ form.safety_issue_discussion.errors }}
+  </div>
+
+  <div class="form-group">
+    {{ form.instruction_from_client.label_tag }}
+    {{ form.instruction_from_client }}
+    {{ form.instruction_from_client.errors }}
+  </div>
+  <div class="form-group">
+    {{ form.visitor_on_site.label_tag }}
+    {{ form.visitor_on_site }}
+    {{ form.visitor_on_site.errors }}
+  </div>
+  <div class="form-group">
+    {{ form.daily_progress_description.label_tag }}
+    {{ form.daily_progress_description }}
+    {{ form.daily_progress_description.errors }}
+  </div>
+
+  <div class="form-group">
+    {{ form.record_comment.label_tag }}
+    {{ form.record_comment }}
+    {{ form.record_comment.errors }}
+  </div>
+
+  <div class="form-group">
+    {{ form.handover_note.label_tag }}
+    {{ form.handover_note }}
+    {{ form.handover_note.errors }}
+  </div>
+
+  <div class="form-section-header">Have Delays Occurred Today As a Result of the Following</div>
+
+  <div class="form-row">
+    <div class="col-md-6">
+      <div class="form-group form-check">
+        {{ form.delay_access.label_tag }}
+        {{ form.delay_access }}
+        {{ form.delay_access.errors }}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group form-check">
+        {{ form.delay_lack_of_drawing.label_tag }}
+        {{ form.delay_lack_of_drawing }}
+        {{ form.delay_lack_of_drawing.errors }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="col-md-6">
+      <div class="form-group form-check">
+        {{ form.delay_await_client_decision.label_tag }}
+        {{ form.delay_await_client_decision }}
+        {{ form.delay_await_client_decision.errors }}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group form-check">
+        {{ form.delay_poor_weather.label_tag }}
+        {{ form.delay_poor_weather }}
+        {{ form.delay_poor_weather.errors }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="col-md-6">
+      <div class="form-group form-check">
+        {{ form.delay_industrial_matters.label_tag }}
+        {{ form.delay_industrial_matters }}
+        {{ form.delay_industrial_matters.errors }}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group form-check">
+        {{ form.delay_await_client_instruction.label_tag }}
+        {{ form.delay_await_client_instruction }}
+        {{ form.delay_await_client_instruction.errors }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="col-md-6">
+      <div class="form-group form-check">
+        {{ form.delay_subcontractors.label_tag }}
+        {{ form.delay_subcontractors }}
+        {{ form.delay_subcontractors.errors }}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group form-check">
+        {{ form.awaiting_materials.label_tag }}
+        {{ form.awaiting_materials }}
+        {{ form.awaiting_materials.errors }}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="col-md-6">
+      <div class="form-group form-check">
+        {{ form.delay_rework.label_tag }}
+        {{ form.delay_rework }}
+        {{ form.delay_rework.errors }}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group form-check">
+        {{ form.delay_other.label_tag }}
+        {{ form.delay_other }}
+        {{ form.delay_other.errors }}
+      </div>
+    </div>
+  </div>
+  <div class="form-section-header">Details of Delays</div>
+  <div class="form-group">
+    {{ form.delay_details.label_tag }}
+    {{ form.delay_details }}
+    {{ form.delay_details.errors }}
+  </div>
+
+  <div class="form-section-header">Number of Safety Items Completed</div>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">Category</th>
+        <th scope="col">Number Completed Today</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>JHA</td>
+        <td>{{ form.jha_qty }}
+          {{ form.jha_qty.errors }}</td>
+      </tr>
+      <tr>
+        <td>CCC</td>
+        <td>{{ form.ccc_qty }}
+          {{ form.ccc_qty.errors }}</td>
+      </tr>
+      <tr>
+        <td>Take 5</td>
+        <td>{{ form.take5_qty }}
+          {{ form.take5_qty.errors }}
+        </td>
+      </tr>
+      <tr>
+        <td>Stop Seek</td>
+        <td>{{ form.stop_seek_qty }}
+          {{ form.stop_seek_qty.errors }}</td>
+      </tr>
+
+      <thead>
+        <tr>
+          <th scope="col">Category</th>
+          <th scope="col">Number of Personal Onsite</th>
+        </tr>
+      </thead>
+    <tbody>
+      <tr>
+        <td>Mobilised</td>
+        <td>{{ form.mobilised_qty }}
+          {{ form.mobilised_qty.errors }}</td>
+      </tr>
+      <tr>
+        <td>Non-Manual</td>
+        <td>{{ form.non_manual_qty }}
+          {{ form.non_manual_qty.errors }}</td>
+      </tr>
+      <tr>
+        <td>Manual</td>
+        <td>{{ form.manual_qty }}
+          {{ form.manual_qty.errors }}
+        </td>
+      </tr>
+      <tr>
+        <td>Sub-contractor</td>
+        <td>{{ form.subcontractor_qty }}
+          {{ form.subcontractor_qty.errors }}</td>
+      </tr>
+      <tr>
+        <td>Environmental Incidents</td>
+        <td>{{ form.incident_qty }}
+          {{ form.incident_qty.errors }}
+        </td>
+      </tr>
+      <tr>
+        <td>Near Misses</td>
+        <td>{{ form.near_miss_qty }}
+          {{ form.near_miss_qty.errors }}</td>
+      </tr>
+      <tr>
+        <td>First Aid</td>
+        <td>{{ form.first_aid_qty }}
+          {{ form.first_aid_qty.errors }}</td>
+      </tr>
+      <tr>
+        <td>Medically Treated Injury</td>
+        <td>{{ form.medically_treated_injury_qty }}
+          {{ form.medically_treated_injury_qty.errors }}</td>
+      </tr>
+      <tr>
+        <td>Loss Time Injury</td>
+        <td>{{ form.loss_time_injury_qty }}
+          {{ form.loss_time_injury_qty.errors }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button type="submit" class="form-group btn btn-success col-2" value="submit">Submit</button>
+  <a href="{% url 'index' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+
+</form>
