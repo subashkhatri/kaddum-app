@@ -21,3 +21,4 @@ kaddumapp/users/__init__.py
 kaddumapp/users/migrations/*
 .DS_Store
 __pycache__/
+.env

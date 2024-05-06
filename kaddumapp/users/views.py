@@ -72,37 +72,12 @@ def employees_list(request):
     employee_list = UserAccount.objects.order_by('username')
     return render(request, 'users/employee_list.html', {'employee_list':employee_list})
 
-# def employees_add(request):
-#     positions = ResourceCost.objects.filter(item_type='personel').values_list('item_name', flat=True)
-#     if request.method == 'POST':
-#         first_name = request.POST['first_name']
-#         last_name = request.POST['last_name']
-#         email = request.POST['email']
-#         indigenous = request.POST['is_indigenous']
-#         local = request.POST['is_local']
-#         position = request.POST['position']
-#         roles = request.POST['role']
-
-#         new_employee = UserAccount.objects.create(
-#             first_name = first_name,
-#             last_name = last_name,
-#             email = email,
-#             indigenous = indigenous,
-#             local = local,
-#             position = position,
-#             roles = roles,
-#         )
-#         new_employee.save()
-#         return redirect('employees')
-
-#     return render(request, 'users/employee_add.html',{'position_list': positions})
-
 def employee_add(request):
     if request.method == 'POST':
         form = UserAccountForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('employees')
+            return redirect('employees_list')
     else:
         form = UserAccountForm()
     

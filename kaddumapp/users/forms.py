@@ -20,8 +20,8 @@ class UserAccountForm(forms.ModelForm):
             'is_indigenous':forms.Select(attrs={'class': 'form-control'}, choices=[('', 'Please select...'), ('True', 'Yes'), ('False', 'No')],),
             'is_local':forms.Select(attrs={'class': 'form-control'}, choices=[('', 'Please select...'), (True, 'Yes'), (False, 'No')]),
             'position_id': forms.Select(attrs={'class': 'form-control'}),           
-            'roles': forms.Select(attrs={'class': 'form-control'},choices=[('','Please select...'),('Super Admin', 'super admin'),('Supervisor', 'supervisor'),('Restricted User', 'restricted user')]),
-            'is_active':forms.Select(attrs={'class': 'form-control'}, choices=[('True', 'Yes'), ('False', 'No')]),
+            'roles': forms.Select(attrs={'class': 'form-control'},choices=[('','Please select...'),('super admin', 'Super Admin'),('supervisor', 'Supervisor'),('restricted user', 'Restricted User')]),
+            'is_active':forms.Select(attrs={'class': 'form-control'}, choices=[(True, 'Active'), (False, 'Inactive')]),
         }
         labels = {
             'first_name': '*First Name',
@@ -31,5 +31,5 @@ class UserAccountForm(forms.ModelForm):
             'is_local': '*Local',
             'position_id': '*Position',
             'roles': '*System Role',
-            'is_active': '*In Employeement',
+            'is_active': '*Employeement Status',
         }
