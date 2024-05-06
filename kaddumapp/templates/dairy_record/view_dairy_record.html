@@ -2,26 +2,110 @@
 
 {% block page_content %}
 <div class="container mt-4">
-    <h2>Dairy Record Details</h2>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">{{ record.project_no.project_name }}</h5>
-            <p class="card-text"><strong>Date:</strong> {{ record.record_date|date:"Y-m-d" }}</p>
-            <p class="card-text"><strong>Shift:</strong> {{ record.record_shift }}</p>
-            <p class="card-text"><strong>Supervisor:</strong> {{ record.supervisor_id.username }}</p>
-            <p class="card-text"><strong>Activity Discussion:</strong> {{ record.activity_discussion }}</p>
-            <p class="card-text"><strong>Safety Issue Discussion:</strong> {{ record.safety_issue_discussion }}</p>
-            <p class="card-text"><strong>Instructions from Client:</strong> {{ record.instruction_from_client }}</p>
-            <p class="card-text"><strong>Visitors on Site:</strong> {{ record.visitor_on_site }}</p>
-            <p class="card-text"><strong>Daily Progress Description:</strong> {{ record.daily_progress_description }}</p>
-            <p class="card-text"><strong>Comments:</strong> {{ record.record_comment }}</p>
-            <p class="card-text"><strong>Handover Notes:</strong> {{ record.handover_note }}</p>
-            <div class="flex-container">
-              <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="form-group btn btn-success col-2">Edit</a>
-              <a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="form-group btn btn-danger col-2">Delete</a>
-              <a href="{% url 'index' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
-            </div>
-        </div>
-    </div>
+	<div class="flex-container">
+		<h2>Dairy Record Report</h2>
+		<button class="form-group btn btn-primary" onclick="printPdf()">Print PDF</button>
+	</div>
+	<div id="print-content">
+
+		<h3 class="text-danger">Shift Information</h3>
+		<p><strong>Project Name:</strong> {{ record.project_no.project_name }}</p>
+		<p><strong>Date:</strong> {{ record.record_date|date:"Y-m-d" }}</p>
+		<p><strong>Shift:</strong> {{ record.record_shift }}</p>
+		<p><strong>Supervisor:</strong> {{ record.supervisor_id.username }}</p>
+
+		<div class="row">
+			<h3 class="text-danger">Discussed Activities</h3>
+			<p><strong>Day's Activities Discussed: </strong>Reviewed project plans and timelines.</p>
+			<p><strong>{{ record.activity_discussion }}</strong></p>
+			<p><strong>Details of Delays:</strong> {{ record.safety_issue_discussion }} </p>
+			<p><strong>Instruction received from client:</strong>{{ record.instruction_from_client }} </p>
+			<p><strong>Visitors on the site:</strong>{{ record.visitor_on_site }} </p>
+		</div>
+
+		<h3 class="text-danger">Progress Tracking</h3>
+
+		<p><strong>Daily Progress Description:</strong> {{ record.daily_progress_description }}</p>
+		<p><strong>Comments:</strong> {{ record.record_comment }}</p>
+		<p><strong>Handover Notes:</strong> {{ record.handover_note }}</p>
+
+		<div class="col-md-8">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th scope="col">Category</th>
+						<th scope="col">Number Completed Today</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>JHA</td>
+						<td>{{ record.jha_qty }}</td>
+					</tr>
+					<tr>
+						<td>CCC</td>
+						<td>{{ record.ccc_qty }}</td>
+					</tr>
+					<tr>
+						<td>Take 5</td>
+						<td>{{ record.take5_qty }}</td>
+					</tr>
+					<tr>
+						<td>Stop Seek</td>
+						<td>{{ record.stop_seek_qty }}</td>
+					</tr>
+					<thead>
+						<tr>
+							<th scope="col">Category</th>
+							<th scope="col">Number of Personal Onsite</th>
+						</tr>
+					</thead>
+				<tbody>
+					<tr>
+						<td>Mobilised</td>
+						<td>{{ record.mobilised_qty }}</td>
+					</tr>
+					<tr>
+						<td>Non-Manual</td>
+						<td>{{ record.non_manual_qty }}</td>
+					</tr>
+					<tr>
+						<td>Manual</td>
+						<td>{{ record.manual_qty }}</td>
+					</tr>
+					<tr>
+						<td>Sub-contractor</td>
+						<td>{{ record.subcontractor_qty }}</td>
+					</tr>
+					<tr>
+						<td>Environmental Incidents</td>
+						<td>{{ record.incident_qty }}</td>
+					</tr>
+					<tr>
+						<td>Near Misses</td>
+						<td>{{ record.near_miss_qty }}
+					</tr>
+					<tr>
+						<td>First Aid</td>
+						<td>{{ record.first_aid_qty }}</td>
+					</tr>
+					<tr>
+						<td>Medically Treated Injury</td>
+						<td>{{ record.medically_treated_injury_qty }}</td>
+					</tr>
+					<tr>
+						<td>Loss Time Injury</td>
+						<td>{{ record.loss_time_injury_qty }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div class="flex-container">
+	<a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="form-group btn btn-success col-2">Edit</a>
+	<a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="form-group btn btn-danger col-2">Delete</a>
+	<a href="{% url 'index' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+</div>
 </div>
 {% endblock %}
