@@ -1,10 +1,9 @@
 from django.db import models
-from django.db.models import Sum, Case, When, F
+from django.db.models import Sum
 from users.models import UserAccount
-from django.utils import timezone
-from django.core.exceptions import ObjectDoesNotExist
 from .models_resource_cost import ResourceCost
-import os
+from datetime import datetime, time
+
 
 
 class Project(models.Model):
@@ -31,6 +30,7 @@ class DairyRecord(models.Model):
     dairy_record_id = models.CharField(max_length=10, primary_key= True)
     project_no = models.ForeignKey(Project, on_delete=models.PROTECT, db_column='project_no') # FK from project table
     record_date = models.DateField()
+    year_week = models.CharField(max_length=6, null= True, blank=True)
     record_shift = models.CharField(max_length=30)  # value = Day shift or Night shift
     supervisor_id = models.ForeignKey(UserAccount, on_delete=models.PROTECT, db_column ='supervisor_id')  # FK supervisor_id = Useraccount.username
     activity_discussion = models.TextField(null=True, blank=True)
@@ -88,6 +88,12 @@ class DairyRecord(models.Model):
             else:
                 new_id = "DR00001"  # If no records exist, start from 1
             self.dairy_record_id = new_id
+
+        # get year_week data like 202417
+        if not self.year_week and self.record_date:
+            year, week, _ = self.record_date.isocalendar()  # Get ISO year and week
+            self.year_week = f"{year}{week:02d}"  # Combine year and week, zero-padded
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -100,17 +106,19 @@ class CostTracking(models.Model):
     record_date = models.DateField()                                    #generated automatically   
     year_week = models.CharField(max_length=6, null= True, blank=True)  #generated automatically
 
-    # the below needs to be update when completing costracking
-    total_hours = models.FloatField(null= True, blank=True)
-    total_hours_local = models.FloatField(null= True, blank=True)
-    total_hours_indigenous = models.FloatField(null= True, blank=True)
-    total_amount = models.FloatField(null= True, blank=True)
-    percentage_hours_indigenous = models.FloatField(null= True, blank=True)
-    percentage_hours_local = models.FloatField(null= True, blank=True)
-
     created_date = models.DateTimeField(auto_now_add=True)  
     last_modification_date = models.DateTimeField(auto_now=True)
     is_draft = models.BooleanField(default=True)
+
+    # the below needs to be update when completing costracking
+    total_hours_employee = models.FloatField(default=0)
+    total_hours_employee_local = models.FloatField(default=0)
+    total_hours_employee_local_percentage = models.FloatField(default=0)
+    total_hours_employee_indigenous= models.FloatField(default=0)
+    total_hours_employee_indigenous_percentage = models.FloatField(default=0)
+    total_amount_employee = models.FloatField(null=True, blank= True)
+    total_hours_equipment = models.FloatField(default=0)
+    total_amount_equipment = models.FloatField(default=0)
     
     class Meta:
         unique_together = ('project_no', 'record_date',)
@@ -134,24 +142,31 @@ class CostTracking(models.Model):
             year, week, _ = self.record_date.isocalendar()  # Get ISO year and week
             self.year_week = f"{year}{week:02d}"  # Combine year and week, zero-padded
 
-        # Calculate percentage_hours_local, percentage_hours_indigenous
-        if any([
-            self.total_hours is not None,
-            self.total_hours_indigenous is not None,
-            self.total_hours_local is not None,            
-        ]):
-            total_hours = self.total_hours
-            total_hours_local = self.total_hours_local
-            total_hours_indigenous = self.total_hours_indigenous
-
-            if total_hours > 0:
-                self.percentage_hours_local = (total_hours_local / total_hours) * 100
-                self.percentage_hours_indigenous = (total_hours_indigenous / total_hours) * 100
-            else:
-                self.percentage_hours_local = 0
-                self.percentage_hours_indigenous = 0
-                
+        self.calculate_total()
         super().save(*args, **kwargs)
+
+    def calculate_total(self):
+        # Summing up values from related DayTracking instances
+        total_hours_employee = self.daytracking_set.aggregate(total_hours_employee=Sum('total_hours_employee'))['total_hours_employee'] or 0.0
+        total_hours_employee_local = self.daytracking_set.aggregate(total_hours_employee_local=Sum('total_hours_employee_local'))['total_hours_employee_local'] or 0.0
+        total_hours_employee_indigenous = self.daytracking_set.aggregate(total_hours_employee_indigenous=Sum('total_hours_employee_indigenous'))['total_hours_employee_indigenous'] or 0.0
+        total_amount_employee = self.daytracking_set.aggregate(total_amount_employee=Sum('total_amount_employee'))['total_amount_employee'] or 0.0
+        total_hours_equipment = self.daytracking_set.aggregate(total_hours_equipment=Sum('total_hours_equipment'))['total_hours_equipment'] or 0.0
+        total_amount_equipment = self.daytracking_set.aggregate(total_amount_equipment=Sum('total_amount_equipment'))['total_amount_equipment'] or 0.0
+        total_hours_employee_local_percentage = (total_hours_employee_local / total_hours_employee) * 100 if total_hours_employee != 0 else 0.0
+        total_hours_employee_indigenous_percentage = (total_hours_employee_indigenous / total_hours_employee) * 100 if total_hours_employee != 0 else 0.0
+
+        # Updating fields in CostTracking
+        self.total_hours_employee = total_hours_employee
+        self.total_hours_employee_local = total_hours_employee_local
+        self.total_hours_employee_local_percentage = total_hours_employee_local_percentage
+        self.total_hours_employee_indigenous = total_hours_employee_indigenous
+        self.total_hours_employee_indigenous_percentage = total_hours_employee_indigenous_percentage
+        self.total_amount_employee = total_amount_employee
+        self.total_hours_equipment = total_hours_equipment
+        self.total_amount_equipment = total_amount_equipment
+
+        # Save the instance
 
 
     def __str__(self):
@@ -162,6 +177,7 @@ class DayTracking(models.Model):
     cost_tracking_id = models.ForeignKey(CostTracking, on_delete=models.CASCADE, blank=True, null=True, db_column='cost_tracking_id')
     project_no = models.ForeignKey(Project, on_delete=models.PROTECT, db_column='project_no') 
     record_date = models.DateField()
+    year_week = models.CharField(max_length=6, null= True, blank=True)  #generated automatically
     record_shift = models.CharField(max_length=30)
     work_area = models.CharField(max_length=255)
     client_representative = models.CharField(max_length=100)
@@ -177,6 +193,13 @@ class DayTracking(models.Model):
     last_modification_date = models.DateTimeField(auto_now=True)
     is_draft = models.BooleanField(default=True)
 
+    total_hours_employee = models.FloatField(default=0)
+    total_hours_employee_local = models.FloatField(default=0)
+    total_hours_employee_indigenous= models.FloatField(default=0)
+    total_amount_employee = models.FloatField(null=True, blank= True)
+    total_hours_equipment = models.FloatField(default=0)
+    total_amount_equipment = models.FloatField(default=0)
+    
     class Meta:
         app_label = 'dashboard'
         db_table = 'dashboard-DayTrackingSheet'
@@ -194,6 +217,26 @@ class DayTracking(models.Model):
             self.day_tracking_id = new_id
 
         super().save(*args, **kwargs)
+        self.calculate_totals()
+        
+    
+    def calculate_totals(self):
+        '''Calculate total employee hours, amount from related DayTrackingEmployeeDetails instances'''
+        total_hours_employee = DayTrackingEmployeeDetails.objects.filter(day_tracking_id=self).aggregate(total_hours=models.Sum('total_hours'))['total_hours']
+        total_hours_employee_local = DayTrackingEmployeeDetails.objects.filter(day_tracking_id=self, employee_id__is_local=True).aggregate(total_hours=models.Sum('total_hours'))['total_hours']
+        total_hours_employee_indigenous = DayTrackingEmployeeDetails.objects.filter(day_tracking_id=self, employee_id__is_indigenous=True).aggregate(total_hours=models.Sum('total_hours'))['total_hours']
+        total_amount_employee = DayTrackingEmployeeDetails.objects.filter(day_tracking_id=self).aggregate(total_amount=models.Sum('total_amount'))['total_amount']
+
+        total_hours_equipment = DayTrackingEquipmentDetails.objects.filter(day_tracking_id=self).aggregate(total_hours=models.Sum('total_hours'))['total_hours']
+        total_amount_equipment = DayTrackingEquipmentDetails.objects.filter(day_tracking_id=self).aggregate(total_amount=models.Sum('item_rate'))['total_amount']
+
+        self.total_hours_employee = total_hours_employee or 0  # Set to 0 if None
+        self.total_hours_employee_local = total_hours_employee_local or 0  # Set to 0 if None
+        self.total_hours_employee_indigenous = total_hours_employee_indigenous or 0  # Set to 0 if None
+        self.total_amount_employee = total_amount_employee or 0  # Set to 0 if None
+
+        self.total_hours_equipment = total_hours_equipment or 0  # Set to 0 if None
+        self.total_amount_equipment = total_amount_equipment or 0  # Set to 0 if None
 
         if not self.is_draft:
             # Get or create the assiciated CostTracking record
@@ -229,12 +272,12 @@ class DayTrackingEmployeeDetails(models.Model):
     position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, related_name='daytracking_employee_details_position', db_column='position_id')
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
-    total_hours = models.FloatField(null= True, blank=True)
     work_description = models.CharField(max_length=255, null=True, blank=True)
 
     # the below is for cost tracking sheet
-    hour_rate = models.FloatField(null= True, blank=True)
-    total_amount = models.FloatField(null= True, blank=True)
+    hour_rate = models.FloatField(default=0)
+    total_hours = models.FloatField(default=0)
+    total_amount = models.FloatField(default=0)
     confirmed_position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, null=True, blank=True, related_name='daytracking_employee_details_confirmed_position', db_column='confirmed_position_id')
 
     class Meta:
@@ -243,13 +286,25 @@ class DayTrackingEmployeeDetails(models.Model):
 
     def save(self, *args, **kwargs):
 
-        if not self.id:
-            # get initial position rate
-            if self.position_id:
-                self.hour_rate = self.position_id.item_rate
-        
+        # Convert start_time and end_time to datetime.time objects
+        start_time_obj = None
+        end_time_obj = None
+
+        if self.start_time:
+            start_time_obj = datetime.strptime(self.start_time, '%H:%M').time()
+
+        if self.end_time:
+            end_time_obj = datetime.strptime(self.end_time, '%H:%M').time()
+
+        # Calculate total hours
+        if start_time_obj and end_time_obj:
+            start_time_seconds = (start_time_obj.hour * 3600) + (start_time_obj.minute * 60) + start_time_obj.second
+            end_time_seconds = (end_time_obj.hour * 3600) + (end_time_obj.minute * 60) + end_time_obj.second
+            total_seconds = end_time_seconds - start_time_seconds
+            self.total_hours = total_seconds / 3600  # Convert seconds to hours
+
+        # Calculate total amount
         if self.total_hours is not None and self.hour_rate is not None:
-            # calculate total amount
             self.total_amount = self.total_hours * self.hour_rate
 
         super().save(*args, **kwargs)
@@ -263,14 +318,11 @@ class DayTrackingEquipmentDetails(models.Model):
     resource_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, db_column='resource_id')
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
-    total_hours = models.FloatField(null=True, blank=True)
     work_description = models.CharField(max_length=255, null=True, blank=True)
 
     # the below is for cost tracking sheet
-    item_rate = models.FloatField(null= True, blank=True)
-    total_amount = models.FloatField(null= True, blank=True)
-    
-
+    item_rate = models.FloatField(default=0)
+    total_hours = models.FloatField(default=0)
 
     class Meta:
         app_label = 'dashboard'
@@ -282,10 +334,19 @@ class DayTrackingEquipmentDetails(models.Model):
             if self.resource_id:
                 self.item_rate = self.resource_id.item_rate
         
-        # 2. Calculate the total amount if total_hours and item_rate are provided
-        if self.total_hours is not None and self.item_rate is not None:
-            self.total_amount = self.total_hours * self.item_rate
-        
+        if self.start_time:
+            start_time_obj = datetime.strptime(self.start_time, '%H:%M').time()
+
+        if self.end_time:
+            end_time_obj = datetime.strptime(self.end_time, '%H:%M').time()
+
+        # Calculate total hours
+        if start_time_obj and end_time_obj:
+            start_time_seconds = (start_time_obj.hour * 3600) + (start_time_obj.minute * 60) + start_time_obj.second
+            end_time_seconds = (end_time_obj.hour * 3600) + (end_time_obj.minute * 60) + end_time_obj.second
+            total_seconds = end_time_seconds - start_time_seconds
+            self.total_hours = total_seconds / 3600  # Convert seconds to hours
+
         super().save(*args, **kwargs)
         
     def __str__(self):

@@ -1,0 +1,51 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+<div class="container mt-4 d-flex align-items-center">
+    <div class="me-auto p-2">
+        <h1 class="text-left mb-4 h4">Project List</h1>
+    </div>
+    <div class="input-group p-2" style="width: 200px;">
+        <input type="text" class="form-control" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-secondary border border-none" type="button" style="background-color: #dee2e6;"><i class="bi bi-search"></i></button>
+    </div>
+    <div class="p-2">
+        <a href="{% url 'project_create' %}" class="btn btn-danger">+ Create New Project</a>
+    </div>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-section-header">Project List</div>            
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col" class="align-middle "><small>Project No</small></th>
+                        <th scope="col" class="align-middle"><small>Project Name</small></th>
+                        <th scope="col" class="align-middle"><small>Client</small></th>
+                        <th scope="col" class="align-middle"><small>PO Number</small></th>
+                        <th scope="col" class="align-middle"><small>Start Date</small></th>
+                        <th scope="col" class="align-middle"><small>End Date</small></th>
+                        <th scope="col" class="align-middle"><small>Budget</small></th>
+                        <th scope="col" class="align-middle"><small>Status</small></th>
+                    </tr>
+                </thead>
+                <tbody id="projectTableBody">
+                    {% for record in records %}
+                    <tr>
+                        <td class="align-middle"><a href="{% url 'project_update' record.project_no %}">{{ record.project_no }}</a></td>
+                        <td class="align-middle"><small>{{record.project_name}}</small></td>
+                        <td class="align-middle"><small>{{record.client}}</small></td>
+                        <td class="align-middle"><small>{{record.purchase_order_no}}</small></td>
+                        <td class="align-middle" ><small>{{record.project_start_date|date:"d/m/Y"}}</small></td>
+                        <td class="align-middle"><small>{{record.project_end_date|date:"d/m/Y"}}</small></td>
+                        <td class="align-middle"><small>{{record.project_budget}}</small></td>
+                        <td class="align-middle"><small>{% if record.is_active %}Active{% else %} Inactive {% endif%}</small></td>      
+                    </tr>
+                    {% endfor%}
+                <tbody>
+            </table>
+           
+    </div>
+</div>
+{% endblock page_content %}

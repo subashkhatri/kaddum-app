@@ -105,7 +105,9 @@
 <div class="flex-container">
 	<a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="form-group btn btn-success col-2">Edit</a>
 	<a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="form-group btn btn-danger col-2">Delete</a>
-	<a href="{% url 'index' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+	<a href="#" onclick="window.history.back();" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
 </div>
 </div>
 {% endblock %}
+
+<!-- <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a> -->
