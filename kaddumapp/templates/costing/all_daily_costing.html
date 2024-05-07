@@ -19,11 +19,12 @@
                 <table class="table table-bordered" style="border-collapse: collapse;">
                     <thead>
                         <tr>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="14%">Record Date</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="13%">Day</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="13%">Week</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Project Name</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="20%">Modification</th>       
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="12%">Record Date</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="9%">Day</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="9%">Week</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="11%">Project No.</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Project Name</th>                            
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="15%">Modification</th>       
                             <th scope="col" class="align-middle" style="border-left-style: inset;" width="17%"></th>       
                         </tr>
                     </thead>
@@ -33,6 +34,7 @@
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.record_date|date:"d/m/Y" }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.day_of_week }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.year_week }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.project_no.project_no }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.project_no.project_name }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.last_modification_date|date:"d/m/Y H:i" }}</td>                            
                             <td class="align-middle" style="border-left-style: inset;">                           
@@ -50,11 +52,12 @@
                 <table class="table table-bordered" style="border-collapse: collapse;">
                     <thead>
                         <tr>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="14%">Record Date</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="13%">Day</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="13%">Week</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="12%">Record Date</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="9%">Day</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="9%">Week</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="11%">Project No.</th>
                             <th scope="col" class="align-middle" style="border-right-style: hidden;">Project Name</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="20%">Modification</th>       
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="15%">Modification</th>       
                             <th scope="col" class="align-middle" style="border-left-style: inset;" width="17%"></th>       
                         </tr>
                     </thead>
@@ -64,11 +67,11 @@
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.record_date|date:"d/m/Y" }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.day_of_week }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.year_week }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.project_no.project_no }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.project_no.project_name }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.last_modification_date|date:"d/m/Y H:i" }}</td>
                             <td class="align-middle" style="border-left-style: inset;">
                                 <div class="row justify-content-evenly">
-                                    <a href="#" class="btn btn-outline-success btn-sm col-5">Edit</a>
                                     <a href="#" class="btn btn-outline-primary btn-sm col-5">View</a>
                                 </div>
                             </td>          

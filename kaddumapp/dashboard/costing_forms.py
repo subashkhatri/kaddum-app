@@ -23,24 +23,29 @@ class CostTrackingForm(forms.ModelForm):
 
     class Meta:
         model = CostTracking
-        fields = '__all__'  # Adjust as necessary to exclude specific fields
-        exclude = ['project_no'] 
+        # fields = '__all__'  # Adjust as necessary to exclude specific fields
+        exclude = ['cost_tracking_id', 'project_no', 'year_week', 'created_date', 'last_modification_date', 'is_draft', ] 
         widgets = {
             'record_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'readonly': 'readonly'}),
-            'total_hours': forms.NumberInput(attrs={'class': 'form-control'}),
-            'total_amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'is_draft': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'total_hours_indigenous': forms.NumberInput(attrs={'class': 'form-control'}),
-            'total_hours_local': forms.NumberInput(attrs={'class': 'form-control'}),
+            'total_amount_employee': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'total_amount_equipment': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         super(CostTrackingForm, self).__init__(*args, **kwargs)
-        quantity_fields = ['total_hours']
+        quantity_fields = ['total_hours_employee']
         self.fields['day_of_week'].widget = forms.TextInput(attrs={
             'class': 'form-control',
             'readonly': 'readonly'
         })
+                # Setting fields to not required
+        self.fields['total_hours_employee'].required = False
+        self.fields['total_hours_employee_indigenous'].required = False
+        self.fields['total_hours_employee_indigenous_percentage'].required = False
+        self.fields['total_hours_employee_local'].required = False
+        self.fields['total_hours_employee_local_percentage'].required = False
+        self.fields['total_hours_equipment'].required = False
+        
         if self.instance and self.instance.record_date:
             self.fields['day_of_week'].initial = self.instance.record_date.strftime('%A')
 
