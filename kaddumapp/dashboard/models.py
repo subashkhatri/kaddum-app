@@ -215,11 +215,10 @@ class DayTrackingEmployeeDetails(models.Model):
         db_table = 'dashboard-DayTrackingEmployeeDetails'
 
     def save(self, *args, **kwargs):
-
         if not self.id:
             # get initial position rate
             if self.position_id:
-                self.hour_rate = self.position_id.hour_rate
+                self.hour_rate = self.position_id.item_rate  # Changed from hour_rate to item_rate
         
         if self.total_hours is not None and self.hour_rate is not None:
             # calculate total amount
