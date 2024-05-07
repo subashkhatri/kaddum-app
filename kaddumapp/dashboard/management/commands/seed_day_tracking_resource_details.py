@@ -22,8 +22,9 @@ class Command(BaseCommand):
             'resource_id': resources['21'],
             'start_time': '06:00',
             'end_time': '18:00',
-            'total_hours': 12,
             'work_description': 'Toyata Hilux Dual Cab',
+            'item_rate':1000,
+            'total_hours':10,
         },
         {
             'id':'2',
@@ -31,8 +32,19 @@ class Command(BaseCommand):
             'resource_id': resources['25'],
             'start_time': '06:00',
             'end_time': '18:00',
-            'total_hours': 12,
             'work_description': 'Isuzu 10m Body Tipper',
+            'item_rate':1000,
+            'total_hours':10,
+        },
+        {
+            'id':'3',
+            'day_tracking_id': day_trackings['DS00003'],
+            'resource_id': resources['25'],
+            'start_time': '06:00',
+            'end_time': '18:00',
+            'work_description': 'Isuzu 10m Body Tipper',
+            'item_rate':1000,
+            'total_hours':10,
         },
         ]
 

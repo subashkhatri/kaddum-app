@@ -251,7 +251,8 @@
     </tbody>
   </table>
 
-  <button type="submit" class="form-group btn btn-success col-2" value="submit">Submit</button>
-  <a href="{% url 'index' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+  <button type="submit" class="form-group btn btn-success col-2" value="complete" name="click-btn">Create</button>
+  <button type="submit" class="form-group btn btn-outline-success col-2" value="draft" name="click-btn">Save as Draft</button>
+  <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
 
 </form>

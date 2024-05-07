@@ -2,8 +2,8 @@ from django import forms
 from .models import CostTracking, Project, UserAccount
 
 SHIFT_CHOICES = [
-    ('morning', 'Morning'),
-    ('evening', 'Evening'),
+    ('morning', 'Day Shift'),
+    ('evening', 'Night Shift'),
 ]
 
 def validate_non_negative(value):
