@@ -216,6 +216,18 @@ class DayTracking(models.Model):
                 new_id = "DS00001"  # If no records exist, start from 1
             self.day_tracking_id = new_id
 
+        # If DayTracking is completed, create a cost_tracking_instance with project no and create_date
+        if not self.is_draft and not self.cost_tracking_id:
+            # Check if a CostTracking record exists for the project and record date
+            cost_tracking = CostTracking.objects.filter(project_no=self.project_no, record_date=self.record_date).first()
+
+            if cost_tracking:
+                self.cost_tracking_id = cost_tracking
+            else:
+                # Create a new CostTracking record
+                cost_tracking = CostTracking.objects.create(project_no=self.project_no, record_date=self.record_date)
+                self.cost_tracking_id = cost_tracking
+
         super().save(*args, **kwargs)
         self.calculate_totals()
         
@@ -238,27 +250,6 @@ class DayTracking(models.Model):
         self.total_hours_equipment = total_hours_equipment or 0  # Set to 0 if None
         self.total_amount_equipment = total_amount_equipment or 0  # Set to 0 if None
 
-        if not self.is_draft:
-            # Get or create the assiciated CostTracking record
-            cost_tracking, created = CostTracking.objects.get_or_create(
-                project_no=self.project_no, 
-                record_date=self.record_date, 
-                defaults={'total_hours':0}
-            )
-            
-            self.cost_tracking_id = cost_tracking # Assign the CostTracking record to DayTracking
-
-            # Aggregate total hours from related DayTrackingEmployeeDetails
-            total_hours = DayTrackingEmployeeDetails.objects.filter(
-                day_tracking_id=self.id
-            ).aggregate(Sum('total_hours'))['total_hours__sum'] or 0
-
-            # Update the total hours in CostTracking
-            cost_tracking.total_hours += total_hours
-            cost_tracking.save()
-
-        # It's good practice to call super().save() again if changes are made after the first save
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Day Tracking:{self.day_tracking_id} {self.project_no} {self.record_date}"

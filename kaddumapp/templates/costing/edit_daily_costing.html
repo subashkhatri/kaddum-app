@@ -62,7 +62,7 @@
                                 </select>
                             </td>
                             <td><input type="number" class="form-control rate-input" name="rate_{{ employee.id }}" min="0" value="{{ employee.hour_rate|floatformat:"2" }}"></td>
-                            <td class="align-middle hours-input">{{ employee.total_hours|floatformat:"2" }}</td>
+                            <td class="align-middle hours-input">{{ instance.total_hours_employee|floatformat:"2" }}</td>
                             <td class="align-middle total-amount"></td> <!-- Total Amount -->
                             <td class="align-middle text-center">{{ employee.employee_id.is_indigenous | yesno:"✓, " }}</td> <!-- Indigenous -->
                             <td class="align-middle text-center">{{ employee.employee_id.is_local | yesno:"✓, " }}</td> <!-- Local -->
@@ -90,13 +90,13 @@
                     <tbody>
                         <tr>
                             <th scope="row">Indigenous</th> <!-- Row header -->
-                            <td class="align-middle text-right">{{ total_hours_indigenous|floatformat:"2" }}</td> <!-- Example data -->
-                            <td class="align-middle text-right">{{ percentage_hours_indigenous|floatformat:2 }}%</td> <!-- Example data -->
+                            <td class="align-middle text-right">{{ instance.total_hours_employee_indigenous|floatformat:"2" }}</td> <!-- Example data -->
+                            <td class="align-middle text-right">{{ instance.total_hours_employee_indigenous_percentage|floatformat:2 }}%</td> <!-- Example data -->
                         </tr>
                         <tr>
                             <th scope="row">Local</th> <!-- Row header -->
-                            <td class="align-middle text-right">{{ total_hours_local|floatformat:"2" }}</td> <!-- Example data -->
-                            <td class="align-middle text-right">{{ percentage_hours_local|floatformat:2 }}%</td> <!-- Example data -->
+                            <td class="align-middle text-right">{{ instance.total_hours_employee_local|floatformat:"2" }}</td> <!-- Example data -->
+                            <td class="align-middle text-right">{{ instance.total_hours_employee_local_percentage|floatformat:2 }}%</td> <!-- Example data -->
                         </tr>       
                     </tbody>
                 </table>
@@ -127,11 +127,9 @@
                         </tr>
                     </tfoot>
                 </table>
-                <input type="hidden" name="total_hours" id="input-total-hours" value="0">
-                <input type="hidden" name="total_amount" id="input-total-amount" value="0">
-                <!-- <button type="submit" class="form-group btn btn-success col-2" value="complete">Complete</button>
-                <button type="submit" class="form-group btn btn-outline-success col-2" value="draft">Save as Draft</button>
-                <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a> -->
+                <input type="hidden" name="total_hours_equipment" id="input-total-hours" value="0">
+                <input type="hidden" name="total_amount_equipment" id="input-total-amount" value="0">
+
                 <form method="POST" novalidate>
                     {% csrf_token %}                    
                     <button type="submit" name="action" value="complete" class="form-group btn btn-success col-2">Complete</button>

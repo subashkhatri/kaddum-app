@@ -12,66 +12,33 @@ from django.http import HttpResponseRedirect
 
 
 def edit_daily_costing(request, cost_tracking_id):
+    # Fetch the specific instance of CostTracking using its ID
     instance = get_object_or_404(CostTracking, cost_tracking_id=cost_tracking_id)
     employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=instance).select_related('position_id', 'employee_id')
     equipment_details = DayTrackingEquipmentDetails.objects.filter(day_tracking_id__cost_tracking_id=instance)
     positions = ResourceCost.objects.filter(item_type='personel').order_by('item_name')
 
-    # Initialize these variables at the start of the function
-    total_hours = 0
-    total_amount = 0
-    total_hours_indigenous = 0
-    total_hours_local = 0
-
-    # Calculate totals even for GET request
-    for employee in employee_details:
-        total_hours += employee.total_hours
-        total_amount += employee.total_amount
-        if employee.employee_id.is_indigenous:
-            total_hours_indigenous += employee.total_hours
-        if employee.employee_id.is_local:
-            total_hours_local += employee.total_hours
+    # Calculate the total hours and total amount for the instance
+    # instance.calculate_total()
+    # instance.save()
 
     if request.method == 'POST':
         form = CostTrackingForm(request.POST, instance=instance)
         if form.is_valid():
-            # If POST, recalculate based on form data
-            for employee in employee_details:
-                rate = float(request.POST.get(f'rate_{employee.id}', 0))
-                hours = float(request.POST.get(f'hours_{employee.id}', 0))
-                            
-                employee.hour_rate = rate
-                employee.total_hours = hours
-                total = rate * hours
-                employee.save()
-
-                total_hours += hours
-                total_amount += total
-                
-                if employee.employee_id.is_indigenous:
-                    total_hours_indigenous += hours
-                if employee.employee_id.is_local:
-                    total_hours_local += hours
-
-            instance.total_hours = total_hours
-            instance.total_amount = total_amount
-            instance.total_hours_indigenous = total_hours_indigenous
-            instance.total_hours_local = total_hours_local
-            instance.total_hours_indigenous = total_hours_indigenous / total_hours * 100 if total_hours > 0 else 0
-            instance.total_hours_local = total_hours_local / total_hours * 100 if total_hours > 0 else 0
-            instance.last_modification_date = timezone.now()
-            instance.save()
-
-            if 'complete' in request.POST:
-                instance.is_draft = False
-                messages.success(request, 'Form marked as complete successfully.')
-            elif 'draft' in request.POST:
-                instance.is_draft = True
-                messages.success(request, 'Form saved as draft successfully.')
-
+            
+            if request.POST.get('action') == 'complete':
+                form.instance.is_draft = False
+                form.save()
+                messages.success(request, 'Form completed successfully.')
+            elif request.POST.get('action') == 'draft':
+                form.instance.is_draft = True
+                form.save()
+                messages.success(request, 'Form saved as draft.')
             return redirect('all_daily_costing')
         else:
+            print(form.errors)
             messages.error(request, 'Please correct the form errors.')
+
     else:
         form = CostTrackingForm(instance=instance)
 
@@ -81,10 +48,6 @@ def edit_daily_costing(request, cost_tracking_id):
         'equipment_details': equipment_details,
         'positions': positions,
         'instance': instance,  # This contains all the totals and percentages
-        'total_hours_indigenous': total_hours_indigenous,
-        'total_hours_local': total_hours_local,
-        'percentage_hours_indigenous': total_hours_indigenous / total_hours * 100 if total_hours > 0 else 0,
-        'percentage_hours_local': total_hours_local / total_hours * 100 if total_hours > 0 else 0
     }
 
     return render(request, 'costing/edit_daily_costing.html', context)
