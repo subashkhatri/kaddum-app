@@ -6,8 +6,8 @@ from .models import (
 )  # Assuming UserAccount is the correct model
 
 SHIFT_CHOICES = [
-        ('morning', 'Morning'),
-        ('evening', 'Evening'),
+        ('morning', 'Day Shift'),
+        ('evening', 'Night Shift'),
     ]
 def validate_non_negative(value):
       if value < 0:
@@ -16,19 +16,20 @@ def validate_non_negative(value):
 class DairyRecordForm(forms.ModelForm):
     project_no = forms.ModelChoiceField(
         queryset=Project.objects.all(),
-        label="Project",
+        label="*Project",
         empty_label="Select a Project",
         widget=forms.Select(attrs={'class': 'form-control'}),
         error_messages={'required': "This field is mandatory"}
     )
     supervisor_id = forms.ModelChoiceField(
         queryset=UserAccount.objects.all(),
-        label="Supervisor",
+        label="*Supervisor",
         empty_label="Select a Supervisor",
         widget=forms.Select(attrs={'class': 'form-control'}),
-        error_messages={'required': "This field is mandatory"}
+        error_messages={'required': "This field is mandatory"},
     )
     record_shift = forms.ChoiceField(
+        label= "*Record shift",
         choices=SHIFT_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
@@ -83,3 +84,4 @@ class DairyRecordForm(forms.ModelForm):
         for field_name in integer_fields:
             self.fields[field_name].validators.append(validate_non_negative)
             self.fields[field_name].widget.attrs.update({'class': 'form-control'})
+        
