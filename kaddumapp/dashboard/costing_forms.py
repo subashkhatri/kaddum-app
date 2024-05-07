@@ -24,12 +24,12 @@ class CostTrackingForm(forms.ModelForm):
     class Meta:
         model = CostTracking
         # fields = '__all__'  # Adjust as necessary to exclude specific fields
-        exclude = ['project_no', 'cost_tracking_id', 'year_week', 'created_date', 'last_modification_date'] 
+        exclude = ['project_no', 'cost_tracking_id', 'year_week', 'created_date', 'last_modification_date', 'is_draft'] 
         widgets = {
             'record_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'readonly': 'readonly'}),
             'total_hours': forms.NumberInput(attrs={'class': 'form-control'}),
             'total_amount': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'is_draft': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            # 'is_draft': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'total_hours_indigenous': forms.NumberInput(attrs={'class': 'form-control'}),
             'total_hours_local': forms.NumberInput(attrs={'class': 'form-control'}),
             

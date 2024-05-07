@@ -11,82 +11,82 @@ from django.utils import timezone
 from django.http import HttpResponseRedirect
 
 
-
 def edit_daily_costing(request, cost_tracking_id):
     instance = get_object_or_404(CostTracking, cost_tracking_id=cost_tracking_id)
     employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=instance).select_related('position_id', 'employee_id')
     equipment_details = DayTrackingEquipmentDetails.objects.filter(day_tracking_id__cost_tracking_id=instance)
     positions = ResourceCost.objects.filter(item_type='personel').order_by('item_name')
-  
+
+    # Initialize these variables at the start of the function
     total_hours = 0
     total_amount = 0
     total_hours_indigenous = 0
     total_hours_local = 0
 
+    # Calculate totals even for GET request
+    for employee in employee_details:
+        total_hours += employee.total_hours
+        total_amount += employee.total_amount
+        if employee.employee_id.is_indigenous:
+            total_hours_indigenous += employee.total_hours
+        if employee.employee_id.is_local:
+            total_hours_local += employee.total_hours
+
     if request.method == 'POST':
         form = CostTrackingForm(request.POST, instance=instance)
         if form.is_valid():
-            
+            # If POST, recalculate based on form data
             for employee in employee_details:
-                # Handle hour_rate and confirmed_position_id
-                # rate_key = f'rate_{employee.id}'
-                # confirmed_position_key = f'confirmed_position_{employee.id}'
-                # employee.hour_rate = request.POST.get(rate_key)
-                # employee.confirmed_position_id = request.POST.get(confirmed_position_key)
+                rate = float(request.POST.get(f'rate_{employee.id}', 0))
+                hours = float(request.POST.get(f'hours_{employee.id}', 0))
+                            
+                employee.hour_rate = rate
+                employee.total_hours = hours
+                total = rate * hours
+                employee.save()
 
-                # Calculate totals from employee details
-                employee_rate = request.POST.get(f'rate_{employee.id}', 0)
-                print(employee_rate)
-                total = float(employee_rate) * employee.total_hours
-                total_hours += employee.total_hours
+                total_hours += hours
                 total_amount += total
+                
                 if employee.employee_id.is_indigenous:
-                    total_hours_indigenous += employee.total_hours
+                    total_hours_indigenous += hours
                 if employee.employee_id.is_local:
-                    total_hours_local += employee.total_hours
+                    total_hours_local += hours
 
-            # Optionally handle equipment details if they contribute to totals
-            for equipment in equipment_details:
-                equipment_rate = request.POST.get(f'rate_{equipment.id}', 0)
-                total = float(equipment_rate) * equipment.total_hours
-
-            # Save aggregated data to CostTracking instance
             instance.total_hours = total_hours
-            instance.total_hours_local = total_hours_local
-            instance.total_hours_indigenous = total_hours_indigenous
             instance.total_amount = total_amount
+            instance.total_hours_indigenous = total_hours_indigenous
+            instance.total_hours_local = total_hours_local
+            instance.total_hours_indigenous = total_hours_indigenous / total_hours * 100 if total_hours > 0 else 0
+            instance.total_hours_local = total_hours_local / total_hours * 100 if total_hours > 0 else 0
+            instance.last_modification_date = timezone.now()
+            instance.save()
 
-            # Check which button was clicked and update is_draft field accordingly
             if 'complete' in request.POST:
                 instance.is_draft = False
+                messages.success(request, 'Form marked as complete successfully.')
             elif 'draft' in request.POST:
                 instance.is_draft = True
-            
-            # Update the last modification date
-            instance.last_modification_date = timezone.now()
-            
-            form.save()
+                messages.success(request, 'Form saved as draft successfully.')
 
             return redirect('all_daily_costing')
+        else:
+            messages.error(request, 'Please correct the form errors.')
     else:
         form = CostTrackingForm(instance=instance)
-
-    # Calculate percentage of indigenous and local participation
-    indigenous_percentage = (total_hours_indigenous / total_hours * 100) if total_hours > 0 else 0
-    local_percentage = (total_hours_local / total_hours * 100) if total_hours > 0 else 0
 
     context = {
         'form': form,
         'employee_details': employee_details,
         'equipment_details': equipment_details,
         'positions': positions,
-        'indigenous_percentage': indigenous_percentage,
-        'local_percentage': local_percentage,
+        'instance': instance,  # This contains all the totals and percentages
         'total_hours_indigenous': total_hours_indigenous,
         'total_hours_local': total_hours_local,
-        'total_hours': total_hours,
-        'total_amount': total_amount,
+        'percentage_hours_indigenous': total_hours_indigenous / total_hours * 100 if total_hours > 0 else 0,
+        'percentage_hours_local': total_hours_local / total_hours * 100 if total_hours > 0 else 0
     }
+
     return render(request, 'costing/edit_daily_costing.html', context)
 
 

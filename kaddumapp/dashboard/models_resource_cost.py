@@ -7,7 +7,7 @@ class ResourceCost(models.Model):
     item_name = models.CharField(max_length=255)
     item_id = models.CharField(max_length=10, null=True, blank=True)
     item_location = models.CharField(max_length=30, null=True, blank=True)
-    item_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    item_rate = models.FloatField(default=0)
     unit_of_measure = models.CharField(max_length=10)
     mobilisation_desc = models.CharField(max_length=50, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)

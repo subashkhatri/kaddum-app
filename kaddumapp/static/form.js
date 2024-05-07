@@ -11,6 +11,16 @@ function toggleSideBar() {
   }
 }
 
+
+//Make messages in your Django template automatically disappear after a set amount of time
+window.onload = function() {
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => alert.style.display = 'none');
+    }, 5000);
+};
+
+
 // calculate total hours and total amount
 document.addEventListener('DOMContentLoaded', function() {
 // Function to calculate totals for employees or equipment
@@ -32,6 +42,7 @@ function calculateTotals(tbodySelector, totalHoursSelector, totalAmountSelector)
     document.querySelector(totalHoursSelector).textContent = totalHours.toFixed(2);
     document.querySelector(totalAmountSelector).textContent = totalAmount.toFixed(2);
 }
+
 
 // Function to calculate total day rate
 function calculateTotalDayRate(tbodySelector, totalDayRateSelector) {
@@ -56,4 +67,27 @@ document.querySelectorAll('.rate-input').forEach(input => {
         calculateTotalDayRate('#equipmentTableBody', '#total-day-rate');
     });
 });
+
+
+const positionSelects = document.querySelectorAll(".position-select");
+positionSelects.forEach(select => {
+    select.addEventListener("change", function() {
+        const employeeId = this.getAttribute("data-employee-id");
+        const rateInput = document.querySelector(`input[name="rate_${employeeId}"]`);
+        // Fetch the rate based on the selected position
+        const positionId = this.value;
+        fetch(`/get_rate/?position_id=${positionId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Update the rate input field with the fetched rate
+                rateInput.value = data.rate;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+});
+
+
+
 });
