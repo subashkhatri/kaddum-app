@@ -47,7 +47,7 @@ DayTrackingEmployeeFormset = inlineformset_factory(
 DayTrackingEquipmentFormset = inlineformset_factory(
     DayTracking,
     DayTrackingEquipmentDetails,
-    fields=('resource_id', 'start_time', 'end_time', 'total_hours', 'work_description', 'item_rate', 'total_amount'),
+    fields=('resource_id', 'start_time', 'end_time', 'total_hours', 'work_description', 'item_rate'),
     extra=1,
     widgets={
         'start_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
@@ -55,6 +55,6 @@ DayTrackingEquipmentFormset = inlineformset_factory(
         'total_hours': forms.NumberInput(attrs={'class': 'form-control'}),
         'work_description': forms.TextInput(attrs={'class': 'form-control'}),
         'item_rate': forms.NumberInput(attrs={'class': 'form-control'}),
-        'total_amount': forms.NumberInput(attrs={'class': 'form-control'})
+        # 'total_amount': forms.NumberInput(attrs={'class': 'form-control'})
     }
 )
