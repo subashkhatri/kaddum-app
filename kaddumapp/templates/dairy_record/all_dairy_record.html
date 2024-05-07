@@ -39,7 +39,7 @@
                             <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.project_no.purchase_order_no }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.project_no.project_name }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.project_no.client }}</td>                            
-                            <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.last_modification_date|date:"d/m/Y" }}</td>                            
+                            <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.last_modification_date|date:"d/m/Y H:i" }}</td>                            
                             <td class="align-middle" style="border-left-style: inset;">                           
                                 <div class="row justify-content-evenly">
                                   <a href="{% url 'view_dairy_record' dairy_record.dairy_record_id %}" class="btn btn-outline-success btn-sm col-md-3">Edit</a> 
@@ -74,7 +74,7 @@
                           <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.project_no.purchase_order_no }}</td>
                           <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.project_no.project_name }}</td>
                           <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.project_no.client }}</td>                            
-                          <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.last_modification_date|date:"d/m/Y" }}</td>                            
+                          <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.last_modification_date|date:"d/m/Y H:i" }}</td>                            
                           <td class="align-middle" style="border-left-style: inset;">                           
                               <div class="row justify-content-evenly">                                
                                 <a href="{% url 'view_dairy_record' dairy_record.dairy_record_id %}" class="btn btn-outline-primary btn-sm col-md-3">View</a> 
