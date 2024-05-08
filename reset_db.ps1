@@ -27,7 +27,7 @@ Get-ChildItem -Path .\migrations\*.pyc -Recurse | Remove-Item
 
 # Create new migrations
 Write-Host "Creating new migrations..."
-python manage.py makemigrations
+python manage.py makemigrations users dashboard
 
 # Apply migrations
 Write-Host "Applying migrations..."

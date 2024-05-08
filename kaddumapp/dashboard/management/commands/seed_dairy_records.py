@@ -19,6 +19,7 @@ class Command(BaseCommand):
                 'dairy_record_id': 'DR00001',
                 'project_no': projects['2425'],  # Fetch Project instance by project_no
                 'record_date': date(2024, 5, 2),
+                'year_week':'202417',
                 'record_shift': 'Day Shift',
                 'supervisor_id': supervisors['KD0001'],  # Fetch UserAccount instance by username
                 'activity_discussion': 'Activity discussion details here.',
@@ -60,6 +61,7 @@ class Command(BaseCommand):
                 'dairy_record_id': 'DR00002',
                 'project_no': projects['2425'],  # Fetch Project instance by project_no
                 'record_date': date(2024, 5, 2),
+                'year_week':'202417',
                 'record_shift': 'Night Shift',
                 'supervisor_id': supervisors['KD0001'],  # Fetch UserAccount instance by username
                 'activity_discussion': 'Activity discussion details here.',
@@ -101,6 +103,7 @@ class Command(BaseCommand):
                 'dairy_record_id': 'DR00003',
                 'project_no': projects['2425'],  # Fetch Project instance by project_no
                 'record_date': date(2024, 5, 3),
+                'year_week':'202417',
                 'record_shift': 'Day Shift',
                 'supervisor_id': supervisors['KD0002'],  # Fetch UserAccount instance by username
                 'activity_discussion': 'Activity discussion details here.',

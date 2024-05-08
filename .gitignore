@@ -22,3 +22,5 @@ kaddumapp/users/migrations/*
 .DS_Store
 __pycache__/
 .env
+kaddumapp/client_signs/*
+kaddumapp/kaddum_signs/*
