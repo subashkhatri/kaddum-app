@@ -5,6 +5,7 @@ from . import views_dairy_record
 from .views_day_tracking import create_day_tracking
 from . import views_day_tracking
 from . import project_views
+from . import views_weekly_report
 
 urlpatterns = [
   path('', views.index, name='index'),
@@ -27,5 +28,9 @@ urlpatterns = [
   path('project_list', project_views.project_list, name='project_list'),
   path('project_delete_confirm/<str:project_no>/', project_views.project_delete, name='project_delete'),
   # path('project_view/<str:project_no>/', project_views.view_dairy_record, name="project_view"),  to be done
+
+  path('view_weekly_report/', views_weekly_report.view_weekly_report, name='view_weekly_report'),
+  path('all_weekly_report/', views_weekly_report.all_weekly_report, name='all_weekly_report'),
+
 ]
 

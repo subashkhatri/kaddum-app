@@ -1,0 +1,179 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+<div class="container mt-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} mt-4 alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <h1 class="text-left mb-4 h4">Weekly Report</h1>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12"> 
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                <div class="form-section-header">Project Overview</div>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>Project Name</th>
+                            <td>Dust Mitigation Strategy</td>
+                            <th>Project No.</th>
+                            <td>2345</td>
+                            <th>Purchase No.</th>
+                            <td>123456</td>
+                        </tr>
+
+                        <tr>
+                            <th>Week</th>
+                            <td>202417</td>
+                            <th>Period</th>
+                            <td>06/05/24 - 12/05/24</td>
+                            <th>Created Date</th>
+                            <td>13-05-2024</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-section-header">Accident / Incidents</div>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>Near Misses</th>
+                            <td>0</td>
+                            <th>First Aid</th>
+                            <td>0</td>
+                            <th>MTI</th>
+                            <td>0</td>
+                            <th>LTI</th>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-section-header">Environmental</div>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>Last Week</th>
+                            <td>0</td>
+                            <th>Total</th>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-section-header">Safety</div>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>JHA</th>
+                            <td>33</td>
+                            <th>CCC</th>
+                            <td>48</td>
+                            <th>Take 5</th>
+                            <td>32</td>
+                            <th>Stop & Seek</th>
+                            <td>5</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-section-header">Personnel</div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th> <!-- Empty top-left corner cell -->
+                            <th scope="col">Mobilised</th>
+                            <th scope="col">Non-Manual</th>
+                            <th scope="col">Manual</th>
+                            <th scope="col">Sub Contractor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Last Week</th> <!-- Row header -->
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">This Week</th> <!-- Row header -->
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>       
+                    </tbody>
+                </table>
+                <div class="form-section-header">Indigenous / Local / Employment</div>
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="align-middle">Week</th>
+                            <th rowspan="2" class="align-middle">Period</th>
+                            <th rowspan="2" class="align-middle">Total Hours</th>
+                            <th colspan="2">Indigenous</th>
+                            <th colspan="2">Local</th>
+                        </tr>
+                        <tr>
+                            <th>Hours</th>
+                            <th>Hours %</th>
+                            <th>Hours</th>
+                            <th>Hours %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>202414</td>
+                            <td>15/04/24 - 21/04/24</td>
+                            <td>432</td>
+                            <td>367</td>
+                            <td>84.95%</td>
+                            <td>367</td>
+                            <td>84.95%</td>
+                        </tr>
+                        <tr>
+                            <td>202415</td>
+                            <td>22/04/24 - 28/04/24</td>
+                            <td>532</td>
+                            <td>367</td>
+                            <td>68.98%</td>
+                            <td>367</td>
+                            <td>68.98%</td>
+                        </tr>
+                        <tr>
+                            <td>202416</td>
+                            <td>29/04/24 - 05/05/24</td>
+                            <td>487</td>
+                            <td>367</td>
+                            <td>75.36%</td>
+                            <td>367</td>
+                            <td>75.36%</td>
+                        </tr>
+                        <tr>
+                            <td>202417</td>
+                            <td>06/05/24 - 12/05/24</td>
+                            <td>487</td>
+                            <td>367</td>
+                            <td>75.36%</td>
+                            <td>367</td>
+                            <td>75.36%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <form method="POST" novalidate>
+                    {% csrf_token %}                    
+                    <button type="submit" name="action" value="complete" class="form-group btn btn-primary col-2">Save as PDF</button>                    
+                    <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+                </form>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock page_content %}
