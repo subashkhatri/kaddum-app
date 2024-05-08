@@ -18,6 +18,8 @@ class UserAccountManager(BaseUserManager):
         if not username:
             raise ValueError("Users must have a valid EmployeeId")
 
+        if 'position_id' in kwargs and isinstance(kwargs['position_id'], int):
+            kwargs['position_id'] = ResourceCost.objects.get(pk=kwargs['position_id'])
         # create user model   **kwargs means keyword variable arguments,
         user = self.model(username=username, **kwargs)
 
@@ -31,11 +33,8 @@ class UserAccountManager(BaseUserManager):
         """
         kwargs.setdefault("is_staff", True)
         kwargs.setdefault("is_superuser", True)
-
-        if kwargs.get("is_staff") is not True:
-            raise ValueError("Superuser must have is_staff=True.")
-        if kwargs.get("is_superuser") is not True:
-            raise ValueError("Superuser must have is_superuser=True.")
+       # Superuser does not need a position_id
+        kwargs.pop('position_id', None)
 
         return self.create_user(username=username, password=password, **kwargs)
 
@@ -49,7 +48,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     email = models.CharField(max_length=255, blank=True, null=True)
     is_indigenous = models.BooleanField(null=False, blank=False)
     is_local = models.BooleanField(null=False, blank=False)
-    position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, db_column='position_id')  # job position 
+    position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, db_column='position_id', null=True, blank=True) # job position
     roles = models.CharField(max_length=50)  # Role permission to access the system super_admin, supervisor, restricted user
 
     # we don't change to False because when we create superuser, i won't be able to log in.
@@ -63,10 +62,9 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = [
         "first_name",
         "last_name",
-        'email'
+        'email',
         "is_indigenous",
         "is_local",
-        "position_id",
         "roles",
     ]  # when registering, requried fileds
     class Meta:

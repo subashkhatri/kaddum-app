@@ -19,4 +19,3 @@ class ResourceCost(models.Model):
 
     def __str__(self):
         return f"Resource: {self.resource_id}, name: {self.item_name} cost rate: {self.item_rate}"
- 
