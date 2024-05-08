@@ -34,6 +34,19 @@ def edit_daily_costing(request, cost_tracking_id):
                 form.instance.is_draft = True
                 form.save()
                 messages.success(request, 'Form saved as draft.')
+
+            # Update the hour_rate for each employee
+            for employee in employee_details:
+                employee_id = str(employee.id)
+                hour_rate = request.POST.get(f'rate_{employee_id}')
+                employee.hour_rate = hour_rate
+                employee.save()
+
+            for equipment in equipment_details:
+                item_rate = request.POST.get(f'equipment_rate_{equipment.id}')
+                equipment.item_rate = float(item_rate) if item_rate else 0  # Convert to float or default to 0
+                equipment.save()
+
             return redirect('all_daily_costing')
         else:
             print(form.errors)

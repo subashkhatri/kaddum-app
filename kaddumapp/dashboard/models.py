@@ -278,14 +278,8 @@ class DayTrackingEmployeeDetails(models.Model):
     def save(self, *args, **kwargs):
 
         # Convert start_time and end_time to datetime.time objects
-        start_time_obj = None
-        end_time_obj = None
-
-        if self.start_time:
-            start_time_obj = datetime.strptime(self.start_time, '%H:%M').time()
-
-        if self.end_time:
-            end_time_obj = datetime.strptime(self.end_time, '%H:%M').time()
+        start_time_obj = self.start_time
+        end_time_obj = self.end_time
 
         # Calculate total hours
         if start_time_obj and end_time_obj:
@@ -296,7 +290,7 @@ class DayTrackingEmployeeDetails(models.Model):
 
         # Calculate total amount
         if self.total_hours is not None and self.hour_rate is not None:
-            self.total_amount = self.total_hours * self.hour_rate
+            self.total_amount = float(self.total_hours) * float(self.hour_rate)
 
         super().save(*args, **kwargs)
 
@@ -325,11 +319,9 @@ class DayTrackingEquipmentDetails(models.Model):
             if self.resource_id:
                 self.item_rate = self.resource_id.item_rate
         
-        if self.start_time:
-            start_time_obj = datetime.strptime(self.start_time, '%H:%M').time()
-
-        if self.end_time:
-            end_time_obj = datetime.strptime(self.end_time, '%H:%M').time()
+        # Convert start_time and end_time to datetime.time objects
+        start_time_obj = self.start_time
+        end_time_obj = self.end_time
 
         # Calculate total hours
         if start_time_obj and end_time_obj:
@@ -337,6 +329,7 @@ class DayTrackingEquipmentDetails(models.Model):
             end_time_seconds = (end_time_obj.hour * 3600) + (end_time_obj.minute * 60) + end_time_obj.second
             total_seconds = end_time_seconds - start_time_seconds
             self.total_hours = total_seconds / 3600  # Convert seconds to hours
+
 
         super().save(*args, **kwargs)
         

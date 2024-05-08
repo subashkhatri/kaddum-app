@@ -115,7 +115,7 @@
                             <td class="align-middle">{{ equipment.resource_id.item_type|capfirst }}</td>
                             <td class="align-middle">{{ equipment.resource_id.item_name }}</td>
                             <td class="align-middle">
-                                <input type="number" class="form-control rate-input" value="{{ equipment.resource_id.item_rate }}" >
+                                <input type="number" class="form-control rate-input" name="equipment_rate_{{ equipment.id }}" value="{{ equipment.item_rate }}" >
                             </td>
                         </tr>
                         {% endfor %}
