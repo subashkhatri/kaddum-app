@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Costing Form</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        :root {
+            --form-background-color: #fff;
+            --form-border-color: #000;
+            --form-section-background-color: #dc3545;
+            --form-section-text-color: #fff;
+        }
+
+        .form-section-header {
+            background-color: var(--form-section-background-color);
+            color: var(--form-section-text-color);
+            padding: 10px;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .form-control,
+        .form-control:focus {
+            border-color: var(--form-border-color);
+            box-shadow: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .table-sm th,
+        .table-sm td {
+            padding: 0.3rem;
+            font-size: 0.875rem;
+        }
+
+        .table-sm {
+            width: auto;
+            margin: 0 auto;
+        }
+
+        .table td input[type="number"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--form-background-color);
+            border: 1px solid var(--form-border-color);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .table {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-primary:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- printable content section -->
+    <div id="print-content">
+        <div class="container mt-4">
+            <h1 class="text-left mb-4 h4 bg-white text-dark border-0">Daily Record Report</h1>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="text-danger">Shift Information</h3>
+                    <p><strong>Job Name:</strong> Construction Site</p>
+                    <p><strong>Date:</strong> 2024-05-01</p>
+                    <p><strong>Day:</strong> Monday</p>
+                    <p><strong>Shift:</strong> Dayshift</p>
+                    <p><strong>Client:</strong> ABC Construction Inc.</p>
+                    <p><strong>Supervisor:</strong> John Doe</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="text-danger">Discussed Activities</h3>
+                        <p><strong>Day's Activities Discussed: </strong>Reviewed project plans and timelines.</p>
+                        <p><strong>Safety Issues Discussed:</strong> Discussed potential safety hazards on site.</p>
+                        <p><strong>Have Delays Occurred Today As a Result of the Following:</strong> Lack of
+                            Drawings
+                        </p>
+                        <p><strong>Details of Delays:</strong> Delays due to heavy rainfall in the morning.</p>
+                        <p><strong>Instruction received from client:</strong> change in project scope. Inc.</p>
+                        <p><strong>Visitors on the site:</strong> project manager and safety inspector</p>
+                    </div>
+
+
+                    <div class="col-md-12">
+                        <h3 class="text-danger">Progress Tracking</h3>
+                        <p><strong>Daily Progress and Description of work Performed: </strong>Completed foundation
+                            work
+                            for building A.</p>
+                        <p><strong>Notes or Comments </strong> No additional notes.</p>
+                        <p><strong>Handover Notes:</strong> Handed over the site to the night shift team.</p>
+                    </div>
+
+
+                    <div class="col-md-8">
+                        <h3 class="text-danger">Number of Safety Items Completed</h3>
+                        <!-- <p><strong>Visitors on the site:</strong> project manager and safety inspector</p> -->
+                    </div>
+
+                    <div class="col-md-8">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Number Completed Today</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Number of personal on site</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>JHA</td>
+                                    <td>1</td>
+                                    <td>Manual</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>CCC</td>
+                                    <td>1</td>
+                                    <td>mobilised</td>
+                                    <td>2</td>
+                                </tr>
+                                <!-- <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr> -->
+                                <!-- Add remaining safety items with dummy data -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Buttons section -->
+            <div class="row mt-6">
+                <div class="col-md-6">
+                    <button class="btn btn-primary" onclick="printPdf()">Print PDF</button>
+                </div>
+                <div class="col-md-6">
+                    <a href="#" class="btn btn-primary">Go to Home</a>
+                </div>
+            </div>
+        </div>
+        <script>
+            function printPdf() {
+                var printContent = document.getElementById("print-content").innerHTML;
+                var originalContent = document.body.innerHTML;
+                document.body.innerHTML = printContent;
+                window.print();
+                document.body.innerHTML = originalContent;
+            }
+        </script>
+
+</body>
+
+</html>
