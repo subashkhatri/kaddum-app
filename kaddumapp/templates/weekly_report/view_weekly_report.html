@@ -19,7 +19,7 @@
         <div class="col-md-12"> 
             <form method="POST" novalidate>
                 {% csrf_token %}
-                <div class="form-section-header">Project Overview</div>
+                <div class="form-section-header">Project information</div>
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
@@ -41,43 +41,50 @@
                         </tr>
                     </tbody>
                 </table>
-                <div class="form-section-header">Accident / Incidents</div>
-                <table class="table table-bordered">
+                <div class="form-section-header">Overview</div>
+                <table class="table table-bordered text-center align-middle">
                     <tbody>
                         <tr>
-                            <th>Near Misses</th>
-                            <td>0</td>
-                            <th>First Aid</th>
-                            <td>0</td>
-                            <th>MTI</th>
-                            <td>0</td>
-                            <th>LTI</th>
+                            <th rowspan="4">Accident / Incidents</td> 
+                            <td>Near Misses</td>
                             <td>0</td>
                         </tr>
-                    </tbody>
-                </table>
-                <div class="form-section-header">Environmental</div>
-                <table class="table table-bordered">
-                    <tbody>
                         <tr>
-                            <th>Last Week</th>
-                            <td>0</td>
-                            <th>Total</th>
+                            <td>First Aid</td>
                             <td>0</td>
                         </tr>
-                    </tbody>
-                </table>
-                <div class="form-section-header">Safety</div>
-                <table class="table table-bordered">
-                    <tbody>
                         <tr>
-                            <th>JHA</th>
+                            <td>MTI</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>LTI</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <th rowspan="2">Environmental</td> 
+                            <td>Last Week</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>Total</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <th rowspan="4">Safety</td> 
+                            <td>JHA</td>
                             <td>33</td>
-                            <th>CCC</th>
+                        </tr>
+                        <tr>
+                            <td>CCC</td>
                             <td>48</td>
-                            <th>Take 5</th>
+                        </tr>
+                        <tr>
+                            <td>Take 5</td>
                             <td>32</td>
-                            <th>Stop & Seek</th>
+                        </tr>
+                        <tr>
+                            <td>Stop & Seek</td>
                             <td>5</td>
                         </tr>
                     </tbody>
