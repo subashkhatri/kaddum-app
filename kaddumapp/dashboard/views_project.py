@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from .project_forms import ProjectForm
+from .forms_project import ProjectForm
 from .models import Project
 from django.contrib import messages
-from .project_forms import ProjectForm
+from .forms_project import ProjectForm
 import logging
 from django.core.paginator import Paginator
 

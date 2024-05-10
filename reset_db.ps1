@@ -45,3 +45,6 @@ python manage.py seed_day_tracking_emp_details
 python manage.py seed_day_tracking_resource_details
 
 Write-Host "Database reset and seeded successfully!"
+
+# Create Weekly Report View
+python manage.py create_view_weekly_report

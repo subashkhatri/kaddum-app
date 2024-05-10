@@ -64,7 +64,7 @@ class DairyRecord(models.Model):
     non_manual_qty = models.IntegerField(default=0)
     manual_qty = models.IntegerField(default=0)
     subcontractor_qty = models.IntegerField(default=0)
-    incident_qty = models.IntegerField(default=0)
+    environment_incident_qty = models.IntegerField(default=0)
     near_miss_qty = models.IntegerField(default=0)
     first_aid_qty = models.IntegerField(default=0)
     medically_treated_injury_qty = models.IntegerField(default=0)

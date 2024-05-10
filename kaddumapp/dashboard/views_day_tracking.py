@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
-from .day_tracking_forms import DayTrackingForm, DayTrackingEmployeeFormset, DayTrackingEquipmentFormset
+from .forms_day_tracking import DayTrackingForm, DayTrackingEmployeeFormset, DayTrackingEquipmentFormset
 from .models import DayTrackingEmployeeDetails, DayTrackingEquipmentDetails  
 from .models import DayTracking
 from django.core.paginator import Paginator
@@ -45,9 +45,11 @@ def create_day_tracking(request):
 
 
 def all_day_tracking(request):
+    draft_records_list = DayTracking.objects.filter(is_draft=True).order_by('-created_date')
+    completed_records_list = DayTracking.objects.filter(is_draft=False).order_by('-created_date')
     # Fetch all records from the DayTracking model
     records = DayTracking.objects.all().select_related('project_no')
-    return render(request, 'day_tracking/all_day_tracking.html', {'records': records})
+    return render(request, 'day_tracking/all_day_tracking.html', {'draft_records': draft_records_list, 'completed_records':completed_records_list})
 
 def edit_day_tracking(request, day_tracking_id):
     record = get_object_or_404(DayTracking, pk=day_tracking_id)
