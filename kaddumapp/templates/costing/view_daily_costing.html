@@ -1,0 +1,124 @@
+{% extends "partials/base.html" %}
+
+{% block title %}Daily Costing Report{% endblock title %}
+
+{% block page_content %}
+<div class="header">
+    <h1>DAILY COSTING REPORT</h1>
+</div>
+<div class="container mt-4">
+    <div class="form-section-header">Shift Information</div>
+    <div class="form-group">
+        <label>Project:</label>
+        <input type="text" class="form-control" value="{{ costing.project_no.project_no }} - {{ costing.project_no.project_name }}" readonly>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label>Record date:</label>
+            <input type="text" class="form-control" value="{{ costing.record_date|date:'d/m/Y' }}" readonly>
+        </div>
+        <div class="form-group col-md-6">
+            <label>Day:</label>
+            <input type="text" class="form-control" value="{{ costing.day_of_week }}" readonly>
+        </div>
+    </div>
+
+    <div class="form-section-header">Costing Breakdown</div>
+    <table class="table table-bordered table-responsive">
+        <thead>
+            <tr>
+                <th scope="col" class="align-middle" width="23%">Name</th>
+                <th scope="col" class="align-middle" width="28%">Position</th>
+                <th scope="col" class="align-middle" width="17%">Rate($)</th>
+                <th scope="col" class="align-middle" width="9%">Total Hours</th>
+                <th scope="col" class="align-middle" width="9%">Total Amount($)</th>
+                <th scope="col" class="align-middle" width="2%">Indigenous</th>
+                <th scope="col" class="align-middle" width="9%">Local</th>
+            </tr>
+        </thead>
+        <tbody id="employeeTableBody">
+            {% for employee in employee_details %}
+            <tr>
+                <td class="align-middle">{{ employee.employee_id.full_name }}</td>
+                <td class="align-middle">{{ employee.position_id.item_name }}</td>
+                <td class="align-middle">{{ employee.hour_rate|floatformat:"2" }}</td>
+                <td class="align-middle">{{ employee.total_hours|floatformat:"2" }}</td>
+                <td class="align-middle">{{ employee.total_amount|floatformat:"2" }}</td>
+                <td class="align-middle text-center">{{ employee.employee_id.is_indigenous | yesno:"✓, " }}</td>
+                <td class="align-middle text-center">{{ employee.employee_id.is_local | yesno:"✓, " }}</td>
+            </tr> 
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="row" colspan="3">Total</th>
+                <td id="total-hours-sum">{{ costing.total_hours|floatformat:"2" }}</td>
+                <td id="total-amount-sum">{{ costing.total_amount|floatformat:"2" }}</td>
+                <td scope="row" colspan="3"></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="form-section-header">Indigenous and Local Participation</div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Total Hours</th>
+                <th scope="col">Total Hours %</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">Indigenous</th>
+                <td class="align-middle text-right">{{ costing.total_hours_indigenous|floatformat:"2" }}</td>
+                <td class="align-middle text-right">{{ costing.total_hours_indigenous_percentage|floatformat:2 }}%</td>
+            </tr>
+            <tr>
+                <th scope="row">Local</th>
+                <td class="align-middle text-right">{{ costing.total_hours_local|floatformat:"2" }}</td>
+                <td class="align-middle text-right">{{ costing.total_hours_local_percentage|floatformat:2 }}%</td>
+            </tr>       
+        </tbody>
+    </table>
+
+    <div class="form-section-header">Equipment Cost</div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Equipment</th>
+                <th scope="col">Day Rate($)</th>                          
+            </tr>
+        </thead>
+        <tbody id="equipmentTableBody">
+            {% for equipment in equipment_details %}
+            <tr>
+                <td class="align-middle">{{ equipment.resource_id.item_type|capfirst }}</td>
+                <td class="align-middle">{{ equipment.resource_id.item_name }}</td>
+                <td class="align-middle">{{ equipment.resource_id.item_rate }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="row" colspan="2">Total</th>
+                <td id="total-day-rate">{{ costing.total_day_rate|floatformat:"2" }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="text-center mt-3">
+        <button class="btn btn-primary" onclick="printPdf()">Print PDF</button>
+        <a href="{% url 'edit_daily_costing' costing.costing_id %}" class="btn btn-success">Edit</a>
+        <a href="{% url 'delete_daily_costing' costing.costing_id %}" class="btn btn-danger">Delete</a>
+        <a href="#" onclick="window.history.back();" class="btn btn-secondary">Cancel</a>
+    </div>
+</div>
+{% endblock %}
+
+<script>
+    function printPdf() {
+        window.print();
+    }
+</script>
