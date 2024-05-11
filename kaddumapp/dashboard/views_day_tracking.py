@@ -1,8 +1,8 @@
 from django.db import transaction
+from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms_day_tracking import DayTrackingForm, DayTrackingEmployeeFormset, DayTrackingEquipmentFormset
-from .models import DayTrackingEmployeeDetails, DayTrackingEquipmentDetails  
-from .models import DayTracking
+from .models import DayTracking, DayTrackingEmployeeDetails, DayTrackingEquipmentDetails, Project
 from django.core.paginator import Paginator
 import logging
 from django.contrib import messages
@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 @transaction.atomic
 def create_day_tracking(request):
+    form_action = reverse ('create_day_tracking')
     if request.method == 'POST':
         form = DayTrackingForm(request.POST, request.FILES)
         employee_formset = DayTrackingEmployeeFormset(request.POST, prefix='employees', queryset=DayTrackingEmployeeDetails.objects.none())
