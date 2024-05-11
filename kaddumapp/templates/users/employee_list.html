@@ -26,6 +26,7 @@
                         <th scope="col" class="align-middle"><small>Position</small></th>
                         <th scope="col" class="align-middle"><small>Role</small></th>
                         <th scope="col" class="align-middle" ><small>Status</small></th>
+                        <th scope="col" class="align-middle"><small>Action</small></th>
                     </tr>
                 </thead>
                 <tbody id="employeeTableBody">
@@ -38,7 +39,8 @@
                         <td class="align-middle"><small>{% if employee.is_local %}Yes{% else %}No{% endif %}</small></td>
                         <td class="align-middle"><small>{{employee.position_id.item_name}}</small></td>
                         <td class="align-middle"><small>{{employee.roles}}</small></td>
-                        <td class="align-middle"><small>{% if employee.is_active %}Active{% else %} Inactive {% endif%}</small></td>    
+                        <td class="align-middle"><small>{% if employee.is_active %}Active{% else %} Inactive {% endif%}</small></td>
+                        <td class="align-middle"><small><a href="{% url 'delete_employee' employee.username %}" class="btn btn-sm btn-danger">X</a></small></td>
                     </tr>
                     {% endfor%}
                 <tbody>

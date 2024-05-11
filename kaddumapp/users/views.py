@@ -104,3 +104,11 @@ def employee_edit(request, employee_id):
         form = UserAccountForm(instance=employee)
 
     return render(request, "users/employee_edit.html", {"form": form})
+
+def delete_employee(request, username):
+    user = get_object_or_404(UserAccount, username=username)
+    if request.method == 'POST':
+        user.delete()
+        messages.success(request, 'User account has been deleted successfully.')
+        return redirect('employees_list')
+    return render(request, 'users/confirm_delete.html', {'user': user})

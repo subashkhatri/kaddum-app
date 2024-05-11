@@ -1,0 +1,15 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+<div class="container mt-4">
+    <h2>Delete Dairy Record</h2>
+    <p>Are you sure you want to delete this record?</p>
+    <div>
+        <form action="{% url 'delete_employee' user.username %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Confirm" class="btn btn-danger">
+            <a href="{% url 'employees_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
