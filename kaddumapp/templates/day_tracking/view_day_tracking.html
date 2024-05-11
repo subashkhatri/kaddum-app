@@ -1,0 +1,124 @@
+{% extends "partials/base.html" %}
+
+{% block title %}Day Tracking Report{% endblock title %}
+
+{% block page_content %}
+<div class="header">
+    <h1>Day Tracking Report</h1>
+</div>
+<div class="container mt-4">
+    <div class="form-section-header">Project Details</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Project:</label>
+            <input type="text" class="form-control" value="{{ record.project_no.project_no }} - {{ record.project_no.project_name }}" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Record date:</label>
+            <input type="text" class="form-control" value="{{ record.record_date|date:'d/m/Y' }}" readonly>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Shift:</label>
+            <input type="text" class="form-control" value="{{ record.record_shift }}" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Work Area:</label>
+            <input type="text" class="form-control" value="{{ record.work_area }}" readonly>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Client Representative:</label>
+            <input type="text" class="form-control" value="{{ record.client_representative }}" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Weather:</label>
+            <input type="text" class="form-control" value="{{ record.weather }}" readonly>
+        </div>
+    </div>
+    <div class="col-md-12 mb-3">
+        <label>Comments:</label>
+        <textarea class="form-control" rows="3" readonly>{{ record.comments }}</textarea>
+    </div>
+
+    <div class="form-section-header">Worker Details</div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>NAME</th>
+                <th>ROLE</th>
+                <th>START</th>
+                <th>END</th>
+                <th>TOTAL</th>
+                <th>BRIEF WORK DESCRIPTION</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for worker in worker_details %}
+            <tr>
+                <td>{{ worker.employee_id.full_name }}</td>
+                <td>{{ worker.position_id.item_name }}</td>
+                <td>{{ worker.start_time|date:"H:i" }}</td>
+                <td>{{ worker.end_time|date:"H:i" }}</td>
+                <td>{{ worker.total_hours }}</td>
+                <td>{{ worker.work_description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="form-section-header">Equipment Details</div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>EQUIPMENT</th>
+                <th>DAY RATE</th>
+                <th>START</th>
+                <th>FINISH</th>
+                <th>TOTAL HOURS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipment in equipment_details %}
+            <tr>
+                <td>{{ equipment.resource_id.item_name }}</td>
+                <td>{{ equipment.item_rate }}</td>
+                <td>{{ equipment.start_time|date:"H:i" }}</td>
+                <td>{{ equipment.end_time|date:"H:i" }}</td>
+                <td>{{ equipment.total_hours }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="form-section-header">Acknowledgements</div>
+    <table class="table table-bordered">
+        <tr>
+            <th>CONTRACTOR NAME:</th>
+            <td>{{ record.kaddum_name }}</td>
+            <th>CONTRACTOR SIGNATURE:</th>
+            <td>{{ record.kaddum_sign }}</td>
+            <th>DATE:</th>
+            <td>{{ record.kaddum_sign_date|date:'d/m/Y' }}</td>
+        </tr>
+        <tr>
+            <th>CLIENT NAME:</th>
+            <td>{{ record.client_name }}</td>
+            <th>CLIENT SIGNATURE:</th>
+            <td>{{ record.client_sign }}</td>
+            <th>DATE:</th>
+            <td>{{ record.client_sign_date|date:'d/m/Y' }}</td>
+        </tr>
+    </table>
+
+    <div class="text-center mt-3">
+        <button class="btn btn-primary" onclick="printPdf()">Print PDF</button>
+        <a href="{% url 'edit_day_tracking' record.day_tracking_id %}" class="btn btn-success">Edit</a>
+        <a href="{% url 'delete_day_tracking' record.day_tracking_id %}" class="btn btn-danger">Delete</a>
+        <a href="#" onclick="window.history.back();" class="btn btn-secondary">Cancel</a>
+    </div>
+</div>
+{% endblock %}
+
