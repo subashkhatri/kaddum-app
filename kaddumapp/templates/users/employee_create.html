@@ -4,12 +4,12 @@
 <div class="container mt-4">
     <h1 class="text-left mb-4 h4">Create New Employee</h1>
 </div>
-<div class="form-section-header">*Required Fields</div>          
+<div class="form-section-header">*Required Fields</div>
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
             <form method="POST">
-                {% csrf_token %} 
+                {% csrf_token %}
                 {{ form.non_field_errors }}
 
                 <div class="form-group">
@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="form-group">{{ form.email.errors }}
-                    
+
                     {{ form.email.label_tag }}
                     {{ form.email }}
                 </div>
@@ -34,7 +34,7 @@
                     {{ form.is_indigenous.errors }}
                     {{ form.is_indigenous.label_tag }}
                     {{ form.is_indigenous }}
-                </div> 
+                </div>
 
                 <div class="form-group">
                     {{ form.is_local.errors }}
@@ -63,7 +63,8 @@
                 <!-- <button type="submit" class="btn btn-danger btn-lg">Save</button> -->
                 <!-- <button type="button" class="btn btn-secondary btn-lg" onclick="location.href='{% url 'all_daily_costing' %}';">Cancel</button> -->
                 <button type="submit" class="form-group btn btn-success col-2" value="submit">Create</button>
-                <a href="{% url 'employees_list' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+                <a href="{% url 'employees_list' %}" type="submit" class="form-group btn btn-primary col-2"
+                    value="back">Cancel</a>
             </form>
         </div>
     </div>

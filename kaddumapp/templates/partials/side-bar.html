@@ -13,11 +13,12 @@
     <i class="bi bi-grid-fill"></i>
     <span class="txt">Dashboard</span>
   </a>
-
-  <a href="{% url 'all_dairy_records' %}" class="d-flex align-items-center">
+  {% if request.user.roles == "super admin" or request.user.roles == "supervisor"  %}
+  <a href="{% url 'all_dairy_record' %}" class="d-flex align-items-center">
     <i class="bi bi-file-earmark"></i>
     <span class="txt">Daily Record</span>
   </a>
+  {% endif %}
 
   <a href="{% url 'all_day_tracking' %}" class="d-flex align-items-center">
     <i class="bi bi-file-earmark-text-fill"></i>
@@ -38,11 +39,12 @@
     <i class="bi bi-tools"></i>
     <span class="txt">Resource Costs</span>
   </a>
-
+  {% if request.user.roles == "super admin" %}
   <a href="{% url 'employees_list' %}" class="d-flex align-items-center">
     <i class="bi bi-people-fill"></i>
     <span class="txt">Employees</span>
   </a>
+  {% endif %}
 
   <a href="#" class="d-flex align-items-center">
     <i class="bi bi-people-fill"></i>
