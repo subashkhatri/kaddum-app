@@ -14,23 +14,32 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
-            <form>            
+            <form method="post" action="{% url 'all_weekly_report' %}">           
+                {% csrf_token %} 
                 <div class="form-section-header">Create New Weekly Report</div>
                 <div class="row">
                     <div class="form-group col-5">
                         <label>Project:</label>
-                        <input type="text" class="form-control">
+                        <select name="project" class="form-control" required>
+                            {% for project_no, project_name in unique_projects %}
+                            <option value="{{ project_no }}">{{ project_no }} - {{ project_name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group col-2">
                         <label>Week:</label>
-                        <input type="text" class="form-control">
+                        <select name="year_week" class="form-control" required>
+                            {% for week in unique_weeks %}
+                            <option value="{{ week }}">{{ week }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="form-group col-3">
                         <label>Period:</label>
                         <input type="text" class="form-control" id="period" readonly>
                     </div>
                     <div class="form-group col d-flex justify-content-evenly align-items-end">
-                        <button type="submit" class="btn btn-success px-5">Create</button>
+                        <button type="submit" name="create_report" class="btn btn-success px-5">Create</button>
                     </div>
                 </div>
                 <div class="form-section-header" style="margin-top: 80px;">Completed Weekly Reports</div>
@@ -41,24 +50,30 @@
                             <th scope="col" class="align-middle" style="border-right-style: hidden;" width="20%">Period</th>                                
                             <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No.</th>
                             <th scope="col" class="align-middle" style="border-right-style: hidden;">Project Name</th>                            
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Purchase No.</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Created Date</th>
                             <th scope="col" class="align-middle" style="border-left-style: inset;" width="17%"></th>       
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
+                        {% for new_report in new_reports %}
                         <tr>
-                            <td class="align-middle" style="border-right-style: hidden;">1</td>
-                            <td class="align-middle" style="border-right-style: hidden;">2</td>
-                            <td class="align-middle" style="border-right-style: hidden;">3</td>
-                            <td class="align-middle" style="border-right-style: hidden;">4</td>
-                            <td class="align-middle" style="border-right-style: hidden;">5</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ new_report.year_week }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ new_report.start_date|date:"d/m/Y" }} - {{ new_report.end_date|date:"d/m/Y" }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ new_report.project_no_id }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ new_report.project_no.project_name }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ new_report.created_date|date:"d/m/Y H:i" }}</td>
                             <td class="align-middle" style="border-left-style: inset;">
-                                <div class="row justify-content-evenly">
-                                    <a href="{% url 'view_weekly_report' %}" class="btn btn-outline-primary btn-sm col-5">View</a>
-                                    <a href="#" class="btn btn-outline-danger btn-sm col-5">Delete</a>
+                                <div class="d-flex justify-content-evenly">
+                                    <a href="{% url 'view_weekly_report' new_report.id %}" class="btn btn-outline-primary btn-sm">View</a>
+                                    <button type="submit" name="delete_report" value="{{ new_report.id }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this report?');">Delete</button>
                                 </div>
                             </td>          
-                        </tr>      
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No reports available.</td>
+                        </tr>    
+                        {% endfor %}
                     <tbody>
                 </table>
             </form>

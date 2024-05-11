@@ -29,8 +29,8 @@ urlpatterns = [
   path('project_delete_confirm/<str:project_no>/', project_views.project_delete, name='project_delete'),
   # path('project_view/<str:project_no>/', project_views.view_dairy_record, name="project_view"),  to be done
 
-  path('view_weekly_report/', views_weekly_report.view_weekly_report, name='view_weekly_report'),
   path('all_weekly_report/', views_weekly_report.all_weekly_report, name='all_weekly_report'),
+  path('view_weekly_report/<int:report_id>/', views_weekly_report.view_weekly_report, name='view_weekly_report'),
 
 ]
 

@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Sum
 from users.models import UserAccount
 from .models_resource_cost import ResourceCost
-from datetime import datetime, time
+from datetime import datetime, timedelta
 
 
 
@@ -276,7 +276,19 @@ class DayTrackingEmployeeDetails(models.Model):
         db_table = 'dashboard-DayTrackingEmployeeDetails'
 
     def save(self, *args, **kwargs):
+        # 1. Set default value to item_rate if it's not provided
+        if not self.id:
+            if self.position_id:
+                self.item_rate = self.position_id.item_rate
+        
+        if isinstance(self.start_time, str):
+            # Convert string to time object
+            self.start_time = datetime.strptime(self.start_time, '%H:%M').time()
 
+        if isinstance(self.end_time, str):
+            # Convert string to time object
+            self.end_time = datetime.strptime(self.end_time, '%H:%M').time()
+            
         # Convert start_time and end_time to datetime.time objects
         start_time_obj = self.start_time
         end_time_obj = self.end_time
@@ -319,6 +331,14 @@ class DayTrackingEquipmentDetails(models.Model):
             if self.resource_id:
                 self.item_rate = self.resource_id.item_rate
         
+        if isinstance(self.start_time, str):
+            # Convert string to time object
+            self.start_time = datetime.strptime(self.start_time, '%H:%M').time()
+
+        if isinstance(self.end_time, str):
+            # Convert string to time object
+            self.end_time = datetime.strptime(self.end_time, '%H:%M').time()
+
         # Convert start_time and end_time to datetime.time objects
         start_time_obj = self.start_time
         end_time_obj = self.end_time
@@ -335,3 +355,62 @@ class DayTrackingEquipmentDetails(models.Model):
         
     def __str__(self):
         return f"Day Tracking Resource Details: {self.day_tracking_no}"
+
+class WeeklyReportList(models.Model):
+    id = models.AutoField(primary_key=True)
+    project_no = models.ForeignKey(Project, on_delete=models.PROTECT)
+    year_week = models.CharField(max_length=6, null= True, blank=True)
+    start_date = models.DateField(null= True, blank=True)
+    end_date = models.DateField(null= True, blank=True)
+    created_date = models.DateTimeField(auto_now_add=True, null= True, blank=True)
+ 
+    class Meta:
+        app_label = 'dashboard'
+        db_table = 'dashboard-WeeklyReportList'
+   
+    def save(self, *args, **kwargs):
+        if self.year_week:
+            # Assuming year_week is in the format 'YYYYWW'
+            year = int(self.year_week[:4])
+            week = int(self.year_week[4:])
+            # Calculate start date based on ISO 8601 week date
+            start_date = datetime.strptime(f'{year}-W{week-1}-1', "%Y-W%W-%w").date()
+            # Calculate end date by adding 6 days to the start date
+            end_date = start_date + timedelta(days=6)
+            self.start_date = start_date
+            self.end_date = end_date
+        super().save(*args, **kwargs)
+ 
+class WeeklyStatisticsView(models.Model):
+    year_week = models.CharField(max_length=6)
+    project_no = models.CharField(max_length=255)
+    project_name = models.CharField(max_length=255)
+    start_date_of_week = models.DateField()
+    end_date_of_week = models.DateField()
+    total_records_of_the_week = models.IntegerField(default=0)  
+    sum_of_jha_qty = models.IntegerField(default=0)
+    sum_of_ccc_qty = models.IntegerField(default=0)
+    sum_of_take5_qty = models.IntegerField(default=0)
+    sum_of_stop_seek_qty = models.IntegerField(default=0)
+    sum_of_mobilised_qty = models.IntegerField(default=0)
+    sum_of_non_manual_qty = models.IntegerField(default=0)
+    sum_of_manual_qty = models.IntegerField(default=0)
+    sum_of_subcontractor_qty = models.IntegerField(default=0)
+    sum_of_environmental_incident_qty = models.IntegerField(default=0)
+    sum_of_near_miss_qty = models.IntegerField(default=0)
+    sum_of_first_aid_qty = models.IntegerField(default=0)
+    sum_of_medically_treated_injury_qty = models.IntegerField(default=0)
+    sum_of_loss_time_injury_qty = models.IntegerField(default=0)
+    total_hours_employee = models.FloatField(default=0)
+    total_hours_employee_local = models.FloatField(default=0)
+    total_hours_employee_indigenous= models.FloatField(default=0)
+    total_amount_employee = models.FloatField(null=True, blank= True,default=0)
+    total_hours_equipment = models.FloatField(default=0)
+    total_amount_equipment = models.FloatField(default=0)
+    percentage_employee_local = models.FloatField(default=0)
+    percentage_employee_indigenous = models.FloatField(default=0)
+ 
+    class Meta:
+        managed = False
+        db_table='weeklystatisticsview'
+        unique_together = ('year_week', 'project_no')
