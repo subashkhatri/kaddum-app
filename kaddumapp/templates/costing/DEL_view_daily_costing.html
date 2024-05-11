@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Costing Report</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+</head>
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #cc0000;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.container {
+    padding: 20px;
+}
+
+.form-section-header {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    margin: 4px 0;
+    box-sizing: border-box;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.col-md-6 {
+    width: 48%;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table, .table th, .table td {
+    border: 1px solid black;
+}
+
+.table th, .table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.btn {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.mt-3 {
+    margin-top: 20px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.align-middle {
+    vertical-align: middle;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+</style>
+<body>
+    <div class="header">
+        <h1>DAILY COSTING REPORT</h1>
+    </div>
+    <div class="container mt-4">
+        <div class="form-section-header">Shift Information</div>
+        <div class="form-group">
+            <label>Project:</label>
+            <input type="text" class="form-control" value="1234 - Example Project Name" readonly>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>Record date:</label>
+                <input type="text" class="form-control" value="03/05/2024" readonly>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Day:</label>
+                <input type="text" class="form-control" value="Friday" readonly>
+            </div>
+        </div>
+
+        <div class="form-section-header">Costing Breakdown</div>
+        <table class="table table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <th scope="col" class="align-middle" width="23%">Name</th>
+                    <th scope="col" class="align-middle" width="28%">Position</th>
+                    <th scope="col" class="align-middle" width="17%">Rate($)</th>
+                    <th scope="col" class="align-middle" width="9%">Total Hours</th>
+                    <th scope="col" class="align-middle" width="9%">Total Amount($)</th>
+                    <th scope="col" class="align-middle" width="2%">Indigenous</th>
+                    <th scope="col" class="align-middle" width="9%">Local</th>
+                </tr>
+            </thead>
+            <tbody id="employeeTableBody">
+                <tr>
+                    <td class="align-middle">John Doe</td>
+                    <td class="align-middle">Supervisor</td>
+                    <td class="align-middle">50.00</td>
+                    <td class="align-middle">8.00</td>
+                    <td class="align-middle">400.00</td>
+                    <td class="align-middle text-center">✓</td>
+                    <td class="align-middle text-center">✓</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">Jane Smith</td>
+                    <td class="align-middle">Operator</td>
+                    <td class="align-middle">40.00</td>
+                    <td class="align-middle">8.00</td>
+                    <td class="align-middle">320.00</td>
+                    <td class="align-middle text-center">✓</td>
+                    <td class="align-middle text-center"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="3">Total</th>
+                    <td id="total-hours-sum">16.00</td>
+                    <td id="total-amount-sum">720.00</td>
+                    <td scope="row" colspan="3"></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="form-section-header">Indigenous and Local Participation</div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Total Hours</th>
+                    <th scope="col">Total Hours %</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Indigenous</th>
+                    <td class="align-middle text-right">16.00</td>
+                    <td class="align-middle text-right">100.00%</td>
+                </tr>
+                <tr>
+                    <th scope="row">Local</th>
+                    <td class="align-middle text-right">8.00</td>
+                    <td class="align-middle text-right">50.00%</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="form-section-header">Equipment Cost</div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Equipment</th>
+                    <th scope="col">Day Rate($)</th>
+                </tr>
+            </thead>
+            <tbody id="equipmentTableBody">
+                <tr>
+                    <td class="align-middle">Excavator</td>
+                    <td class="align-middle">Cat 320</td>
+                    <td class="align-middle">500.00</td>
+                </tr>
+                <tr>
+                    <td class="align-middle">Truck</td>
+                    <td class="align-middle">Volvo A40</td>
+                    <td class="align-middle">600.00</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="2">Total</th>
+                    <td id="total-day-rate">1100.00</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="text-center mt-3">
+            <button class="btn btn-primary" onclick="printPdf()">Print PDF</button>
+            <a href="#" class="btn btn-success">Edit</a>
+            <a href="#" class="btn btn-danger">Delete</a>
+            <a href="#" onclick="window.history.back();" class="btn btn-secondary">Cancel</a>
+        </div>
+    </div>
+
+    <script>
+        function printPdf() {
+            window.print();
+        }
+    </script>
+</body>
+
+</html>
