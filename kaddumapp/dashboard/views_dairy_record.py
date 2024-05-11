@@ -4,19 +4,23 @@ from .dairy_record_forms import DairyRecordForm
 from .models import DairyRecord
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
+
+@login_required(login_url='login')
 def view_dairy_record(request, dairy_record_id):
     record = get_object_or_404(DairyRecord, pk=dairy_record_id)
     return render(request, 'dairy_record/view_dairy_record.html', {'record': record})
 
-def all_dairy_records(request):
-    draft_records_list = DairyRecord.objects.filter(is_draft=True).order_by('-created_date')
-    completed_records_list = DairyRecord.objects.filter(is_draft=False).order_by('-created_date')
-    paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
+@login_required(login_url='login')
+def all_dairy_record(request):
+    records_list = DairyRecord.objects.order_by('-created_date')
+    paginator = Paginator(records_list, 10)  # Show 10 records per page.
     page_number = request.GET.get('page')
     dairy_records = paginator.get_page(page_number)
     return render(request, 'dairy_record/all_dairy_record.html', {'draft_records': draft_records_list, 'completed_records':completed_records_list})
 
+@login_required(login_url='login')
 def create_dairy_record(request):
     form_action = reverse('create_dairy_record')
     if request.method == 'POST':
@@ -32,6 +36,7 @@ def create_dairy_record(request):
         form = DairyRecordForm()
         return render(request, 'dairy_record/create_dairy_record.html', {'form': form, 'form_action': form_action})
 
+@login_required(login_url='login')
 def edit_dairy_record(request, dairy_record_id):
     form_action = reverse('edit_dairy_record', args=[dairy_record_id])
     record = get_object_or_404(DairyRecord, pk=dairy_record_id)
@@ -45,6 +50,7 @@ def edit_dairy_record(request, dairy_record_id):
         form = DairyRecordForm(instance=record)
         return render(request, 'dairy_record/edit_dairy_record.html', {'form': form, 'dairy_record': record, 'form_action': form_action})
 
+@login_required(login_url='login')
 def delete_dairy_record(request, dairy_record_id):
     record = get_object_or_404(DairyRecord, pk=dairy_record_id)
 
