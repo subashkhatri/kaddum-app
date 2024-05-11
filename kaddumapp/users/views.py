@@ -71,27 +71,10 @@ def reset_password(request):
         return render(request, "users/reset_password.html")
 
 
-def signup(request):
-    if request.method == "POST":
-        first_name = request.POST["first_name"]
-        last_name = request.POST["last_name"]
-        email = request.POST["email"]
-        password = request.POST["password"]
-        password2 = request.POST["password2"]
-        return render(request, "users/signup.html")
-        # set password criteria
-        if password == password2:
-
-            # check if the e-mail exist in the email list
-            if User.objects.filter(email=email).exists():
-                messages.info(request, "Email registered")
-                return redirect("signup")
-
-
 # @login_required(login_url="signin")
 def logout(request):
     auth.logout(request)
-    return redirect("signin")
+    return redirect("login")
 
 
 def employees_list(request):
@@ -122,9 +105,8 @@ def employee_update(request, employee_id):
             # Redirect to a success page or display a success message
             return redirect(
                 "employees_list"
-            )  # Assuming you have a URL name for the employees list page
+            )
     else:
-        # Create a form instance and populate it with the existing employee data
         form = UserAccountForm(instance=employee)
 
     return render(request, "users/employee_edit.html", {"form": form})
