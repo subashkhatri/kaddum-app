@@ -158,7 +158,7 @@ class UserAccountForm(forms.ModelForm):
             "is_local": "*Local",
             "position_id": "*Position",
             "roles": "*System Role",
-            "is_active": "*Employeement Status",
+            "is_active": "*Employment Status",
         }
     def save(self, commit=True):
         user = super().save(commit=False)

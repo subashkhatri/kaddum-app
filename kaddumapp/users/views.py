@@ -34,12 +34,10 @@ def login(request):
         user = auth.authenticate(username=username, password=password)
 
         if user is not None:
-            if user.is_superuser:
-                auth.login(request, user)
-                messages.success(request, 'Welcome to Kaddum App!')
-                return redirect("/")
-            else:
-                messages.info(request, "You are not authorized to login.")
+            auth.login(request, user)
+            messages.success(request, 'Welcome to Kaddum App!')
+            return redirect("/")
+
         else:
             messages.info(request, "Invalid credentials")
             # Render the login page again with the error message
