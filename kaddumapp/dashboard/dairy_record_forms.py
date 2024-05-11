@@ -65,7 +65,7 @@ class DairyRecordForm(forms.ModelForm):
           "non_manual_qty": forms.NumberInput(attrs={"class": "form-control"}),
           "manual_qty": forms.NumberInput(attrs={"class": "form-control"}),
           "subcontractor_qty": forms.NumberInput(attrs={"class": "form-control"}),
-          "incident_qty": forms.NumberInput(attrs={"class": "form-control"}),
+          "environmental_incident_qty": forms.NumberInput(attrs={"class": "form-control"}),
           "near_miss_qty": forms.NumberInput(attrs={"class": "form-control"}),
           "first_aid_qty": forms.NumberInput(attrs={"class": "form-control"}),
           "medically_treated_injury_qty": forms.NumberInput(attrs={"class": "form-control"}),
@@ -77,7 +77,7 @@ class DairyRecordForm(forms.ModelForm):
         super(DairyRecordForm, self).__init__(*args, **kwargs)
         integer_fields = [
             'jha_qty', 'ccc_qty', 'take5_qty', 'stop_seek_qty', 'mobilised_qty',
-            'non_manual_qty', 'manual_qty', 'subcontractor_qty', 'incident_qty',
+            'non_manual_qty', 'manual_qty', 'subcontractor_qty', 'environmental_incident_qty',
             'near_miss_qty', 'first_aid_qty', 'medically_treated_injury_qty', 'loss_time_injury_qty'
         ]
 

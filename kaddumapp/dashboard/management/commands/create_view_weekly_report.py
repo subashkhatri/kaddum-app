@@ -27,7 +27,7 @@ class Command(BaseCommand):
                     SUM(CASE WHEN NOT dr.is_draft THEN dr.non_manual_qty ELSE 0 END) AS sum_of_non_manual_qty,
                     SUM(CASE WHEN NOT dr.is_draft THEN dr.manual_qty ELSE 0 END) AS sum_of_manual_qty,
                     SUM(CASE WHEN NOT dr.is_draft THEN dr.subcontractor_qty ELSE 0 END) AS sum_of_subcontractor_qty,
-                    SUM(CASE WHEN NOT dr.is_draft THEN dr.incident_qty ELSE 0 END) AS sum_of_environmental_incident_qty,
+                    SUM(CASE WHEN NOT dr.is_draft THEN dr.environmental_incident_qty ELSE 0 END) AS sum_of_environmental_incident_qty,
                     SUM(CASE WHEN NOT dr.is_draft THEN dr.near_miss_qty ELSE 0 END) AS sum_of_near_miss_qty,
                     SUM(CASE WHEN NOT dr.is_draft THEN dr.first_aid_qty ELSE 0 END) AS sum_of_first_aid_qty,
                     SUM(CASE WHEN NOT dr.is_draft THEN dr.medically_treated_injury_qty ELSE 0 END) AS sum_of_medically_treated_injury_qty,

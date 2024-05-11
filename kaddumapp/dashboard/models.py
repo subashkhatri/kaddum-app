@@ -64,7 +64,7 @@ class DairyRecord(models.Model):
     non_manual_qty = models.IntegerField(default=0)
     manual_qty = models.IntegerField(default=0)
     subcontractor_qty = models.IntegerField(default=0)
-    incident_qty = models.IntegerField(default=0)
+    environmental_incident_qty = models.IntegerField(default=0)
     near_miss_qty = models.IntegerField(default=0)
     first_aid_qty = models.IntegerField(default=0)
     medically_treated_injury_qty = models.IntegerField(default=0)
@@ -355,39 +355,14 @@ class DayTrackingEquipmentDetails(models.Model):
         
     def __str__(self):
         return f"Day Tracking Resource Details: {self.day_tracking_no}"
-
+    
 class WeeklyReportList(models.Model):
-    id = models.AutoField(primary_key=True)
-    project_no = models.ForeignKey(Project, on_delete=models.PROTECT)
-    year_week = models.CharField(max_length=6, null= True, blank=True)
+    report_id = models.AutoField(primary_key=True)
+    project_no = models.ForeignKey(Project, on_delete=models.PROTECT,db_column='project_no')
+    year_week = models.CharField(max_length=6)
     start_date = models.DateField(null= True, blank=True)
     end_date = models.DateField(null= True, blank=True)
-    created_date = models.DateTimeField(auto_now_add=True, null= True, blank=True)
- 
-    class Meta:
-        app_label = 'dashboard'
-        db_table = 'dashboard-WeeklyReportList'
-   
-    def save(self, *args, **kwargs):
-        if self.year_week:
-            # Assuming year_week is in the format 'YYYYWW'
-            year = int(self.year_week[:4])
-            week = int(self.year_week[4:])
-            # Calculate start date based on ISO 8601 week date
-            start_date = datetime.strptime(f'{year}-W{week-1}-1', "%Y-W%W-%w").date()
-            # Calculate end date by adding 6 days to the start date
-            end_date = start_date + timedelta(days=6)
-            self.start_date = start_date
-            self.end_date = end_date
-        super().save(*args, **kwargs)
- 
-class WeeklyStatisticsView(models.Model):
-    year_week = models.CharField(max_length=6)
-    project_no = models.CharField(max_length=255)
-    project_name = models.CharField(max_length=255)
-    start_date_of_week = models.DateField()
-    end_date_of_week = models.DateField()
-    total_records_of_the_week = models.IntegerField(default=0)  
+    created_date = models.DateTimeField(auto_now_add=True)
     sum_of_jha_qty = models.IntegerField(default=0)
     sum_of_ccc_qty = models.IntegerField(default=0)
     sum_of_take5_qty = models.IntegerField(default=0)
@@ -411,6 +386,20 @@ class WeeklyStatisticsView(models.Model):
     percentage_employee_indigenous = models.FloatField(default=0)
  
     class Meta:
-        managed = False
-        db_table='weeklystatisticsview'
-        unique_together = ('year_week', 'project_no')
+        app_label = 'dashboard'
+        db_table = 'Report-WeeklyReportList'
+   
+    def save(self, *args, **kwargs):
+        if self.year_week:
+            # Assuming year_week is in the format 'YYYYWW'
+            year = int(self.year_week[:4])
+            week = int(self.year_week[4:])
+            # Calculate start date based on ISO 8601 week date
+            start_date = datetime.strptime(f'{year}-W{week-1}-1', "%Y-W%W-%w").date()
+            # Calculate end date by adding 6 days to the start date
+            end_date = start_date + timedelta(days=6)
+            self.start_date = start_date
+            self.end_date = end_date
+        super().save(*args, **kwargs)
+ 
+ 

@@ -2,16 +2,6 @@
 
 {% block page_content %}
 <div class="container mt-4">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} mt-4 alert-dismissible fade show">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        {% endfor %}
-    {% endif %}
     <h1 class="text-left mb-4 h4">Weekly Report</h1>
 </div>
 <div class="container mt-4">
@@ -24,20 +14,20 @@
                     <tbody>
                         <tr>
                             <th>Project Name</th>
-                            <td>Dust Mitigation Strategy</td>
+                            <td>{{ report.project_no.project_name }}</td>
                             <th>Project No.</th>
-                            <td>2345</td>
+                            <td>{{ report.project_no.project_no }}</td>
                             <th>Purchase No.</th>
-                            <td>123456</td>
+                            <td>{{ report.project_no.purchase_order_no }}</td>
                         </tr>
 
                         <tr>
                             <th>Week</th>
-                            <td>202417</td>
+                            <td>{{ report.year_week }}</td>
                             <th>Period</th>
-                            <td>06/05/24 - 12/05/24</td>
+                            <td>{{ report.start_date|date:"d/m/Y" }} - {{ report.end_date|date:"d/m/Y" }}</td>
                             <th>Created Date</th>
-                            <td>13-05-2024</td>
+                            <td>{{ report.created_date|date:"d/m/Y" }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -45,47 +35,51 @@
                 <table class="table table-bordered text-center align-middle">
                     <tbody>
                         <tr>
-                            <th rowspan="4">Accident / Incidents</td> 
-                            <td>Near Misses</td>
-                            <td>0</td>
+                            <th rowspan="4" width="40%">Accident / Incidents</td> 
+                            <td width="40%">Near Misses</td>
+                            <td>{{ report.sum_of_near_miss_qty }}</td>
                         </tr>
                         <tr>
                             <td>First Aid</td>
-                            <td>0</td>
+                            <td>{{ report.sum_of_first_aid_qty }}</td>
                         </tr>
                         <tr>
                             <td>MTI</td>
-                            <td>0</td>
+                            <td>{{ report.sum_of_medically_treated_injury_qty }}</td>
                         </tr>
                         <tr>
                             <td>LTI</td>
-                            <td>0</td>
+                            <td>{{ report.sum_of_loss_time_injury_qty }}</td>
                         </tr>
                         <tr>
                             <th rowspan="2">Environmental</td> 
                             <td>Last Week</td>
-                            <td>0</td>
+                            {% if previous_report %}
+                                <td>{{ previous_report.sum_of_environmental_incident_qty }}</td>
+                            {% else %}
+                                <td>N/A</td>
+                            {% endif %}
                         </tr>
                         <tr>
                             <td>Total</td>
-                            <td>0</td>
+                            <td>{{ report.sum_of_environmental_incident_qty }}</td>
                         </tr>
                         <tr>
                             <th rowspan="4">Safety</td> 
                             <td>JHA</td>
-                            <td>33</td>
+                            <td>{{ report.sum_of_jha_qty }}</td>
                         </tr>
                         <tr>
                             <td>CCC</td>
-                            <td>48</td>
+                            <td>{{ report.sum_of_ccc_qty }}</td>
                         </tr>
                         <tr>
                             <td>Take 5</td>
-                            <td>32</td>
+                            <td>{{ report.sum_of_take5_qty }}</td>
                         </tr>
                         <tr>
                             <td>Stop & Seek</td>
-                            <td>5</td>
+                            <td>{{ report.sum_of_stop_seek_qty }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -93,7 +87,7 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col"></th> <!-- Empty top-left corner cell -->
+                            <th scope="col"></th>
                             <th scope="col">Mobilised</th>
                             <th scope="col">Non-Manual</th>
                             <th scope="col">Manual</th>
@@ -102,18 +96,25 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">Last Week</th> <!-- Row header -->
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <th scope="row">Last Week</th>
+                            {% if previous_report %}
+                                <td>{{ previous_report.sum_of_mobilised_qty }}</td>
+                                <td>{{ previous_report.sum_of_non_manual_qty }}</td>
+                                <td>{{ previous_report.sum_of_manual_qty }}</td>
+                                <td>{{ previous_report.sum_of_subcontractor_qty }}</td>
+                            {% else %}
+                                <td>N/A</td>
+                                <td>N/A</td>
+                                <td>N/A</td>
+                                <td>N/A</td>
+                            {% endif %}
                         </tr>
                         <tr>
-                            <th scope="row">This Week</th> <!-- Row header -->
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <th scope="row">This Week</th>
+                            <td>{{ report.sum_of_mobilised_qty }}</td>
+                            <td>{{ report.sum_of_non_manual_qty }}</td>
+                            <td>{{ report.sum_of_manual_qty }}</td>
+                            <td>{{ report.sum_of_subcontractor_qty }}</td>
                         </tr>       
                     </tbody>
                 </table>
@@ -135,41 +136,25 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for past_report in past_reports %}
                         <tr>
-                            <td>202414</td>
-                            <td>15/04/24 - 21/04/24</td>
-                            <td>432</td>
-                            <td>367</td>
-                            <td>84.95%</td>
-                            <td>367</td>
-                            <td>84.95%</td>
+                            <td>{{ past_report.year_week }}</td>
+                            <td>{{ past_report.start_date|date:"d/m/y" }} - {{ past_report.end_date|date:"d/m/y" }}</td>
+                            <td>{{ past_report.total_hours_employee }}</td>
+                            <td>{{ past_report.total_hours_employee_indigenous }}</td>
+                            <td>{{ past_report.percentage_employee_indigenous }}%</td>
+                            <td>{{ past_report.total_hours_employee_local }}</td>
+                            <td>{{ past_report.percentage_employee_local }}%</td>
                         </tr>
+                        {% endfor %}
                         <tr>
-                            <td>202415</td>
-                            <td>22/04/24 - 28/04/24</td>
-                            <td>532</td>
-                            <td>367</td>
-                            <td>68.98%</td>
-                            <td>367</td>
-                            <td>68.98%</td>
-                        </tr>
-                        <tr>
-                            <td>202416</td>
-                            <td>29/04/24 - 05/05/24</td>
-                            <td>487</td>
-                            <td>367</td>
-                            <td>75.36%</td>
-                            <td>367</td>
-                            <td>75.36%</td>
-                        </tr>
-                        <tr>
-                            <td>202417</td>
-                            <td>06/05/24 - 12/05/24</td>
-                            <td>487</td>
-                            <td>367</td>
-                            <td>75.36%</td>
-                            <td>367</td>
-                            <td>75.36%</td>
+                            <td>{{ report.year_week }}</td>
+                            <td>{{ report.start_date|date:"d/m/y" }} - {{ report.end_date|date:"d/m/y" }}</td>
+                            <td>{{ report.total_hours_employee }}</td>
+                            <td>{{ report.total_hours_employee_indigenous }}</td>
+                            <td>{{ report.percentage_employee_indigenous }}</td>
+                            <td>{{ report.total_hours_employee_local }}</td>
+                            <td>{{ report.percentage_employee_local }}%</td>
                         </tr>
                     </tbody>
                 </table>
