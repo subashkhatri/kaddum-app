@@ -69,7 +69,7 @@ def logout(request):
     auth.logout(request)
     return redirect("login")
 
-
+@superuser_required
 def employees_list(request):
     employee_list = UserAccount.objects.order_by("username")
     return render(request, "users/employee_list.html", {"employee_list": employee_list})
@@ -85,7 +85,7 @@ def employee_add(request):
     else:
         form = UserAccountForm()
 
-    return render(request, "users/employee_add.html", {"form": form})
+    return render(request, "users/employee_create.html", {"form": form})
 
 @superuser_required
 def employee_edit(request, employee_id):

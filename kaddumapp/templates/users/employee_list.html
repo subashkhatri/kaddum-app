@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <h1 class="text-left mb-4 h4">Employee List</h1>     
     {% if request.user.roles == "super admin" %}
-    <a href="{% url 'employees_add' %}"  class="form-group btn btn-danger col-2 float-right" >Add</a>
+    <a href="{% url 'employees_create' %}"  class="form-group btn btn-danger col-2 float-right" >Add</a>
     {% endif %}
 
     {% comment %} <div>

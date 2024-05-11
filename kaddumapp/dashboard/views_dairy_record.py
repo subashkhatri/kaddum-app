@@ -14,8 +14,9 @@ def view_dairy_record(request, dairy_record_id):
 
 @superuser_or_supervisor_required
 def all_dairy_record(request):
-    records_list = DairyRecord.objects.order_by('-created_date')
-    paginator = Paginator(records_list, 10)  # Show 10 records per page.
+    draft_records_list = DairyRecord.objects.filter(is_draft=True).order_by('-created_date')
+    completed_records_list = DairyRecord.objects.filter(is_draft=False).order_by('-created_date')
+    paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
     page_number = request.GET.get('page')
     dairy_records = paginator.get_page(page_number)
     return render(request, 'dairy_record/all_dairy_record.html', {'draft_records': draft_records_list, 'completed_records':completed_records_list})
@@ -32,7 +33,7 @@ def create_dairy_record(request):
           dairy_record.is_draft = is_draft
           dairy_record.save()
           messages.success(request, 'Dairy record created successfully.')
-          return redirect('all_dairy_records')
+          return redirect('all_dairy_record')
     else:
         form = DairyRecordForm()
         return render(request, 'dairy_record/create_dairy_record.html', {'form': form, 'form_action': form_action})
@@ -46,7 +47,7 @@ def edit_dairy_record(request, dairy_record_id):
         if form.is_valid():
           form.save()
           messages.success(request, 'Dairy record updated successfully.')
-          return redirect('all_dairy_records')
+          return redirect('all_dairy_record')
     else:
         form = DairyRecordForm(instance=record)
         return render(request, 'dairy_record/edit_dairy_record.html', {'form': form, 'dairy_record': record, 'form_action': form_action})
@@ -58,6 +59,6 @@ def delete_dairy_record(request, dairy_record_id):
     if request.method == 'POST':
         record.delete()
         messages.success(request, "Dairy record deleted successfully.")
-        return redirect('all_dairy_records')
+        return redirect('all_dairy_record')
 
     return render(request, 'dairy_record/confirm_delete.html', {'record': record})
