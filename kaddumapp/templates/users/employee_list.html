@@ -1,17 +1,15 @@
 {% extends "partials/base.html" %}
 
 {% block page_content %}
-<div class="container mt-4 d-flex align-items-center">
-    <div class="me-auto p-2">
-        <h1 class="text-left mb-4 h4">Employee List</h1>
-    </div>
-    <div class="input-group p-2" style="width: 200px;">
-        <input type="text" class="form-control" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-secondary border border-none" type="button" style="background-color: #dee2e6;"><i class="bi bi-search"></i></button>
-    </div>
-    <div class="p-2">
-        <a href="{% url 'employee_create' %}" class="btn btn-danger">+ Create New Employee</a>
-    </div>
+<div class="container mt-4">
+    <h1 class="text-left mb-4 h4">Employee List</h1>     
+    {% if request.user.roles == "super admin" %}
+    <a href="{% url 'employees_add' %}"  class="form-group btn btn-danger col-2 float-right" >Add</a>
+    {% endif %}
+
+    {% comment %} <div>
+        <button type="submit" class="btn btn-danger btn-lg float-right">Save</button>
+    </div> {% endcomment %}
 </div>
 <div class="container mt-4">
     <div class="row">

@@ -5,6 +5,8 @@ from .models import DairyRecord
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from users.decorators import superuser_required, supervisor_required, employee_required
+
 
 
 @login_required(login_url='login')
@@ -21,6 +23,7 @@ def all_dairy_record(request):
     return render(request, 'dairy_record/all_dairy_record.html', {'draft_records': draft_records_list, 'completed_records':completed_records_list})
 
 @login_required(login_url='login')
+@supervisor_required
 def create_dairy_record(request):
     form_action = reverse('create_dairy_record')
     if request.method == 'POST':
@@ -37,6 +40,7 @@ def create_dairy_record(request):
         return render(request, 'dairy_record/create_dairy_record.html', {'form': form, 'form_action': form_action})
 
 @login_required(login_url='login')
+@supervisor_required
 def edit_dairy_record(request, dairy_record_id):
     form_action = reverse('edit_dairy_record', args=[dairy_record_id])
     record = get_object_or_404(DairyRecord, pk=dairy_record_id)
@@ -51,6 +55,7 @@ def edit_dairy_record(request, dairy_record_id):
         return render(request, 'dairy_record/edit_dairy_record.html', {'form': form, 'dairy_record': record, 'form_action': form_action})
 
 @login_required(login_url='login')
+@superuser_required
 def delete_dairy_record(request, dairy_record_id):
     record = get_object_or_404(DairyRecord, pk=dairy_record_id)
 

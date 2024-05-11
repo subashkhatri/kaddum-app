@@ -22,6 +22,8 @@ class UserAccountManager(BaseUserManager):
             kwargs['position_id'] = ResourceCost.objects.get(pk=kwargs['position_id'])
         # create user model   **kwargs means keyword variable arguments,
         user = self.model(username=username, **kwargs)
+        if not password:
+            password = "kaddum123"
 
         user.set_password(password)  # hash the password
         user.save(using=self._db)
@@ -77,9 +79,17 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         if not self.username:
             last_record = UserAccount.objects.order_by('-username').first()
             if last_record:
-                last_number = int(last_record.username[2:])
-                new_number = last_number + 1
-                self.username = f"KD{new_number:04d}"
+                prefix = last_record.username[:2]
+                suffix = last_record.username[2:]
+
+                # Check if the suffix is numeric and increment
+                if suffix.isdigit():
+                    last_number = int(suffix)
+                    new_number = last_number + 1
+                    self.username = f"{prefix}{new_number:04d}"
+                else:
+                    # Fallback if no suitable last record is found
+                    self.username = "KD0001"  # Default to start from 'KD0001' if unable to parse
             else:
                 self.username = "KD0001"
 

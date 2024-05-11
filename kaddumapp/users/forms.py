@@ -142,7 +142,7 @@ class UserAccountForm(forms.ModelForm):
                     ("", "Please select..."),
                     ("super admin", "Super Admin"),
                     ("supervisor", "Supervisor"),
-                    ("restricted user", "Restricted User"),
+                    ("employee", "Employee"),
                 ],
             ),
             "is_active": forms.Select(
@@ -160,6 +160,14 @@ class UserAccountForm(forms.ModelForm):
             "roles": "*System Role",
             "is_active": "*Employeement Status",
         }
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if not self.instance.pk:  # Checking if it's a new instance
+            user.set_password(self.cleaned_data.get('password', 'kaddum123'))
+        if commit:
+            user.save()
+        return user
+
     def clean(self):
         cleaned_data = super().clean()
         position_id = cleaned_data.get('position_id')
@@ -169,3 +177,4 @@ class UserAccountForm(forms.ModelForm):
             raise forms.ValidationError("Position ID is required for all non-superuser accounts.")
 
         return cleaned_data
+
