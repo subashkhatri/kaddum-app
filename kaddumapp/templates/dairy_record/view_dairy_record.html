@@ -1,10 +1,12 @@
 {% extends "partials/base.html" %}
+{% load static %}
 
 {% block title %}Daily Record and Diary{% endblock title %}
 
 {% block page_content %}
 <div id="print-content">
 	<div class="header">
+		<img src="{% static 'logo.jpg' %}" alt="Kaddum Logo">
 		<h1>DAILY RECORD AND DIARY</h1>
 	</div>
 	<div class="container">
