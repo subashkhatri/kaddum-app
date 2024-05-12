@@ -5,6 +5,9 @@ from . import views_dairy_record
 from .views_day_tracking import create_day_tracking
 from . import views_day_tracking
 from . import project_views
+from . import views_resource
+from .views_resource import delete_resource_cost
+
 
 urlpatterns = [
   path('', views.index, name='index'),
@@ -27,5 +30,10 @@ urlpatterns = [
   path('project_list', project_views.project_list, name='project_list'),
   path('project_delete_confirm/<str:project_no>/', project_views.project_delete, name='project_delete'),
   # path('project_view/<str:project_no>/', project_views.view_dairy_record, name="project_view"),  to be done
+
+  path('resource_cost/', views_resource.resource_cost_list, name='resource_cost_list'),
+  path('resource_cost/create/', views_resource.create_resource_cost, name='create_resource_cost'),
+  path('edit_resource_cost/<int:resource_id>/', views_resource.edit_resource_cost, name='edit_resource_cost'),
+  path('resource_cost/delete/<int:resource_id>/', views_resource.delete_resource_cost, name='delete_resource_cost'),
 ]
 
