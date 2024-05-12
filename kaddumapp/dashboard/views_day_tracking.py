@@ -43,6 +43,9 @@ def create_day_tracking(request):
         })
 
 
+def view_day_tracking(request, day_tracking_id):
+    day_tracking = get_object_or_404(DayTracking, pk=day_tracking_id)
+    return render(request, 'day_tracking/view_day_tracking.html', {'day_tracking': day_tracking})
 
 def all_day_tracking(request):
     # Fetch all records from the DayTracking model
