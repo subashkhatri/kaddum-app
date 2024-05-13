@@ -3,17 +3,14 @@
 {% block page_content %}
 <div class="p-2 px-3 d-flex justify-content-between topbar">
   <h4 class="header">Dashboard</h4>
-  <div class="profile-settings">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-      aria-haspopup="true" aria-expanded="false">
+  <div class="dropdown">
+    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
       <i class="bi bi-person-fill"></i>
     </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <a class="dropdown-item" href="#">Action</a>
-      <a class="dropdown-item" href="#">Another action</a>
-      <a class="dropdown-item" href="#">Something else here</a>
+    <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+    </ul>
     </div>
-  </div>
 </div>
 <div class="p-4 main-content">
   <div class="row">
@@ -87,7 +84,7 @@
             {% endfor %}
           </div>
           <div class="table-bottom text-center" role="button">
-           <a href="{% url 'all_dairy_records' %}"> <i class="bi bi-caret-down-fill"></i></a>
+           <a href="{% url 'all_dairy_record' %}"> <i class="bi bi-caret-down-fill"></i></a>
           </div>
         </div>
       </div>

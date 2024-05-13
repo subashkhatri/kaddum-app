@@ -12,6 +12,7 @@ class Command(BaseCommand):
             cursor.execute("""
                 CREATE VIEW WeeklyStatisticsView AS
                 SELECT
+                    row_number() OVER (ORDER BY dt.year_week, dt.project_no) AS id,
                     dt.year_week,
                     dt.project_no AS project_no,
                     p.project_name,

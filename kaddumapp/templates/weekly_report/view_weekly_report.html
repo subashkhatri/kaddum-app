@@ -1,0 +1,171 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+<div class="container mt-4">
+    <h1 class="text-left mb-4 h4">Weekly Report</h1>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12"> 
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                <div class="form-section-header">Project information</div>
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th>Project Name</th>
+                            <td>{{ report.project_no.project_name }}</td>
+                            <th>Project No.</th>
+                            <td>{{ report.project_no.project_no }}</td>
+                            <th>Purchase No.</th>
+                            <td>{{ report.project_no.purchase_order_no }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>Week</th>
+                            <td>{{ report.year_week }}</td>
+                            <th>Period</th>
+                            <td>{{ report.start_date|date:"d/m/Y" }} - {{ report.end_date|date:"d/m/Y" }}</td>
+                            <th>Created Date</th>
+                            <td>{{ report.created_date|date:"d/m/Y" }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-section-header">Overview</div>
+                <table class="table table-bordered text-center align-middle">
+                    <tbody>
+                        <tr>
+                            <th rowspan="4" width="40%">Accident / Incidents</td> 
+                            <td width="40%">Near Misses</td>
+                            <td>{{ report.sum_of_near_miss_qty }}</td>
+                        </tr>
+                        <tr>
+                            <td>First Aid</td>
+                            <td>{{ report.sum_of_first_aid_qty }}</td>
+                        </tr>
+                        <tr>
+                            <td>MTI</td>
+                            <td>{{ report.sum_of_medically_treated_injury_qty }}</td>
+                        </tr>
+                        <tr>
+                            <td>LTI</td>
+                            <td>{{ report.sum_of_loss_time_injury_qty }}</td>
+                        </tr>
+                        <tr>
+                            <th rowspan="2">Environmental</td> 
+                            <td>Last Week</td>
+                            {% if previous_report %}
+                                <td>{{ previous_report.sum_of_environmental_incident_qty }}</td>
+                            {% else %}
+                                <td>N/A</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td>Total</td>
+                            <td>{{ report.sum_of_environmental_incident_qty }}</td>
+                        </tr>
+                        <tr>
+                            <th rowspan="4">Safety</td> 
+                            <td>JHA</td>
+                            <td>{{ report.sum_of_jha_qty }}</td>
+                        </tr>
+                        <tr>
+                            <td>CCC</td>
+                            <td>{{ report.sum_of_ccc_qty }}</td>
+                        </tr>
+                        <tr>
+                            <td>Take 5</td>
+                            <td>{{ report.sum_of_take5_qty }}</td>
+                        </tr>
+                        <tr>
+                            <td>Stop & Seek</td>
+                            <td>{{ report.sum_of_stop_seek_qty }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-section-header">Personnel</div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Mobilised</th>
+                            <th scope="col">Non-Manual</th>
+                            <th scope="col">Manual</th>
+                            <th scope="col">Sub Contractor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Last Week</th>
+                            {% if previous_report %}
+                                <td>{{ previous_report.sum_of_mobilised_qty }}</td>
+                                <td>{{ previous_report.sum_of_non_manual_qty }}</td>
+                                <td>{{ previous_report.sum_of_manual_qty }}</td>
+                                <td>{{ previous_report.sum_of_subcontractor_qty }}</td>
+                            {% else %}
+                                <td>N/A</td>
+                                <td>N/A</td>
+                                <td>N/A</td>
+                                <td>N/A</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th scope="row">This Week</th>
+                            <td>{{ report.sum_of_mobilised_qty }}</td>
+                            <td>{{ report.sum_of_non_manual_qty }}</td>
+                            <td>{{ report.sum_of_manual_qty }}</td>
+                            <td>{{ report.sum_of_subcontractor_qty }}</td>
+                        </tr>       
+                    </tbody>
+                </table>
+                <div class="form-section-header">Indigenous / Local / Employment</div>
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="align-middle">Week</th>
+                            <th rowspan="2" class="align-middle">Period</th>
+                            <th rowspan="2" class="align-middle">Total Hours</th>
+                            <th colspan="2">Indigenous</th>
+                            <th colspan="2">Local</th>
+                        </tr>
+                        <tr>
+                            <th>Hours</th>
+                            <th>Hours %</th>
+                            <th>Hours</th>
+                            <th>Hours %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for past_report in past_reports %}
+                        <tr>
+                            <td>{{ past_report.year_week }}</td>
+                            <td>{{ past_report.start_date|date:"d/m/y" }} - {{ past_report.end_date|date:"d/m/y" }}</td>
+                            <td>{{ past_report.total_hours_employee }}</td>
+                            <td>{{ past_report.total_hours_employee_indigenous }}</td>
+                            <td>{{ past_report.percentage_employee_indigenous }}%</td>
+                            <td>{{ past_report.total_hours_employee_local }}</td>
+                            <td>{{ past_report.percentage_employee_local }}%</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td>{{ report.year_week }}</td>
+                            <td>{{ report.start_date|date:"d/m/y" }} - {{ report.end_date|date:"d/m/y" }}</td>
+                            <td>{{ report.total_hours_employee }}</td>
+                            <td>{{ report.total_hours_employee_indigenous }}</td>
+                            <td>{{ report.percentage_employee_indigenous }}</td>
+                            <td>{{ report.total_hours_employee_local }}</td>
+                            <td>{{ report.percentage_employee_local }}%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <form method="POST" novalidate>
+                    {% csrf_token %}                    
+                    <button type="submit" name="action" value="complete" class="form-group btn btn-primary col-2">Save as PDF</button>                    
+                    <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+                </form>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock page_content %}

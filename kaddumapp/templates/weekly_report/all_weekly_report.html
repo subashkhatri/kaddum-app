@@ -1,0 +1,93 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+
+<div class="container mt-4 d-flex align-items-center">
+    <div class="me-auto p-2">
+        <h1 class="text-left mb-4 h4">Weekly Report</h1>
+    </div>
+    <div class="input-group p-2" style="width: 250px;">
+        <input type="text" class="form-control" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-secondary border border-none" type="button" style="background-color: #dee2e6;"><i class="bi bi-search"></i></button>
+    </div>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <form method="post" action="{% url 'all_weekly_report' %}">           
+                {% csrf_token %} 
+                <div class="form-section-header">Create New Weekly Report</div>
+                <div class="row">
+                    <div class="form-group col-5">
+                        <label>Project:</label>
+                        <select name="project_no" class="form-control" required>
+                            <option value="" disabled selected> </option>
+                            {% for project_no, project_name in unique_projects %}
+                            <option value="{{ project_no }}">{{ project_no }} - {{ project_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-2">
+                        <label>Week:</label>
+                        <select name="year_week" class="form-control" required>
+                            <option value="" disabled selected> </option>
+                            {% for week in unique_weeks %}
+                            <option value="{{ week }}">{{ week }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-3">
+                        <label>Period:</label>
+                        <input type="text" class="form-control" id="period" readonly>
+                    </div>
+                    <div class="form-group col d-flex justify-content-evenly align-items-end">
+                        <button type="submit" name="create_report" class="btn btn-success px-5">Create</button>
+                    </div>
+                </div>
+            </form>
+            <div class="form-section-header" style="margin-top: 80px;">Completed Weekly Reports</div>
+            <table class="table table-bordered" style="border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;" width="9%">Week</th>      
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;" width="20%">Period</th>                                
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No.</th>
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Project Name</th>                            
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Created Date</th>
+                        <th scope="col" class="align-middle" style="border-left-style: inset;" width="17%"></th>       
+                    </tr>
+                </thead>
+                <tbody id="employeeTableBody">
+                    {% for new_report in new_reports %}
+                    <tr>
+                        <td class="align-middle" style="border-right-style: hidden;">{{ new_report.year_week }}</td>
+                        <td class="align-middle" style="border-right-style: hidden;">{{ new_report.start_date|date:"d/m/Y" }} - {{ new_report.end_date|date:"d/m/Y" }}</td>
+                        <td class="align-middle" style="border-right-style: hidden;">{{ new_report.project_no.project_no }}</td>
+                        <td class="align-middle" style="border-right-style: hidden;">{{ new_report.project_no.project_name }}</td>
+                        <td class="align-middle" style="border-right-style: hidden;">{{ new_report.created_date|date:"d/m/Y H:i" }}</td>
+                        <td class="align-middle" style="border-left-style: inset;">
+                            <div class="d-flex justify-content-evenly">
+                                <div>
+                                    <a href="{% url 'view_weekly_report' new_report.report_id %}" class="btn btn-outline-primary btn-sm">View</a>
+                                </div>                              
+                                <div>
+                                    <form method="post" action="{% url 'all_weekly_report' %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" name="delete_report" value="{{ new_report.report_id }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this report?');">Delete</button>
+                                    </form>    
+                                </div>
+                            </div>
+                        </td>          
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No reports available.</td>
+                    </tr>    
+                    {% endfor %}
+                <tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock page_content %}
