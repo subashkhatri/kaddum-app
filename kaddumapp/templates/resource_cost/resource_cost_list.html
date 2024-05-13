@@ -1,0 +1,55 @@
+{% extends "partials/base.html" %}
+
+{% load static %}
+
+{% block additional_styles %}
+<link rel="stylesheet" href="{% static 'resource.css' %}">
+{% endblock %}
+
+{% block page_content %}
+<div class="container mt-4">
+    <h1 class="text-left mb-4 h4">Resource Cost List</h1>
+    <div class="mb-4">
+        <a href="{% url 'create_resource_cost' %}" class="btn btn-danger" style="background-color: #dc3545;">+ Create New Resource Cost</a>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Item Type</th>
+                <th>Item Name</th>
+                <th>Item ID</th>
+                <th>Location</th>
+                <th>Cost Rate</th>
+                <th>Unit of Measure</th>
+                <th>Mobilisation Description</th>
+                <th>Last Modified</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for resource in resources %}
+            <tr>
+                <td>{{ resource.item_type }}</td>
+                <td>{{ resource.item_name }}</td>
+                <td>{{ resource.item_id }}</td>
+                <td>{{ resource.item_location }}</td>
+                <td>{{ resource.item_rate }}</td>
+                <td>{{ resource.unit_of_measure }}</td>
+                <td>{{ resource.mobilisation_desc }}</td>
+                <td>{{ resource.last_modification_date|date:"Y-m-d" }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'edit_resource_cost' resource.resource_id %}" class="btn btn-outline-success btn-sm col-md-6">Edit</a>
+                        <a href="{% url 'delete_resource_cost' resource.resource_id %}" class="btn btn-outline-danger btn-sm col-md-8">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9">No resource costs found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

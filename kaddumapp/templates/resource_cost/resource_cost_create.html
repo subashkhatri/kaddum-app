@@ -1,0 +1,39 @@
+{% extends "partials/base.html" %}
+
+{% block page_content %}
+<div class="container mt-4">
+  <h1>Create New Resource Cost</h1>
+  <form method="post" action="{% url 'create_resource_cost' %}">
+    {% csrf_token %}
+    <div class="form-group mb-3">
+      {{ form.item_type.label_tag }}
+      {{ form.item_type }}
+    </div>
+    <div class="form-group mb-3">
+      {{ form.item_name.label_tag }}
+      {{ form.item_name }}
+    </div>
+    <div class="form-group mb-3">
+      {{ form.item_id.label_tag }}
+      {{ form.item_id }}
+    </div>
+    <div class="form-group mb-3">
+      {{ form.item_location.label_tag }}
+      {{ form.item_location }}
+    </div>
+    <div class="form-group mb-3">
+      {{ form.item_rate.label_tag }}
+      {{ form.item_rate }}
+    </div>
+    <div class="form-group mb-3">
+      {{ form.unit_of_measure.label_tag }}
+      {{ form.unit_of_measure }}
+    </div>
+    <div class="form-group mb-3">
+      {{ form.mobilisation_desc.label_tag }}
+      {{ form.mobilisation_desc }}
+    </div>
+    <button type="submit" class="btn btn-primary">Save Resource Cost</button>
+  </form>
+</div>
+{% endblock %}
