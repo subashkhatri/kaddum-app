@@ -21,9 +21,12 @@ urlpatterns = [
   path('all_day_tracking/', views_day_tracking.all_day_tracking, name='all_day_tracking'),
   path('edit_day_tracking/<str:day_tracking_id>/', views_day_tracking.edit_day_tracking, name='edit_day_tracking'),
   path('delete_day_tracking/<str:day_tracking_id>/', views_day_tracking.day_tracking_delete, name='day_tracking_delete'),
+  path('view_day_tracking/<str:day_tracking_id>/', views_day_tracking.view_day_tracking, name='view_day_tracking'),
+
 
   path('all_daily_costing', views_costing.all_daily_costing, name='all_daily_costing'),
   path('edit_daily_costing/<str:cost_tracking_id>/', views_costing.edit_daily_costing, name='edit_daily_costing'),
+  path('view_daily_costing/<str:cost_tracking_id>/', views_costing.view_daily_costing, name='view_daily_costing'),
 
   path('project_create/', project_views.project_create, name='project_create'),
   path('project_update/<str:project_no>/', project_views.project_update, name='project_update'),

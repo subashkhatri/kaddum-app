@@ -10,6 +10,12 @@ from django.contrib import messages
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 
+def view_daily_costing(request, cost_tracking_id):
+    costing = get_object_or_404(CostTracking, pk=cost_tracking_id)
+    context = {
+        'costing': costing,
+    }
+    return render(request, 'costing/view_daily_costing.html', context)
 
 def edit_daily_costing(request, cost_tracking_id):
     # Fetch the specific instance of CostTracking using its ID

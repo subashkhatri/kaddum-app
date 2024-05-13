@@ -21,6 +21,7 @@
                 <td>{{ record.client_name }}</td>
                 <td>{{ record.kaddum_name }}</td>
                 <td>
+                    <a href="{% url 'view_day_tracking' record.day_tracking_id %}" class="btn btn-danger btn-sm">View</a>
                     <a href="{% url 'edit_day_tracking' record.day_tracking_id %}" class="btn btn-danger btn-sm">Edit</a>
                     <a href="{% url 'day_tracking_delete' record.day_tracking_id %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
 
