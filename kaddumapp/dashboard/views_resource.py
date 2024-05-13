@@ -2,7 +2,7 @@ from .models import ResourceCost
 from .models_resource_cost import ResourceCost
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from .resource_cost_forms import ResourceCostForm
+from .forms_resource_cost import ResourceCostForm
 from django.contrib import messages
 
 def resource_cost_list(request):
