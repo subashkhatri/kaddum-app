@@ -1,0 +1,9 @@
+{% extends "partials/base.html" %}
+{% block page_content %}
+<h2>Create Superuser</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Superuser</button>
+</form>
+{% endblock %}
