@@ -99,3 +99,5 @@ function printPdf() {
   window.print();
   document.body.innerHTML = originalContent;
 }
+
+// Used for Day Tracking Sheet

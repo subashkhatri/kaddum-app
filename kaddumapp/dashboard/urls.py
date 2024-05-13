@@ -2,9 +2,9 @@ from django.urls import path
 from . import views
 from . import views_costing
 from . import views_dairy_record
-from .views_day_tracking import create_day_tracking
 from . import views_day_tracking
 from . import views_project
+
 
 urlpatterns = [
   path('', views.index, name='index'),
@@ -14,10 +14,10 @@ urlpatterns = [
   path('view_dairy_record/<str:dairy_record_id>/', views_dairy_record.view_dairy_record, name="view_dairy_record"),
   path('delete_dairy_record/<str:dairy_record_id>/', views_dairy_record.delete_dairy_record, name='delete_dairy_record'),
 
-  path('create_day_tracking/', views_day_tracking.create_day_tracking, name='create_day_tracking'),  
-  path('all_day_tracking/', views_day_tracking.all_day_tracking, name='all_day_tracking'),
-  path('edit_day_tracking/<str:day_tracking_id>/', views_day_tracking.edit_day_tracking, name='edit_day_tracking'),
-  path('delete_day_tracking/<str:day_tracking_id>/', views_day_tracking.day_tracking_delete, name='day_tracking_delete'),
+  path('day_tracking_create/', views_day_tracking.day_tracking_create, name='day_tracking_create'),  
+  path('day_tracking_list/', views_day_tracking.day_tracking_list, name='day_tracking_list'),
+  path('day_tracking_update/<str:day_tracking_id>/', views_day_tracking.day_tracking_update, name='day_tracking_update'),
+  path('day_tracking_delete/<str:day_tracking_id>/', views_day_tracking.day_tracking_delete, name='day_tracking_delete'),
 
   path('all_daily_costing', views_costing.all_daily_costing, name='all_daily_costing'),
   path('edit_daily_costing/<str:cost_tracking_id>/', views_costing.edit_daily_costing, name='edit_daily_costing'),
@@ -27,6 +27,5 @@ urlpatterns = [
   path('project_list', views_project.project_list, name='project_list'),
   path('project_delete_confirm/<str:project_no>/', views_project.project_delete, name='project_delete'),
 
-  path('sample_daily_costing', views.sample_daily_costing, name='sample_daily_costing'),
 ]
 
