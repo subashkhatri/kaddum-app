@@ -1,0 +1,125 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/resource.css' %}">
+{% endblock %}
+
+{% block page_content %}
+<div id="print-content">
+    <div class="header">
+        <img src="{% static 'logo.jpg' %}" alt="Kaddum Logo">
+        <h1>Day Tracking Sheet</h1>
+    </div>
+    <div class="container">
+        <table class="details-table">
+            <tr>
+                <th>PROJECT:</th>
+                <td>{{ day_tracking.project_no }}</td>
+                <th>CLIENT REPRESENTATIVE:</th>
+                <td>{{ day_tracking.client_representative }}</td>
+            </tr>
+            <tr>
+                <th>WORK AREA:</th>
+                <td>{{ day_tracking.work_area }}</td>
+                <th>PURCHASE ORDER:</th>
+                <td>{{ day_tracking.cost_tracking_id }}</td>
+            </tr>
+            <tr>
+                <th>DATE:</th>
+                <td>{{ day_tracking.record_date|date:"Y-m-d" }}</td>
+                <th>SHIFT:</th>
+                <td>{{ day_tracking.record_shift }}</td>
+            </tr>
+        </table>
+
+        <table class="work-description-table">
+            <thead>
+                <tr>
+                    <th>NAME</th>
+                    <th>ROLE</th>
+                    <th>START</th>
+                    <th>END</th>
+                    <th>TOTAL HOURS</th>
+                    <th>BRIEF WORK DESCRIPTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in day_tracking.employeedetails_set.all %}
+                <tr>
+                    <td>{{ employee.employee_id }}</td>
+                    <td>{{ employee.position_id }}</td>
+                    <td>{{ employee.start_time|time:"H:i" }}</td>
+                    <td>{{ employee.end_time|time:"H:i" }}</td>
+                    <td>{{ employee.total_hours }}</td>
+                    <td>{{ employee.work_description }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No employee records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <table class="equipment-table">
+            <thead>
+                <tr>
+                    <th>EQUIPMENT</th>
+                    <th>DAY RATE</th>
+                    <th>START</th>
+                    <th>FINISH</th>
+                    <th>TOTAL HOURS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipment in day_tracking.equipmentdetails_set.all %}
+                <tr>
+                    <td>{{ equipment.resource_id }}</td>
+                    <td>{{ equipment.item_rate }}</td>
+                    <td>{{ equipment.start_time|time:"H:i" }}</td>
+                    <td>{{ equipment.end_time|time:"H:i" }}</td>
+                    <td>{{ equipment.total_hours }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No equipment records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <table class="signature-table">
+            <tr>
+                <th>CONTRACTOR NAME:</th>
+                <td>{{ day_tracking.kaddum_name }}</td>
+                <th>CONTRACTOR SIGNATURE:</th>
+                <td><img src="{{ day_tracking.kaddum_sign.url }}" alt="Signature" height="50"></td>
+                <th>DATE:</th>
+                <td>{{ day_tracking.kaddum_sign_date|date:"Y-m-d" }}</td>
+            </tr>
+            <tr>
+                <th>CLIENT NAME:</th>
+                <td>{{ day_tracking.client_name }}</td>
+                <th>CLIENT SIGNATURE:</th>
+                <td><img src="{{ day_tracking.client_sign.url }}" alt="Signature" height="50"></td>
+                <th>DATE:</th>
+                <td>{{ day_tracking.client_sign_date|date:"Y-m-d" }}</td>
+            </tr>
+        </table>
+    </div>
+    </div>
+    <div class="text-center mt-3">
+        <button class="btn btn-primary" onclick="printPdf()">Print PDF</button>
+        <a href="#" onclick="window.history.back();" class="btn btn-danger">Cancel</a>
+    </div>
+</div>
+
+
+<script>
+    function printPdf() {
+    window.print();
+    }
+</script>
+
+
+{% endblock %}

@@ -120,4 +120,7 @@ def day_tracking_delete(request, day_tracking_id):
         return redirect('day_tracking_list')
     return render(request, 'day_tracking/day_tracking_delete.html', {'record': day_tracking_instance})
 
+def view_day_tracking(request, day_tracking_id):
+    day_tracking = get_object_or_404(DayTracking, pk=day_tracking_id)
+    return render(request, 'day_tracking/view_day_tracking.html', {'day_tracking': day_tracking})
 

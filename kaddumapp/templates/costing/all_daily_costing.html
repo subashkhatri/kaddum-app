@@ -72,7 +72,7 @@
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.last_modification_date|date:"d/m/Y H:i" }}</td>
                             <td class="align-middle" style="border-left-style: inset;">
                                 <div class="row justify-content-evenly">
-                                    <a href="#" class="btn btn-outline-primary btn-sm col-5">View</a>
+                                    <a href="{% url 'view_daily_costing' costing_record.cost_tracking_id %}" class="btn btn-outline-primary btn-sm col-5">View</a>
                                 </div>
                             </td>          
                         </tr>      
