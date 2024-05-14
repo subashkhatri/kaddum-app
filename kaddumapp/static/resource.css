@@ -1,0 +1,13 @@
+.action-buttons a {
+    display: inline-block;
+    margin-right: 5px; /* Adjust the right margin as needed */
+}
+
+.table th, .table td {
+    vertical-align: middle; /* Aligns content of table cells to the middle */
+    font-size: small; /* Adjusts the font size */
+}
+
+.table th {
+    background-color: #f8f9fa; /* Light grey background for header */
+}

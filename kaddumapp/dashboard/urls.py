@@ -5,6 +5,9 @@ from . import views_dairy_record
 from . import views_day_tracking
 from . import views_project
 from . import views_weekly_report
+from . import views_resource
+
+
 
 urlpatterns = [
   path('', views.index, name='index'),
@@ -30,5 +33,10 @@ urlpatterns = [
   path('all_weekly_report/', views_weekly_report.all_weekly_report, name='all_weekly_report'),
   path('view_weekly_report/<int:report_id>/', views_weekly_report.view_weekly_report, name='view_weekly_report'),
 
+
+  path('resource_cost/', views_resource.resource_cost_list, name='resource_cost_list'),
+  path('resource_cost/create/', views_resource.create_resource_cost, name='create_resource_cost'),
+  path('edit_resource_cost/<int:resource_id>/', views_resource.edit_resource_cost, name='edit_resource_cost'),
+  path('resource_cost/delete/<int:resource_id>/', views_resource.delete_resource_cost, name='delete_resource_cost'),
 ]
 
