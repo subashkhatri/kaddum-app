@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import *
+from .models import Project, DairyRecord, DayTracking, DayTrackingEmployeeDetails, DayTrackingEquipmentDetails,CostTracking
+from .models_resource_cost import ResourceCost
 # from django.contrib.auth.models import Group
 
 admin.site.site_header = 'Kaddum App Dashboard'

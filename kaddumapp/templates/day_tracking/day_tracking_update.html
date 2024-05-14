@@ -1,0 +1,425 @@
+{% extends "partials/base.html" %}
+{% block page_content %}
+<div class="container mt-4">
+    <h1 class="text-left mb-4 h4">Day Tracking: {{record_PK}}</h1>
+</div>
+<div class="container mt-4">
+    <form method="POST" enctype="multipart/form-data"
+        action="{{ form_action }}">
+        {% csrf_token %}
+        <div class="col-md-12">
+            <div class="form-section-header">Project Information</div>
+            <div class="row">
+                <div class="form-group col-4">
+                    {{ form.project_no.label_tag }}
+                    {{ form.project_no }}
+                    {{ form.project_no.errors }}
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="day">Purchase Order No.</label>
+                    <input type="text" class="form-control"
+                        id="purchase_order_no" readonly>
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.client_representative.label_tag }}
+                    {{ form.client_representative }}
+                    {{ form.client_representative.errors }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4">
+                    {{ form.work_area.label_tag }}
+                    {{ form.work_area }}
+                    {{ form.work_area.errors }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.record_shift.label_tag }}
+                    {{ form.record_shift }}
+                    {{ form.record_shift.errors }}
+                </div>
+                <div class="form-group col-md-4">
+                    {{ form.record_date.label_tag }}
+                    {{ form.record_date }}
+                    {{ form.record_date.errors }}
+                </div>
+                <div class="form-group col-md-12">
+                    {{ form.weather.label_tag }}
+                    {{ form.weather }}
+                    {{ form.weather.errors }}
+                </div>
+            </div>
+        </div>
+        <!-- Employees Section -->
+        <div class="form-section-header">*Employee (Required)</div>
+        {{ employee_formset.management_form }}
+        <table class="table table-bordered" id="employee-table">
+            <thead>
+                <tr>
+                    <th scope="col" class="align-middle" width="25%">Name</th>
+                    <th scope="col" class="align-middle" width="20%">Position
+                    </th>
+                    <th scope="col" class="align-middle" width="8%">Start Time
+                    </th>
+                    <th scope="col" class="align-middle" width="8%">Finish Time
+                    </th>
+                    <th scope="col" class="align-middle" width="10%">Total Hours
+                    </th>
+                    <th scope="col" class="align-middle" width="20%">Brief Work
+                        Description</th>
+                    <th scope="col" class="align-middle" width="5%"></th>
+                </tr>
+            </thead>
+            <tbody id="EmployeeTableBody">
+                {% for form in employee_formset %}
+                <div class="form-row">
+                    <tr class="employee-row">
+                        <td class="align-middle">
+                            {{ form.employee_id }}
+                            {{ form.employee_id.errors }}
+                        </td>
+                        <td class="align-middle">
+                            {{ form.position_id }}
+                            {{ form.position_id.errors }}
+                        </td>
+                        <td>
+                            {{ form.start_time }}
+                            {{ form.start_time.errors }}
+                        </td>
+                        <td>
+                            {{ form.end_time }}
+                            {{ form.end_time.errors }}
+                        </td>
+                        <td class="align-middle text-right">
+                            {{ form.employee_total_hours }}
+                        </td>
+                        <td class="align-middle text-center">
+                            {{ form.work_description }}
+                            {{ form.work_description.errors }}
+                        </td>
+                        <td class="align-middle text-center">
+                            <button type="button"
+                                class="btn btn-outline-danger remove-employee-row"
+                                id="remove-employee-row"><i
+                                    class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                </div>
+                {% endfor %}
+            <tbody>
+        </table>
+        <div class="d-grid gap-2 d-md-block">
+            <button class="btn btn-success mb-2 col-4" type="button"
+                id="add-employee-row">+Add New Employee</button>
+        </div>
+        <!-- Equipment-->
+        <div class="form-section-header">Equipment (Optional) </div>
+        {{ equipment_formset.management_form }}
+        <table class="table table-bordered" id="equipment-table">
+            <thead>
+                <tr>
+                    <th scope="col" class="align-middle" width="45%">Equipment
+                    </th>
+                    <th scope="col" class="align-middle" width="8%">Start Time
+                    </th>
+                    <th scope="col" class="align-middle" width="8%">Finish Time
+                    </th>
+                    <th scope="col" class="align-middle" width="10%">Total Hours
+                    </th>
+                    <th scope="col" class="align-middle" width="20%">Brief Work
+                        Description</th>
+                    <th scope="col" class="align-middle" width="5%"></th>
+                </tr>
+            </thead>
+            <tbody id="EquipmentTableBody">
+                {% for form in equipment_formset %}
+                <div class="form-row">
+                    <tr class="equipment-row">
+                        <td class="align-middle">
+                            {{ form.resource_id }}
+                            {{ form.resource_id.errors }}
+                        </td>
+                        <td>
+                            {{ form.start_time }}
+                            {{ form.start_time.errors }}
+                        </td>
+                        <td>
+                            {{ form.end_time }}
+                            {{ form.end_time.errors }}
+                        </td>
+                        <td class="align-middle text-right">
+                            {{ form.equipment_total_hours  }}
+                            {{ form.equipment_total_hours.errors }}
+                        </td>
+                        <td class="align-middle text-center">
+                            {{ form.work_description }}
+                            {{ form.work_description.errors }}
+                        </td>
+                        <td class="align-middle text-center">
+                            <button type="button"
+                                class="btn btn-outline-danger remove-equipment-row"
+                                id="remove-equipment-row"><i
+                                    class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                </div>
+                {% endfor %}
+            <tbody>
+        </table>
+        <div class="d-grid gap-2 d-md-block">
+            <button class="btn btn-outline-success mb-2 col-4" type="button"
+                id="add-equipment-row">+Add New Equipment</button>
+        </div>
+        <!-- Comment -->
+        <div class="form-section-header">Additional Comment</div>
+        <div class="form-group col-md-12">
+            {{ form.comments }}
+            {{ form.comments.errors }}
+        </div>
+        <!-- Acknowledgements -->
+        <div class="form-section-header">Acknowledgements</div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col" width="20%"></th>
+                    <!-- Empty top-left corner cell -->
+                    <th scope="col" width="25%">Name</th>
+                    <th scope="col" width="40%">Signature</th>
+                    <th scope="col" width="15%">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Kaddum Supervisor</th> <!-- Row header -->
+                    <td class="align-middle text-right">
+                        {{ form.kaddum_name }}
+                        {{ form.kaddum_name.errors }}
+                    </td>
+                    <td class="align-middle text-right">
+                        {{ form.kaddum_sign }}
+                        {{ form.kaddum_sign.errors }}
+                    </td>
+                    <td class="align-middle text-right">
+                        {{ form.kaddum_sign_date }}
+                        {{ form.kaddum_sign_date.errors }}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Client Representative</th>
+                    <!-- Row header -->
+                    <td class="align-middle text-right">
+                        {{ form.client_name }}
+                        {{ form.client_name.errors }}
+                    </td>
+                    <td class="align-middle text-right">
+                        {{ form.client_sign }}
+                        {{ form.client_sign.errors }}
+                    </td>
+                    <td class="align-middle text-right">
+                        {{ form.client_sign_date }}
+                        {{ form.client_sign_date.errors }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit" class="form-group btn btn-success col-2"
+            value="complete" name="click-btn">Create</button>
+        <button type="submit" class="form-group btn btn-outline-success col-2"
+            value="draft" name="click-btn">Save as Draft</button>
+        <a href="#" onclick="window.history.back();"
+            class="form-group btn btn-outline-primary col-2"
+            value="back">Back</a>
+    </form>
+</div>
+</div>
+</div>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        calculateEmployeeTotalHours()
+        calculateEquipmentTotalHours()
+      
+      // Event listener for calculating employee totol hours in employee
+      document.getElementById('EmployeeTableBody').addEventListener('input', calculateEmployeeTotalHours);
+
+      // Event listener for calculating equipment totol hours in employee row
+      document.getElementById('EquipmentTableBody').addEventListener('input', calculateEquipmentTotalHours);
+
+      // Add event listener for adding employee rows
+      document.getElementById('add-employee-row').addEventListener(
+          'click',
+          function() {
+              addRow('employee');
+          });
+      // Add event listener for removing employee rows
+      document.querySelectorAll('.remove-employee-row').forEach(
+          function(button) {
+              button.addEventListener('click', function(event) {
+                  removeRow(this, 'employee');
+              });
+          });
+      // Add event listener for adding equipment rows
+      document.getElementById('add-equipment-row').addEventListener(
+          'click',
+          function() {
+              addEquipmentRow('equipment');
+          });
+      // Add event listener for removing equipment rows
+      document.querySelectorAll('.remove-equipment-row').forEach(
+          function(button) {
+              button.addEventListener('click', function(event) {
+                  removeEquipmentRow(this, 'equipment');
+              });
+          });
+    });
+
+    function addRow(type) {
+        var templateRow = document.querySelector('.' + type + '-row');
+        var newRow = templateRow.cloneNode(true);
+        // Clear input values in the cloned row
+        newRow.querySelectorAll('input').forEach(function(input) {
+            input.value = '';
+        });
+        // Clear select options in the cloned row
+        newRow.querySelectorAll('select').forEach(function(select) {
+            select.selectedIndex = 0;
+        });
+        // Update input field names with the appropriate index
+        var rowCount = document.querySelectorAll('.' + type + '-row').length;
+        newRow.querySelectorAll('input, select').forEach(function(element) {
+            element.name = element.name.replace('-0-', '-' + rowCount + '-');
+            element.id = element.id.replace('-0-', '-' + rowCount + '-');
+        });
+        // Append the cloned row to the table body
+        var tableBodyId = type === 'employee' ? 'EmployeeTableBody' :
+            'EquipmentTableBody';
+        document.getElementById(tableBodyId).appendChild(newRow);
+        // Update TOTAL_FORMS value
+        var totalFormsInput = document.getElementById('id_' + type +
+            '-TOTAL_FORMS');
+        totalFormsInput.value = rowCount + 1;
+        // Attach event listener to the new remove button
+        newRow.querySelector('.remove-' + type + '-row').addEventListener(
+            'click',
+            function(event) {
+                removeRow(this, type);
+            });
+    }
+    function removeRow(button, type) {
+        var totalFormsInput = document.getElementById('id_' + type +
+            '-TOTAL_FORMS');
+        if (parseInt(totalFormsInput.value) > 1) {
+            var rowToRemove = button.closest('.' + type + '-row');
+            rowToRemove.remove();
+            // Update TOTAL_FORMS value
+            totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
+        } else {
+            alert("Cannot delete the last row.");
+        }
+    }
+    function addEquipmentRow(type) {
+        var totalFormsInput = document.getElementById('id_' + type +
+            '-TOTAL_FORMS');
+        if (parseInt(totalFormsInput.value) === 0) {
+            // Make the previously hidden row visible
+            var hiddenRow = document.querySelector('.' + type +
+                '-row[style="display: none;"]');
+            if (hiddenRow) {
+                hiddenRow.style.display = 'table-row';
+                totalFormsInput.value = 1;
+                return; // Exit the function if the hidden row is made visible
+            }
+        }
+        var templateRow = document.querySelector('.' + type + '-row');
+        var newRow = templateRow.cloneNode(true);
+        // Clear input values in the cloned row
+        newRow.querySelectorAll('input').forEach(function(input) {
+            input.value = '';
+        });
+        // Clear select options in the cloned row
+        newRow.querySelectorAll('select').forEach(function(select) {
+            select.selectedIndex = 0;
+        });
+        // Update input field names with the appropriate index
+        var rowCount = document.querySelectorAll('.' + type + '-row').length;
+        newRow.querySelectorAll('input, select').forEach(function(element) {
+            element.name = element.name.replace('-0-', '-' + rowCount + '-');
+            element.id = element.id.replace('-0-', '-' + rowCount + '-');
+        });
+        // Append the cloned row to the table body
+        var tableBodyId = type === 'employee' ? 'EmployeeTableBody' :
+            'EquipmentTableBody';
+        document.getElementById(tableBodyId).appendChild(newRow);
+        // Update TOTAL_FORMS value
+        totalFormsInput.value = rowCount + 1;
+        // Make the newly added row visible
+        newRow.style.display = 'table-row';
+        // Attach event listener to the new remove button
+        newRow.querySelector('.remove-' + type + '-row').addEventListener(
+            'click',
+            function(event) {
+                removeEquipmentRow(this, type);
+            });
+    }
+    function removeEquipmentRow(button, type) {
+        var totalFormsInput = document.getElementById('id_' + type +
+            '-TOTAL_FORMS');
+        if (parseInt(totalFormsInput.value) > 1) {
+            var rowToRemove = button.closest('.' + type + '-row');
+            rowToRemove.remove();
+            // Update TOTAL_FORMS value
+        } else {
+            // Hide the row if TOTAL_FORMS is 0
+            var rowToRemove = button.closest('.' + type + '-row');
+            rowToRemove.style.display = 'none';
+        }
+        totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
+    }
+    function calculateEmployeeTotalHours() {
+      $('.employee-row').each(function(index) {
+          var index = $(this).index('.employee-row');
+          var startTime = $(this).find('#id_employee-' + index + '-start_time').val();
+          var endTime = $(this).find('#id_employee-' + index + '-end_time').val();
+                  
+          // Convert start and end times to Date objects
+          var startDate = new Date('2000-01-01 ' + startTime);
+          var endDate = new Date('2000-01-01 ' + endTime);      
+        
+        // Calculate the difference in milliseconds
+        var timeDiff = Math.abs(endDate - startDate);
+        
+        // Convert milliseconds to hours
+        var totalHours = timeDiff / (1000 * 3600);
+        
+        // Update the total hours input
+        $(this).find('#id_employee-' + index + '-employee_total_hours').val(totalHours.toFixed(2));
+    });
+}
+    function calculateEquipmentTotalHours() {
+          $('.equipment-row').each(function(index) {
+              var index = $(this).index('.equipment-row');
+              var startTime = $(this).find('#id_equipment-' + index + '-start_time').val();
+              var endTime = $(this).find('#id_equipment-' + index + '-end_time').val();
+              console.log("index", startTime)
+              console.log("startTime", startTime)
+              console.log("endTime", endTime);
+                      
+              // Convert start and end times to Date objects
+              var startDate = new Date('2000-01-01 ' + startTime);
+              var endDate = new Date('2000-01-01 ' + endTime);
+          
+            
+            // Calculate the difference in milliseconds
+            var timeDiff = Math.abs(endDate - startDate);
+            
+            // Convert milliseconds to hours
+            var totalHours = timeDiff / (1000 * 3600);
+            console.log("total hour", index, ":",totalHours)
+
+            
+            // Update the total hours input
+            $(this).find('#id_equipment-' + index + '-equipment_total_hours').val(totalHours.toFixed(2));
+        });
+    }
+</script>
+{% endblock page_content %}

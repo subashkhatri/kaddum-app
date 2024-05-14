@@ -71,7 +71,11 @@ class DairyRecordForm(forms.ModelForm):
           "medically_treated_injury_qty": forms.NumberInput(attrs={"class": "form-control"}),
           "loss_time_injury_qty": forms.NumberInput(attrs={"class": "form-control"}),
           "is_draft": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-      }
+        }
+        labels = {
+            'record_date': '*Record Date',
+        }
+
 
     def __init__(self, *args, **kwargs):
         super(DairyRecordForm, self).__init__(*args, **kwargs)

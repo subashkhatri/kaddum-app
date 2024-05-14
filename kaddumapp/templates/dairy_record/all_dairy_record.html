@@ -9,7 +9,7 @@
     <div class="input-group p-2" style="width: 200px;">
       <input type="text" class="form-control" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-secondary border border-none" type="button" style="background-color: #dee2e6;"><i class="bi bi-search"></i></button>
-  </div>
+    </div>
   <div class="p-2">
       <a href="{% url 'create_dairy_record' %}" class="btn btn-danger">+ Create New Form</a>
   </div>
@@ -42,7 +42,7 @@
                             <td class="align-middle" style="border-right-style: hidden;">{{ dairy_record.last_modification_date|date:"d/m/Y H:i" }}</td>                            
                             <td class="align-middle" style="border-left-style: inset;">                           
                                 <div class="row justify-content-evenly">
-                                  <a href="{% url 'view_dairy_record' dairy_record.dairy_record_id %}" class="btn btn-outline-success btn-sm col-md-3">Edit</a> 
+                                  <a href="{% url 'edit_dairy_record' dairy_record.dairy_record_id %}" class="btn btn-outline-success btn-sm col-md-3">Edit</a> 
                                   <a href="{% url 'view_dairy_record' dairy_record.dairy_record_id %}" class="btn btn-outline-primary btn-sm col-md-3">View</a> 
                                   <a href="{% url 'delete_dairy_record' dairy_record.dairy_record_id %}" class="btn btn-outline-danger btn-sm col-md-3">Delete</a> 
                                 </div>

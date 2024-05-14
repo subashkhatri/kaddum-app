@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from .dairy_record_forms import DairyRecordForm
+from .forms_dairy_record import DairyRecordForm
 from .models import DairyRecord
 from django.contrib import messages
 from django.core.paginator import Paginator
