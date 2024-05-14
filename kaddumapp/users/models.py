@@ -18,8 +18,12 @@ class UserAccountManager(BaseUserManager):
         if not username:
             raise ValueError("Users must have a valid EmployeeId")
 
+        if 'position_id' in kwargs and isinstance(kwargs['position_id'], int):
+            kwargs['position_id'] = ResourceCost.objects.get(pk=kwargs['position_id'])
         # create user model   **kwargs means keyword variable arguments,
         user = self.model(username=username, **kwargs)
+        if not password:
+            password = "kaddum123"
 
         user.set_password(password)  # hash the password
         user.save(using=self._db)
@@ -31,11 +35,8 @@ class UserAccountManager(BaseUserManager):
         """
         kwargs.setdefault("is_staff", True)
         kwargs.setdefault("is_superuser", True)
-
-        if kwargs.get("is_staff") is not True:
-            raise ValueError("Superuser must have is_staff=True.")
-        if kwargs.get("is_superuser") is not True:
-            raise ValueError("Superuser must have is_superuser=True.")
+       # Superuser does not need a position_id
+        kwargs.pop('position_id', None)
 
         return self.create_user(username=username, password=password, **kwargs)
 
@@ -49,7 +50,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     email = models.CharField(max_length=255, blank=True, null=True)
     is_indigenous = models.BooleanField(null=False, blank=False)
     is_local = models.BooleanField(null=False, blank=False)
-    position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, db_column='position_id')  # job position 
+    position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, db_column='position_id', null=True, blank=True) # job position
     roles = models.CharField(max_length=50)  # Role permission to access the system super_admin, supervisor, restricted user
 
     # we don't change to False because when we create superuser, i won't be able to log in.
@@ -63,10 +64,9 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = [
         "first_name",
         "last_name",
-        'email'
+        'email',
         "is_indigenous",
         "is_local",
-        "position_id",
         "roles",
     ]  # when registering, requried fileds
     class Meta:
@@ -79,9 +79,17 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         if not self.username:
             last_record = UserAccount.objects.order_by('-username').first()
             if last_record:
-                last_number = int(last_record.username[2:])
-                new_number = last_number + 1
-                self.username = f"KD{new_number:04d}"
+                prefix = last_record.username[:2]
+                suffix = last_record.username[2:]
+
+                # Check if the suffix is numeric and increment
+                if suffix.isdigit():
+                    last_number = int(suffix)
+                    new_number = last_number + 1
+                    self.username = f"{prefix}{new_number:04d}"
+                else:
+                    # Fallback if no suitable last record is found
+                    self.username = "KD0001"  # Default to start from 'KD0001' if unable to parse
             else:
                 self.username = "KD0001"
 
