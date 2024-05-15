@@ -25,7 +25,7 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 table, th, td {
     border: 1px solid black;

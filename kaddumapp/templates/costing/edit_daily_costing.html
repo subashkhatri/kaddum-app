@@ -41,7 +41,7 @@
                     <tbody id="employeeTableBody">
                         {% for employee in employee_details %}
                         <tr>
-                            <td class="align-middle">{{ employee.employee_id.full_name }}</td>
+                            <td class="align-middle">{{ employee.employee_id }}</td>
                             <td class="align-middle">
                                 <select class="form-control" name="position[]">
                                     <option value="">Select Position</option>
@@ -52,7 +52,7 @@
                                 </select>
                             </td>
                             <td><input type="number" class="form-control rate-input" name="rate_{{ employee.id }}" min="0" value="{{ employee.hour_rate|floatformat:"2" }}"></td>
-                            <td class="align-middle hours-input">{{ instance.total_hours_employee|floatformat:"2" }}</td>
+                            <td class="align-middle hours-input">{{ employee.total_hours|floatformat:"2" }}</td>
                             <td class="align-middle total-amount"></td> <!-- Total Amount -->
                             <td class="align-middle text-center">{{ employee.employee_id.is_indigenous | yesno:"✓, " }}</td> <!-- Indigenous -->
                             <td class="align-middle text-center">{{ employee.employee_id.is_local | yesno:"✓, " }}</td> <!-- Local -->

@@ -6,12 +6,11 @@ from django.contrib.auth import get_user_model
 from .models import UserAccount
 from dashboard.models import *
 from .forms import UserAccountForm, SuperUserCreationForm
-from .decorators import superuser_required, supervisor_required, employee_required
+from .decorators import superuser_required, superuser_or_supervisor_required
 
 
 User = get_user_model()
 
-@superuser_required
 def register_superuser(request):
     if request.method == 'POST':
         form = SuperUserCreationForm(request.POST)
@@ -25,6 +24,8 @@ def register_superuser(request):
         form = SuperUserCreationForm()
 
     return render(request, 'users/register_superuser.html', {'form': form})
+
+
 
 def login(request):
     if request.method == "POST":
@@ -47,7 +48,7 @@ def login(request):
 
     return render(request, "users/login.html")
 
-
+@superuser_required
 def reset_password(request):
     if request.method == "POST":
         username = request.POST["username"]

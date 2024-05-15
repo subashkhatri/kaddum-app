@@ -21,7 +21,7 @@ urlpatterns = [
   path('day_tracking_list/', views_day_tracking.day_tracking_list, name='day_tracking_list'),
   path('day_tracking_update/<str:day_tracking_id>/', views_day_tracking.day_tracking_update, name='day_tracking_update'),
   path('day_tracking_delete/<str:day_tracking_id>/', views_day_tracking.day_tracking_delete, name='day_tracking_delete'),
-  path('view_day_tracking/<str:day_tracking_id>/', views_day_tracking.view_day_tracking, name='view_day_tracking'),
+  path('day_tracking_view/<str:day_tracking_id>/', views_day_tracking.day_tracking_view, name='day_tracking_view'),
 
 
 

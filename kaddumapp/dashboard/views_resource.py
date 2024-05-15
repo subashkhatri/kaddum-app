@@ -4,11 +4,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .forms_resource_cost import ResourceCostForm
 from django.contrib import messages
+from users.decorators import superuser_required
 
+@superuser_required
 def resource_cost_list(request):
     resources = ResourceCost.objects.all().order_by('-last_modification_date')
     return render(request, 'resource_cost/resource_cost_list.html', {'resources': resources})
 
+@superuser_required
 def create_resource_cost(request):
     if request.method == 'POST':
         form = ResourceCostForm(request.POST)
@@ -21,6 +24,7 @@ def create_resource_cost(request):
 
     return render(request, 'resource_cost/resource_cost_create.html', {'form': form})
 
+@superuser_required
 def edit_resource_cost(request, resource_id):
     resource = get_object_or_404(ResourceCost, pk=resource_id)
     if request.method == 'POST':
@@ -36,6 +40,7 @@ def edit_resource_cost(request, resource_id):
         'resource': resource
     })
 
+@superuser_required
 def delete_resource_cost(request, resource_id):
     resource = get_object_or_404(ResourceCost, pk=resource_id)
 

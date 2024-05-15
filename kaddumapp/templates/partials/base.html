@@ -18,11 +18,17 @@
     <div id="main">
         {% if messages %}
         <div class="container mt-3">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-            {% endfor %}
+        {% for message in messages %}
+            {% if message.tags == 'error' %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% else %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
         </div>
         {% endif %}
 
@@ -34,12 +40,12 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script>
+    <!-- <script>
         function toggleSideBar() {
             const sidebar = document.getElementById("sidebar");
             sidebar.classList.toggle("active");
         }
-    </script>
+    </script> -->
 </body>
 
 </html>

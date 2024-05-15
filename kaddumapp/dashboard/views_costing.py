@@ -1,15 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import CostTracking, Project, DayTracking, DayTrackingEmployeeDetails, ResourceCost,DayTrackingEquipmentDetails
-from users.models import UserAccount
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 import datetime
 from .forms_costing import CostTrackingForm
-from django.urls import reverse
 from django.contrib import messages
-from django.utils import timezone
-from django.http import HttpResponseRedirect
+from users.decorators import superuser_required
 
+@superuser_required
 def view_daily_costing(request, cost_tracking_id):
     costing = get_object_or_404(CostTracking, pk=cost_tracking_id)
     context = {
@@ -17,6 +15,7 @@ def view_daily_costing(request, cost_tracking_id):
     }
     return render(request, 'costing/view_daily_costing.html', context)
 
+@superuser_required
 def edit_daily_costing(request, cost_tracking_id):
     # Fetch the specific instance of CostTracking using its ID
     instance = get_object_or_404(CostTracking, cost_tracking_id=cost_tracking_id)
@@ -71,7 +70,7 @@ def edit_daily_costing(request, cost_tracking_id):
 
     return render(request, 'costing/edit_daily_costing.html', context)
 
-
+@superuser_required
 def all_daily_costing(request):
     draft_records_list = CostTracking.objects.filter(is_draft=True).order_by('-created_date')
     completed_records_list = CostTracking.objects.filter(is_draft=False).order_by('-created_date')
@@ -93,7 +92,7 @@ def all_daily_costing(request):
     }
     return render(request, 'costing/all_daily_costing.html', context)
 
-
+@superuser_required
 def check_day_tracking(request):
     project_name = request.GET.get('projectName')
     date_input = request.GET.get('date')
