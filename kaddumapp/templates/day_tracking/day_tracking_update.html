@@ -55,6 +55,7 @@
         <table class="table table-bordered" id="employee-table">
             <thead>
                 <tr>
+                    <th scope="col" class="align-middle" width="0%" style="display: none;">id</th>
                     <th scope="col" class="align-middle" width="25%">Name</th>
                     <th scope="col" class="align-middle" width="20%">Position
                     </th>
@@ -73,6 +74,9 @@
                 {% for form in employee_formset %}
                 <div class="form-row">
                     <tr class="employee-row">
+                        <td class="align-middle" style="display: none;">
+                            {{ form.id }}
+                        </td>
                         <td class="align-middle">
                             {{ form.employee_id }}
                             {{ form.employee_id.errors }}
@@ -117,6 +121,7 @@
         <table class="table table-bordered" id="equipment-table">
             <thead>
                 <tr>
+                    <th scope="col" class="align-middle" width="0%" style="display: none;" >id
                     <th scope="col" class="align-middle" width="45%">Equipment
                     </th>
                     <th scope="col" class="align-middle" width="8%">Start Time
@@ -134,6 +139,9 @@
                 {% for form in equipment_formset %}
                 <div class="form-row">
                     <tr class="equipment-row">
+                        <td class="align-middle" style="display: none;">
+                            {{ form.id }}
+                        </td>
                         <td class="align-middle">
                             {{ form.resource_id }}
                             {{ form.resource_id.errors }}

@@ -144,32 +144,7 @@ class CostTracking(models.Model):
             year, week, _ = self.record_date.isocalendar()  # Get ISO year and week
             self.year_week = f"{year}{week:02d}"  # Combine year and week, zero-padded
 
-        self.calculate_total()
         super().save(*args, **kwargs)
-
-    def calculate_total(self):
-        # Summing up values from related DayTracking instances
-        total_hours_employee = self.daytracking_set.aggregate(total_hours_employee=Sum('total_hours_employee'))['total_hours_employee'] or 0.0
-        total_hours_employee_local = self.daytracking_set.aggregate(total_hours_employee_local=Sum('total_hours_employee_local'))['total_hours_employee_local'] or 0.0
-        total_hours_employee_indigenous = self.daytracking_set.aggregate(total_hours_employee_indigenous=Sum('total_hours_employee_indigenous'))['total_hours_employee_indigenous'] or 0.0
-        total_amount_employee = self.daytracking_set.aggregate(total_amount_employee=Sum('total_amount_employee'))['total_amount_employee'] or 0.0
-        total_hours_equipment = self.daytracking_set.aggregate(total_hours_equipment=Sum('total_hours_equipment'))['total_hours_equipment'] or 0.0
-        total_amount_equipment = self.daytracking_set.aggregate(total_amount_equipment=Sum('total_amount_equipment'))['total_amount_equipment'] or 0.0
-        total_hours_employee_local_percentage = (total_hours_employee_local / total_hours_employee) * 100 if total_hours_employee != 0 else 0.0
-        total_hours_employee_indigenous_percentage = (total_hours_employee_indigenous / total_hours_employee) * 100 if total_hours_employee != 0 else 0.0
-
-        # Updating fields in CostTracking
-        self.total_hours_employee = total_hours_employee
-        self.total_hours_employee_local = total_hours_employee_local
-        self.total_hours_employee_local_percentage = total_hours_employee_local_percentage
-        self.total_hours_employee_indigenous = total_hours_employee_indigenous
-        self.total_hours_employee_indigenous_percentage = total_hours_employee_indigenous_percentage
-        self.total_amount_employee = total_amount_employee
-        self.total_hours_equipment = total_hours_equipment
-        self.total_amount_equipment = total_amount_equipment
-
-        # Save the instance
-
 
     def __str__(self):
         return f"CostTracking Details: {self.cost_tracking_id}"
@@ -233,6 +208,40 @@ class DayTracking(models.Model):
                 cost_tracking = CostTracking.objects.create(project_no=self.project_no, record_date=self.record_date)
                 self.cost_tracking_id = cost_tracking
         super().save(*args, **kwargs)
+
+        cost_tracking_instance = self.cost_tracking_id
+        if cost_tracking_instance:
+            day_tracking_aggregates = DayTracking.objects.filter(cost_tracking_id=self.cost_tracking_id).aggregate(
+                total_hours_employee=Sum('total_hours_employee'),
+                total_hours_employee_local=Sum('total_hours_employee_local'),
+                total_hours_employee_indigenous=Sum('total_hours_employee_indigenous'),
+                total_amount_employee=Sum('total_amount_employee'),
+                total_hours_equipment=Sum('total_hours_equipment'),
+                total_amount_equipment=Sum('total_amount_equipment')
+            )
+
+            total_hours_employee = day_tracking_aggregates['total_hours_employee'] or 0
+            total_hours_employee_local = day_tracking_aggregates['total_hours_employee_local'] or 0
+            total_hours_employee_indigenous = day_tracking_aggregates['total_hours_employee_indigenous'] or 0
+            total_amount_employee = day_tracking_aggregates['total_amount_employee'] or 0
+            total_hours_equipment = day_tracking_aggregates['total_hours_equipment'] or 0
+            total_amount_equipment = day_tracking_aggregates['total_amount_equipment'] or 0
+
+            local_percentage = 0 if total_hours_employee == 0 else (total_hours_employee_local / total_hours_employee)*100
+            indigenous_percentage = 0 if total_hours_employee == 0 else (total_hours_employee_indigenous / total_hours_employee)*100
+
+            # Update corresponding CostTracking instance
+            cost_tracking_instance.total_hours_employee = total_hours_employee
+            cost_tracking_instance.total_hours_employee_local = total_hours_employee_local
+            cost_tracking_instance.total_hours_employee_indigenous = total_hours_employee_indigenous
+            cost_tracking_instance.total_amount_employee = total_amount_employee
+            cost_tracking_instance.total_hours_equipment = total_hours_equipment
+            cost_tracking_instance.total_amount_equipment = total_amount_equipment
+            cost_tracking_instance.total_hours_employee_local_percentage = local_percentage
+            cost_tracking_instance.total_hours_employee_indigenous_percentage = indigenous_percentage
+
+            cost_tracking_instance.save()
+
 
     def __str__(self):
         return f"Day Tracking:{self.day_tracking_id} {self.record_date}"
@@ -306,7 +315,7 @@ class DayTrackingEmployeeDetails(models.Model):
 
 
     def __str__(self):
-        return f"Day Tracking Employee Details: {self.day_tracking_id}"
+        return f"{self.id}: {self.day_tracking_id}"
     
 class DayTrackingEquipmentDetails(models.Model):
     id = models.AutoField(primary_key= True)
@@ -363,7 +372,7 @@ class DayTrackingEquipmentDetails(models.Model):
 
         
     def __str__(self):
-        return f"Day Tracking Resource Details: {self.day_tracking_no}"
+        return f"{self.id}: {self.day_tracking_id}"
    
     
 class WeeklyReportList(models.Model):
