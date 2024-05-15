@@ -19,7 +19,7 @@ class DayTrackingForm(forms.ModelForm):
 
     record_shift = forms.ChoiceField(
         label="*Record Shift",
-        choices=[('', 'Please select...'),('morning', 'Day Shift'),('evening', 'Night Shift')],
+        choices=[('', 'Please select...'),('Day Shift', 'Day Shift'),('Night Shift', 'Night Shift')],
         widget=forms.Select(attrs={"class": "form-control"})
     )
 
@@ -56,7 +56,6 @@ class DayTrackingForm(forms.ModelForm):
 
 class DayTrackingEmployeeForm(forms.ModelForm):
     employee_total_hours = forms.FloatField(label='Employee Total Hours', required=False)
-
     employee_id = forms.ModelChoiceField(
     queryset=UserAccount.objects.all(),
     label="*Employee",
@@ -68,7 +67,7 @@ class DayTrackingEmployeeForm(forms.ModelForm):
 
     class Meta:
         model = DayTrackingEmployeeDetails
-        fields = ('employee_id', 'position_id', 'start_time', 'end_time', 'work_description')
+        fields = ('id','employee_id', 'position_id', 'start_time', 'end_time', 'work_description')
         widgets = {
             'position_id': forms.Select(attrs={'class': 'form-control'}),
             'start_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
@@ -83,6 +82,7 @@ class DayTrackingEmployeeForm(forms.ModelForm):
         self.fields['position_id'].choices = [('', 'Please select...')]+[(position.resource_id, position.item_name) for position in ResourceCost.objects.filter(item_type='personel')]
 
 
+
 class DayTrackingEquipmentForm(forms.ModelForm):
     equipment_total_hours = forms.FloatField(label='Equipment Total Hours', required=False)
     resource_id = forms.ModelChoiceField(
@@ -95,7 +95,7 @@ class DayTrackingEquipmentForm(forms.ModelForm):
 
     class Meta:
         model = DayTrackingEquipmentDetails
-        fields=('resource_id', 'start_time', 'end_time', 'work_description')
+        fields=('id','resource_id', 'start_time', 'end_time', 'work_description')
         widgets={
             'start_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
             'end_time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
@@ -109,6 +109,11 @@ class DayTrackingEquipmentForm(forms.ModelForm):
 
 
 class DayTrackingEmployeeFormSet(BaseInlineFormSet):
+
+    def __init__(self, *args, **kwargs):
+        extra = kwargs.pop('extra', 1)  # Get 'extra' from kwargs, default to 1 if not provided
+        super().__init__(*args, **kwargs)
+        self.extra = extra  # Set the extra attribute dynamically
     
     def clean(self):
         if any(self.errors):
@@ -132,7 +137,9 @@ class DayTrackingEmployeeFormSet(BaseInlineFormSet):
 
 class DayTrackingEquipmentFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
+        extra = kwargs.pop('extra', 1)  # Get 'extra' from kwargs, default to 1 if not provided
         super().__init__(*args, **kwargs)
+        self.extra = extra  # Set the extra attribute dynamically
 
 
 DayTrackingEmployeeFormSet = inlineformset_factory(
@@ -140,7 +147,7 @@ DayTrackingEmployeeFormSet = inlineformset_factory(
     DayTrackingEmployeeDetails,
     form=DayTrackingEmployeeForm,
     formset=DayTrackingEmployeeFormSet,
-    extra=1,
+     extra=1,
 
 )
 
@@ -150,5 +157,5 @@ DayTrackingEquipmentFormSet = inlineformset_factory(
         form=DayTrackingEquipmentForm,
         formset=DayTrackingEquipmentFormSet,
         extra=1,
-        min_num=0,
+        # min_num=0,
     )

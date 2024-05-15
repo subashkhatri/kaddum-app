@@ -6,14 +6,15 @@ from .models import (
 )  # Assuming UserAccount is the correct model
 
 SHIFT_CHOICES = [
-        ('morning', 'Day Shift'),
-        ('evening', 'Night Shift'),
+        ('Day Shift', 'Day Shift'),
+        ('Night Shift', 'Night Shift'),
     ]
 def validate_non_negative(value):
       if value < 0:
           raise forms.ValidationError("The {value} quantity cannot be less than 0.")
 
 class DairyRecordForm(forms.ModelForm):
+
     project_no = forms.ModelChoiceField(
         queryset=Project.objects.all(),
         label="*Project",
@@ -74,6 +75,15 @@ class DairyRecordForm(forms.ModelForm):
         }
         labels = {
             'record_date': '*Record Date',
+            'delay_access': 'Access',
+            'delay_lack_of_drawing': 'Lack of Drawing',
+            'delay_await_client_decision': 'Await client decision',
+            'delay_industrial_matters': 'Industrial Matters',
+            'delay_await_client_instruction': 'Await client instruction',
+            'delay_subcontractors': 'Subcontractors',
+            'delay_await_materials': 'Await Materials',
+            'delay_rework': 'Re-work',
+            'delay_other': 'Other',
         }
 
 

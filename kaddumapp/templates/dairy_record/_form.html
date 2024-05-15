@@ -133,9 +133,9 @@
     </div>
     <div class="col-md-6">
       <div class="form-group form-check">
-        {{ form.awaiting_materials.label_tag }}
-        {{ form.awaiting_materials }}
-        {{ form.awaiting_materials.errors }}
+        {{ form.delay_await_materials.label_tag }}
+        {{ form.delay_await_materials }}
+        {{ form.delay_await_materials.errors }}
       </div>
     </div>
   </div>
@@ -163,12 +163,12 @@
     {{ form.delay_details.errors }}
   </div>
 
-  <div class="form-section-header">Number of Safety Items Completed</div>
+  <div class="form-section-header">Daily Summary</div>
   <table class="table table-bordered">
     <thead>
-      <tr>
-        <th scope="col">Category</th>
-        <th scope="col">Number Completed Today</th>
+      <tr >
+        <th scope="col" class="bg-danger-subtle">Category</th>
+        <th scope="col" class="bg-danger-subtle">Number of Safety Items Completed</th>
       </tr>
     </thead>
     <tbody>
@@ -196,8 +196,8 @@
 
       <thead>
         <tr>
-          <th scope="col">Category</th>
-          <th scope="col">Number of Personal Onsite</th>
+          <th scope="col" class="bg-danger-subtle">Category</th>
+          <th scope="col" class="bg-danger-subtle">Number of Personal Onsite</th>
         </tr>
       </thead>
     <tbody>
@@ -222,12 +222,27 @@
         <td>{{ form.subcontractor_qty }}
           {{ form.subcontractor_qty.errors }}</td>
       </tr>
+      <thead>
+        <tr>
+          <th scope="col" class="bg-danger-subtle">Category</th>
+          <th scope="col" class="bg-danger-subtle">Number of Environmental Incidents</th>
+        </tr>
+      </thead>
+    <tbody>
       <tr>
         <td>Environmental Incidents</td>
         <td>{{ form.environmental_incident_qty }}
           {{ form.environmental_incident_qty.errors }}
         </td>
       </tr>
+    </tbody>
+    <thead>
+      <tr>
+        <th scope="col" class="bg-danger-subtle">Category</th>
+        <th scope="col" class="bg-danger-subtle">Number of Incidents or Accidenst</th>
+      </tr>
+    </thead>
+    <tbody>
       <tr>
         <td>Near Misses</td>
         <td>{{ form.near_miss_qty }}
@@ -249,10 +264,12 @@
           {{ form.loss_time_injury_qty.errors }}</td>
       </tr>
     </tbody>
+    </tbody>
   </table>
 
   <button type="submit" class="form-group btn btn-success col-2" value="complete" name="click-btn">Create</button>
-  <button type="submit" class="form-group btn btn-outline-success col-2" value="draft" name="click-btn">Save as Draft</button>
+  <button type="submit" class="form-group btn btn-outline-success col-2" value="draft" name="click-btn">Save as
+    Draft</button>
   <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
 
 </form>

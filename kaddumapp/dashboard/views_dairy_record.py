@@ -45,7 +45,10 @@ def edit_dairy_record(request, dairy_record_id):
     if request.method == 'POST':
         form = DairyRecordForm(request.POST, instance=record)
         if form.is_valid():
-          form.save()
+          is_draft = request.POST.get('click-btn') == 'draft'
+          dairy_record = form.save(commit=False)
+          dairy_record.is_draft = is_draft
+          dairy_record.save()
           messages.success(request, 'Dairy record updated successfully.')
           return redirect('all_dairy_record')
     else:
