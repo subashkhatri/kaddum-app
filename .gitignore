@@ -1,26 +1,23 @@
 # Database environment file
-kaddumapp/.env
+.env
 projectenv/*
-kaddumapp/.env
-projectenv/*
-kaddumapp/examplepage/__pycache__/*
-kaddumapp/examplepage/migrations/*
-kaddumapp/kaddumapp/__pycache__/*
-kaddumapp/kaddumapp/__init__.py
-kaddumapp/asert/*
-kaddumapp/dashboard/__pycache__/*
-kaddumapp/dashboard/__init__.py
+examplepage/__pycache__/*
+examplepage/migrations/*
+__pycache__/*
+__init__.py
+asert/*
+dashboard/__pycache__/*
+dashboard/__init__.py
+dashboard/migrations/*
 
-kaddumapp/dashboard/migrations/*
+dashboard/management/commands/__pycache__/*
+static/images/logo.jpg
 
-kaddumapp/dashboard/management/commands/__pycache__/*
-kaddumapp/static/images/logo.jpg
-
-kaddumapp/users/__pycache__/*
-kaddumapp/users/__init__.py
-kaddumapp/users/migrations/*
+users/__pycache__/*
+users/__init__.py
+users/migrations/*
 .DS_Store
 __pycache__/
 .env
-kaddumapp/client_signs/*
-kaddumapp/kaddum_signs/*
+client_signs/*
+kaddum_signs/*
