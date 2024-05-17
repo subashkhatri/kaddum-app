@@ -53,7 +53,7 @@
                     <td>{{ employee.position_id }}</td>
                     <td>{{ employee.start_time|time:"H:i" }}</td>
                     <td>{{ employee.end_time|time:"H:i" }}</td>
-                    <td>{{ employee.total_hours }}</td>
+                    <td>{{ employee.total_hours|floatformat:"2" }}</td>
                     <td>{{ employee.work_description }}</td>
                 </tr>
                 {% empty %}
@@ -83,7 +83,7 @@
                     <td>{{ equipment.item_rate }}</td>
                     <td>{{ equipment.start_time|time:"H:i" }}</td>
                     <td>{{ equipment.end_time|time:"H:i" }}</td>
-                    <td>{{ equipment.total_hours }}</td>
+                    <td>{{ equipment.total_hours|floatformat:"2" }}</td>
                 </tr>
                 {% empty %}
                 <tr>

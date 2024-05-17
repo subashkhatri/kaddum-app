@@ -26,7 +26,7 @@ class Project(models.Model):
         db_table = 'dashboard-Project'
 
     def __str__(self):
-        return f"{self.project_no}-{self.project_name}"
+        return f"{self.project_no} - {self.project_name}"
 
 class DairyRecord(models.Model):
     dairy_record_id = models.CharField(max_length=10, primary_key= True)
