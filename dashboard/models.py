@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist,ValidationError
 from django.db import models
 from django.db.models import Sum
 from users.models import UserAccount
@@ -207,11 +207,32 @@ class DayTracking(models.Model):
             else:
                 cost_tracking = CostTracking.objects.create(project_no=self.project_no, record_date=self.record_date)
                 self.cost_tracking_id = cost_tracking
+                
         super().save(*args, **kwargs)
+        self._update_cost_tracking_statistics(self.cost_tracking_id)
 
-        cost_tracking_instance = self.cost_tracking_id
+
+    def delete(self, *args, **kwargs):
+        '''Check if related cost_tracking has other day tracking sheets,
+        if related to other day tracking sheets, update the value, 
+        if not related to other day tracking sheets, delete cost tracking as well.'''
+        cost_tracking_instance = self. cost_tracking_id
         if cost_tracking_instance:
-            day_tracking_aggregates = DayTracking.objects.filter(cost_tracking_id=self.cost_tracking_id).aggregate(
+            if not cost_tracking_instance.is_draft:
+                raise ValidationError("Cannot delete Day Tracking Record. Cost Tracking has been confirmed.")
+            else: 
+                other_day_tracking_count = DayTracking.objects.filter(cost_tracking_id=cost_tracking_instance).exclude(day_tracking_id=self.day_tracking_id).count()
+                if other_day_tracking_count == 0:
+                    cost_tracking_instance.delete()
+                else:
+                    super().delete(*args, **kwargs)
+                    self._update_cost_tracking_statistics(cost_tracking_instance)
+        else:
+            super().delete(*args, **kwargs)
+    
+    def _update_cost_tracking_statistics(self, cost_tracking_instance):
+        if cost_tracking_instance:
+            day_tracking_aggregates = DayTracking.objects.filter(cost_tracking_id=cost_tracking_instance).aggregate(
                 total_hours_employee=Sum('total_hours_employee'),
                 total_hours_employee_local=Sum('total_hours_employee_local'),
                 total_hours_employee_indigenous=Sum('total_hours_employee_indigenous'),
@@ -227,8 +248,8 @@ class DayTracking(models.Model):
             total_hours_equipment = day_tracking_aggregates['total_hours_equipment'] or 0
             total_amount_equipment = day_tracking_aggregates['total_amount_equipment'] or 0
 
-            local_percentage = 0 if total_hours_employee == 0 else (total_hours_employee_local / total_hours_employee)*100
-            indigenous_percentage = 0 if total_hours_employee == 0 else (total_hours_employee_indigenous / total_hours_employee)*100
+            local_percentage = 0 if total_hours_employee == 0 else (total_hours_employee_local / total_hours_employee) * 100
+            indigenous_percentage = 0 if total_hours_employee == 0 else (total_hours_employee_indigenous / total_hours_employee) * 100
 
             # Update corresponding CostTracking instance
             cost_tracking_instance.total_hours_employee = total_hours_employee
@@ -241,8 +262,7 @@ class DayTracking(models.Model):
             cost_tracking_instance.total_hours_employee_indigenous_percentage = indigenous_percentage
 
             cost_tracking_instance.save()
-
-
+    
     def __str__(self):
         return f"Day Tracking:{self.day_tracking_id} {self.record_date}"
 

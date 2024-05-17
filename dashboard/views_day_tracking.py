@@ -1,11 +1,15 @@
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 from django.db import transaction
+from django.core.exceptions import ValidationError
+
 from .forms_day_tracking import DayTrackingForm, DayTrackingEmployeeFormSet, DayTrackingEquipmentFormSet
 from .models import DayTracking,  CostTracking, DayTrackingEmployeeDetails,DayTrackingEquipmentDetails
-import logging
-from django.contrib import messages
+
 from users.decorators import superuser_or_supervisor_required
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -124,21 +128,12 @@ def day_tracking_delete(request, day_tracking_id):
     day_tracking_instance = get_object_or_404(DayTracking, pk=day_tracking_id)
 
     if request.method == 'POST':
-        cost_tracking_instance = day_tracking_instance.cost_tracking_id
-        other_day_tracking_count = DayTracking.objects.filter(cost_tracking_id=cost_tracking_instance).exclude(day_tracking_id=day_tracking_id).count()
-
-        if not cost_tracking_instance.is_draft:            
-            messages.error(request, "Cannot delete Day Tracking Record. Cost Tracking has been confirmed.")
-            return redirect('day_tracking_list')
-
-        # Check if there are other day tracking records related to the same cost tracking, if no, delete cost tracking
-        if other_day_tracking_count == 0:
-            cost_tracking_instance.delete()
-            return redirect('day_tracking_list')      
-        
-        day_tracking_instance.delete()
-        messages.success(request, f"DayTracking {day_tracking_instance.day_tracking_id} deleted successfully.")
-        return redirect('day_tracking_list')
+        try:
+            day_tracking_instance.delete()
+            messages.success(request, f"DayTracking {day_tracking_instance.day_tracking_id} deleted successfully.")            
+        except ValidationError as e:
+            messages.error(request, str(e))
+        return HttpResponseRedirect(reverse('day_tracking_list'))
 
     return render(request, 'day_tracking/day_tracking_delete.html', {'record': day_tracking_instance})
 
