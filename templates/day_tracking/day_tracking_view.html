@@ -16,7 +16,7 @@
         <table class="details-table table-bordered"">
             <tr>
                 <th>PROJECT:</th>
-                <td>{{ day_tracking.project_no }}</td>                
+                <td>{{ day_tracking.project_no }}</td>
                 <th>CLIENT REPRESENTATIVE:</th>
                 <td>{{ day_tracking.client_representative }}</td>
             </tr>
@@ -65,7 +65,7 @@
         </table>
 
         <table class="equipment-table table-bordered ">
-     
+
             <thead>
                 <tr>
                     <th>EQUIPMENT</th>
@@ -77,7 +77,7 @@
             </thead>
             <tbody>
                 {{ equipment_formset.management_form }}
-                {% for equipment in equipment_formset %}     
+                {% for equipment in equipment_formset %}
                 <tr>
                     <td>{{ equipment.resource_id }}</td>
                     <td>{{ equipment.item_rate }}</td>

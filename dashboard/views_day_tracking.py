@@ -20,11 +20,10 @@ logger = logging.getLogger(__name__)
 
 @superuser_or_supervisor_required
 def day_tracking_create(request):
-    print(f"Request user: {request.user}")
-
     form_action = reverse('day_tracking_create')
 
     if request.method == 'POST':
+        print(request.POST)
         form = DayTrackingForm(request.POST)
         employee_formset = DayTrackingEmployeeFormSet(request.POST, prefix='employee')
         equipment_formset = DayTrackingEquipmentFormSet(request.POST, prefix='equipment')
@@ -35,7 +34,7 @@ def day_tracking_create(request):
             if not any(employee_formset.cleaned_data):
                 messages.error(request, "Please add at least one employee.")
                 return render(request, 'day_tracking/day_tracking_create.html', {'form': form, 'employee_formset': employee_formset, 'equipment_formset': equipment_formset})
-            
+
             with transaction.atomic():
                 is_draft = request.POST.get('click-btn') == 'draft'
                 day_tracking_instance = form.save(commit=False)
@@ -48,13 +47,15 @@ def day_tracking_create(request):
                         employee_detail = employee_form.save(commit=False)
                         employee_detail.day_tracking_id = day_tracking_instance
                         employee_detail.save()
-                
+
                 # Save the equipment formset
                 for equipment_form in equipment_formset:
+                    # print("equipment_form", equipment_form)
                     if equipment_form.cleaned_data:
                         equipment_detail = equipment_form.save(commit=False)
                         equipment_detail.day_tracking_id = day_tracking_instance
                         equipment_detail.save()
+
 
                 if kaddum_sign_data:
                     day_tracking_instance.kaddum_sign = kaddum_sign_data
@@ -83,14 +84,14 @@ def save_signature(image_data, filename):
     # Remove the SVG header if present
     if image_data.startswith('data:image/svg+xml;base64,'):
         image_data = image_data.replace('data:image/svg+xml;base64,', '')
-    
+
     # Decode the base64-encoded SVG data
     try:
         image_data = base64.b64decode(image_data)
     except base64.binascii.Error as e:
         print(f"Error decoding base64 data: {e}")
         return
-    
+
     # Save the SVG file to the media directory
     file_path = os.path.join(settings.MEDIA_ROOT, filename)
     with open(file_path, 'wb') as f:
@@ -116,7 +117,7 @@ def day_tracking_update(request, day_tracking_id):
             if not any(employee_formset.cleaned_data):
                 messages.error(request, "Please add at least one employee.")
                 return render(request, 'day_tracking/day_tracking_update.html', {'form': form, 'employee_formset': employee_formset, 'equipment_formset': equipment_formset})
-                
+
             with transaction.atomic():
                 is_draft = request.POST.get('click-btn') == 'draft'
                 day_tracking_instance = form.save(commit=False)
@@ -124,20 +125,18 @@ def day_tracking_update(request, day_tracking_id):
                 day_tracking_instance.save()
 
                 # Save the employee formset
-                employee_formset.save()
+                employee_formset.save(commit=True)
+
 
                 # Save the equipment formset
-                equipment_formset.save()
+                equipment_formset.save(commit=True)
 
                 if kaddum_sign_data:
-                    kaddum_sign_filename = f"{day_tracking_instance.day_tracking_id}_kaddum_sign.svg"
-                    save_signature(kaddum_sign_data, kaddum_sign_filename)
-                    day_tracking_instance.kaddum_sign = kaddum_sign_filename
+                    day_tracking_instance.kaddum_sign = kaddum_sign_data
 
                 if client_sign_data:
-                    client_sign_filename = f"{day_tracking_instance.day_tracking_id}_client_sign.svg"
-                    save_signature(client_sign_data, client_sign_filename)
-                    day_tracking_instance.client_sign = client_sign_filename
+                    day_tracking_instance.client_sign = client_sign_data
+
 
                 messages.success(request, "Day tracking record updated successfully.")
                 return redirect('day_tracking_list')
@@ -175,7 +174,7 @@ def day_tracking_delete(request, day_tracking_id):
     if request.method == 'POST':
         try:
             day_tracking_instance.delete()
-            messages.success(request, f"DayTracking {day_tracking_instance.day_tracking_id} deleted successfully.")            
+            messages.success(request, f"DayTracking {day_tracking_instance.day_tracking_id} deleted successfully.")
         except ValidationError as e:
             messages.error(request, str(e))
         return HttpResponseRedirect(reverse('day_tracking_list'))
@@ -187,7 +186,7 @@ def day_tracking_view(request, day_tracking_id):
     day_tracking = get_object_or_404(DayTracking, pk=day_tracking_id)
     employee_formset = DayTrackingEmployeeDetails.objects.all().filter(day_tracking_id=day_tracking)
     equipment_formset = DayTrackingEquipmentDetails.objects.all().filter(day_tracking_id=day_tracking)
-    
+
     return render(request, 'day_tracking/day_tracking_view.html', {
         'day_tracking': day_tracking,
         'employee_formset': employee_formset,
