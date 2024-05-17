@@ -22,29 +22,28 @@
                 <table class="table table-bordered" style="border-collapse: collapse;">
                     <thead>
                         <tr>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="8%">No</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="10%">Date</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="8%">Week</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="30%">Project No- Project Name</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="10%">Shift</th>       
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="10%">Modification</th>       
-                            <th scope="col" class="align-middle" style="border-left-style: inset;" width="20%">Action</th>       
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">No.</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Date</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Week</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No. - Project Name</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Shift</th>       
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Modification</th>       
+                            <th scope="col" class="align-middle" style="border-left-style: inset;" width="15%"></th>       
                         </tr>
                     </thead>
                     <tbody id="DraftTableBody">
                         {% for record in draft_records %}
                         <tr>
                             <td class="align-middle" style="border-right-style: hidden;">{{ record.day_tracking_id }}</td>
-                            <td class="align-middle" style="border-right-style: hidden;">{{ record.record_date|date:"d/m/Y" }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ record.record_date|date:"d/m/y" }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ record.year_week }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ record.project_no }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ record.record_shift }}</td>                            
-                            <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m H:i" }}</td>                            
+                            <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m/y H:i" }}</td>                            
                             <td class="align-middle" style="border-left-style: inset;">                           
-                                <div class="row justify-content-evenly">
-                                  <a href="{% url 'day_tracking_update' record.day_tracking_id %}" class="btn btn-outline-success btn-sm col-md-3">Edit</a> 
-                                  <a href="{% url 'day_tracking_view' record.day_tracking_id %}" class="btn btn-outline-primary btn-sm col-md-3">View</a> 
-                                  <a href="{% url 'day_tracking_delete' record.day_tracking_id %}" class="btn btn-outline-danger btn-sm col-md-3">Delete</a> 
+                                <div class="d-flex justify-content-evenly">
+                                  <a href="{% url 'day_tracking_update' record.day_tracking_id %}" class="btn btn-outline-success btn-sm">Edit</a> 
+                                  <a href="{% url 'day_tracking_delete' record.day_tracking_id %}" class="btn btn-outline-danger btn-sm">Delete</a> 
                                 </div>
                             </td>          
                         </tr>
@@ -61,29 +60,30 @@
                 <table class="table table-bordered" style="border-collapse: collapse;">
                   <thead>
                       <tr>
-                        <th scope="col" class="align-middle" style="border-right-style: hidden;" width="8%">No</th>
-                        <th scope="col" class="align-middle" style="border-right-style: hidden;" width="10%">Date</th>
-                        <th scope="col" class="align-middle" style="border-right-style: hidden;" width="8%">Week</th>
-                        <th scope="col" class="align-middle" style="border-right-style: hidden;" width="30%">Project No- Project Name</th>
-                        <th scope="col" class="align-middle" style="border-right-style: hidden;" width="10%">Shift</th>       
-                        <th scope="col" class="align-middle" style="border-right-style: hidden;" width="10%">Modification</th>       
-                        <th scope="col" class="align-middle" style="border-left-style: inset;" width="20%">Action</th>             
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">No.</th>
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Date</th>
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Week</th>
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No. - Project Name</th>
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Shift</th>       
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Modification</th>       
+                        <th scope="col" class="align-middle" style="border-left-style: inset;" width="15%"></th>             
                       </tr>
                   </thead>
                   <tbody id="DraftTableBody">
                       {% for record in completed_records %}
                       <tr>
                         <td class="align-middle" style="border-right-style: hidden;">{{ record.day_tracking_id }}</td>
-                        <td class="align-middle" style="border-right-style: hidden;">{{ record.record_date|date:"d/m/Y" }}</td>
+                        <td class="align-middle" style="border-right-style: hidden;">{{ record.record_date|date:"d/m/y" }}</td>
                         <td class="align-middle" style="border-right-style: hidden;">{{ record.year_week }}</td>
                         <td class="align-middle" style="border-right-style: hidden;">{{ record.project_no }}</td>
                         <td class="align-middle" style="border-right-style: hidden;">{{ record.record_shift }}</td>                            
-                        <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m H:i" }}</td>                                                       
+                        <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m/y H:i" }}</td>                                                       
                         <td class="align-middle" style="border-left-style: inset;">                           
-                            <div class="row justify-content-evenly">                                
-                            <a href="{% url 'day_tracking_view' record.day_tracking_id %}" class="btn btn-outline-primary btn-sm col-md-3">View</a> 
-                            <a href="{% url 'day_tracking_delete' record.day_tracking_id %}" class="btn btn-outline-danger btn-sm col-md-3">Delete</a> 
-                            </div>
+                            <div class="d-flex justify-content-evenly"> 
+                                <a href="{% url 'day_tracking_view' record.day_tracking_id %}" class="btn btn-outline-primary btn-sm">View</a>                         
+                                <a href="{% url 'day_tracking_delete' record.day_tracking_id %}" class="btn btn-outline-danger btn-sm">Delete</a> 
+                           
+                            </div>   
                         </td>          
                       </tr>                        
                       {% endfor %}

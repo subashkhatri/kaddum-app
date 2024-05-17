@@ -26,7 +26,7 @@ class Project(models.Model):
         db_table = 'dashboard-Project'
 
     def __str__(self):
-        return f"{self.project_no}-{self.project_name}"
+        return f"{self.project_no} - {self.project_name}"
 
 class DairyRecord(models.Model):
     dairy_record_id = models.CharField(max_length=10, primary_key= True)
@@ -161,10 +161,10 @@ class DayTracking(models.Model):
     weather = models.TextField(null=True, blank=True)
     comments = models.TextField(null=True, blank=True)
     kaddum_name = models.CharField(max_length=100,null=True, blank=True)
-    kaddum_sign = models.CharField(max_length=100,null=True, blank=True)
+    kaddum_sign = models.TextField(null=True, blank=True)
     kaddum_sign_date = models.DateField(null=True, blank=True)
     client_name = models.CharField(max_length=100, null=True, blank=True)
-    client_sign = models.CharField(max_length=100, null=True, blank=True )
+    client_sign = models.TextField( null=True, blank=True )
     client_sign_date = models.DateField(null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     last_modification_date = models.DateTimeField(auto_now=True)

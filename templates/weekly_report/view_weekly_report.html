@@ -139,7 +139,7 @@
                         {% for past_report in past_reports %}
                         <tr>
                             <td>{{ past_report.year_week }}</td>
-                            <td>{{ past_report.start_date|date:"d/m/y" }} - {{ past_report.end_date|date:"d/m/y" }}</td>
+                            <td>{{ past_report.start_date|date:"d/m/Y" }} - {{ past_report.end_date|date:"d/m/Y" }}</td>
                             <td>{{ past_report.total_hours_employee }}</td>
                             <td>{{ past_report.total_hours_employee_indigenous }}</td>
                             <td>{{ past_report.percentage_employee_indigenous }}%</td>
@@ -149,7 +149,7 @@
                         {% endfor %}
                         <tr>
                             <td>{{ report.year_week }}</td>
-                            <td>{{ report.start_date|date:"d/m/y" }} - {{ report.end_date|date:"d/m/y" }}</td>
+                            <td>{{ report.start_date|date:"d/m/Y" }} - {{ report.end_date|date:"d/m/Y" }}</td>
                             <td>{{ report.total_hours_employee }}</td>
                             <td>{{ report.total_hours_employee_indigenous }}</td>
                             <td>{{ report.percentage_employee_indigenous }}</td>

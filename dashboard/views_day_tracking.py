@@ -9,19 +9,27 @@ from .forms_day_tracking import DayTrackingForm, DayTrackingEmployeeFormSet, Day
 from .models import DayTracking,  CostTracking, DayTrackingEmployeeDetails,DayTrackingEquipmentDetails
 
 from users.decorators import superuser_or_supervisor_required
+import base64
+import os
+from django.conf import settings
+from django.http import HttpResponse
+
 import logging
 
 logger = logging.getLogger(__name__)
 
 @superuser_or_supervisor_required
 def day_tracking_create(request):
+    print(f"Request user: {request.user}")
+
     form_action = reverse('day_tracking_create')
 
     if request.method == 'POST':
         form = DayTrackingForm(request.POST)
         employee_formset = DayTrackingEmployeeFormSet(request.POST, prefix='employee')
         equipment_formset = DayTrackingEquipmentFormSet(request.POST, prefix='equipment')
-
+        kaddum_sign_data = request.POST.get('kaddum_sign')
+        client_sign_data = request.POST.get('client_sign')
 
         if form.is_valid() and employee_formset.is_valid() and equipment_formset.is_valid():
             if not any(employee_formset.cleaned_data):
@@ -48,6 +56,12 @@ def day_tracking_create(request):
                         equipment_detail.day_tracking_id = day_tracking_instance
                         equipment_detail.save()
 
+                if kaddum_sign_data:
+                    day_tracking_instance.kaddum_sign = kaddum_sign_data
+
+                if client_sign_data:
+                    day_tracking_instance.client_sign = client_sign_data
+
             messages.success(request, "Day tracking record created successfully.")
             return redirect('day_tracking_list')
         else:
@@ -65,6 +79,26 @@ def day_tracking_create(request):
         'form_action': form_action,
     })
 
+def save_signature(image_data, filename):
+    # Remove the SVG header if present
+    if image_data.startswith('data:image/svg+xml;base64,'):
+        image_data = image_data.replace('data:image/svg+xml;base64,', '')
+    
+    # Decode the base64-encoded SVG data
+    try:
+        image_data = base64.b64decode(image_data)
+    except base64.binascii.Error as e:
+        print(f"Error decoding base64 data: {e}")
+        return
+    
+    # Save the SVG file to the media directory
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    with open(file_path, 'wb') as f:
+        f.write(image_data)
+
+
+
+
 @superuser_or_supervisor_required
 def day_tracking_update(request, day_tracking_id):
     form_action = reverse('day_tracking_update', args=[day_tracking_id])
@@ -75,7 +109,8 @@ def day_tracking_update(request, day_tracking_id):
         form = DayTrackingForm(request.POST, instance=day_tracking_instance)
         employee_formset = DayTrackingEmployeeFormSet(request.POST, instance=day_tracking_instance, prefix='employee')
         equipment_formset = DayTrackingEquipmentFormSet(request.POST, instance=day_tracking_instance, prefix='equipment')
-
+        kaddum_sign_data = request.POST.get('kaddum_sign')
+        client_sign_data = request.POST.get('client_sign')
 
         if form.is_valid() and employee_formset.is_valid() and equipment_formset.is_valid():
             if not any(employee_formset.cleaned_data):
@@ -93,6 +128,16 @@ def day_tracking_update(request, day_tracking_id):
 
                 # Save the equipment formset
                 equipment_formset.save()
+
+                if kaddum_sign_data:
+                    kaddum_sign_filename = f"{day_tracking_instance.day_tracking_id}_kaddum_sign.svg"
+                    save_signature(kaddum_sign_data, kaddum_sign_filename)
+                    day_tracking_instance.kaddum_sign = kaddum_sign_filename
+
+                if client_sign_data:
+                    client_sign_filename = f"{day_tracking_instance.day_tracking_id}_client_sign.svg"
+                    save_signature(client_sign_data, client_sign_filename)
+                    day_tracking_instance.client_sign = client_sign_filename
 
                 messages.success(request, "Day tracking record updated successfully.")
                 return redirect('day_tracking_list')
