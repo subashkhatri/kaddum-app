@@ -203,8 +203,13 @@
                         {{ form.kaddum_name.errors }}
                     </td>
                     <td class="align-middle text-right">
-                        {{ form.kaddum_sign }}
+                        {% if form.instance.kaddum_sign %}
+                            <img src="{{ form.instance.kaddum_sign }}" alt="Kaddum Supervisor Signature" style="border: 1px solid #000; width: 400px; height: 150px;">
+                        {% else %}
+                            <p>No signature provided</p>
+                        {% endif %}
                         {{ form.kaddum_sign.errors }}
+                    
                     </td>
                     <td class="align-middle text-right">
                         {{ form.kaddum_sign_date }}
@@ -219,8 +224,13 @@
                         {{ form.client_name.errors }}
                     </td>
                     <td class="align-middle text-right">
-                        {{ form.client_sign }}
+                        {% if form.instance.client_sign %}
+                            <img src="{{ form.instance.client_sign }}" alt="Client Representative Signature" style="border: 1px solid #000; width: 400px; height: 150px;">
+                        {% else %}
+                            <p>No signature provided</p>
+                        {% endif %}
                         {{ form.client_sign.errors }}
+                    
                     </td>
                     <td class="align-middle text-right">
                         {{ form.client_sign_date }}
@@ -240,9 +250,23 @@
 </div>
 </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 <script>
 
     document.addEventListener('DOMContentLoaded', function() {
+
+        const kaddumSignaturePad = new SignaturePad(document.getElementById('kaddum-signature-pad'));
+        const clientSignaturePad = new SignaturePad(document.getElementById('client-signature-pad'));
+
+        document.getElementById('day-tracking-form').addEventListener('submit', function(event) {
+            document.getElementById('id_kaddum_sign').value = kaddumSignaturePad.toDataURL('image/svg+xml');
+            document.getElementById('id_client_sign').value = clientSignaturePad.toDataURL('image/svg+xml');
+        });
+
+        window.clearSignature = function(padId) {
+            const pad = padId === 'kaddum-signature-pad' ? kaddumSignaturePad : clientSignaturePad;
+            pad.clear();
+        };
 
         calculateEmployeeTotalHours()
         calculateEquipmentTotalHours()

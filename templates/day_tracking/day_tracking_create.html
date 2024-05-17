@@ -4,8 +4,7 @@
     <h1 class="text-left mb-4 h4">Day Tracking</h1>
 </div>
 <div class="container mt-4">
-    <form method="POST" enctype="multipart/form-data"
-        action="{{ form_action }}">
+    <form id="day-tracking-form" method="POST" enctype="multipart/form-data" action="{{ form_action }}">
         {% csrf_token %}
         <div class="col-md-12">
             <div class="form-section-header">Project Information</div>
@@ -175,7 +174,9 @@
             {{ form.comments }}
             {{ form.comments.errors }}
         </div>
+
         <!-- Acknowledgements -->
+
         <div class="form-section-header">Acknowledgements</div>
         <table class="table table-bordered">
             <thead>
@@ -195,8 +196,9 @@
                         {{ form.kaddum_name.errors }}
                     </td>
                     <td class="align-middle text-right">
+                        <canvas id="kaddum-signature-pad" class="signature-pad" width="400" height="150" style="border: 1px solid #000;"></canvas>
                         {{ form.kaddum_sign }}
-                        {{ form.kaddum_sign.errors }}
+                        <button type="button" onclick="clearSignature('kaddum-signature-pad')">Clear</button>
                     </td>
                     <td class="align-middle text-right">
                         {{ form.kaddum_sign_date }}
@@ -211,8 +213,9 @@
                         {{ form.client_name.errors }}
                     </td>
                     <td class="align-middle text-right">
+                        <canvas id="client-signature-pad" class="signature-pad" width="400" height="150" style="border: 1px solid #000;"></canvas>
                         {{ form.client_sign }}
-                        {{ form.client_sign.errors }}
+                        <button type="button" onclick="clearSignature('client-signature-pad')">Clear</button>
                     </td>
                     <td class="align-middle text-right">
                         {{ form.client_sign_date }}
@@ -221,53 +224,65 @@
                 </tr>
             </tbody>
         </table>
-        <button type="submit" class="form-group btn btn-success col-2"
-            value="complete" name="click-btn">Create</button>
-        <button type="submit" class="form-group btn btn-outline-success col-2"
-            value="draft" name="click-btn">Save as Draft</button>
-        <a href="#" onclick="window.history.back();"
-            class="form-group btn btn-outline-primary col-2"
-            value="back">Back</a>
+        <button type="submit" class="form-group btn btn-success col-2" value="complete" name="click-btn">Create</button>
+        <button type="submit" class="form-group btn btn-outline-success col-2" value="draft" name="click-btn">Save as Draft</button>
+        <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
     </form>
 </div>
 </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 <script>
 
     document.addEventListener('DOMContentLoaded', function() {
+
+        const kaddumSignaturePad = new SignaturePad(document.getElementById('kaddum-signature-pad'));
+        const clientSignaturePad = new SignaturePad(document.getElementById('client-signature-pad'));
+
+        document.getElementById('day-tracking-form').addEventListener('submit', function(event) {
+            document.getElementById('id_kaddum_sign').value = kaddumSignaturePad.toDataURL('image/svg+xml');
+            document.getElementById('id_client_sign').value = clientSignaturePad.toDataURL('image/svg+xml');
+        });
+
+        window.clearSignature = function(padId) {
+            const pad = padId === 'kaddum-signature-pad' ? kaddumSignaturePad : clientSignaturePad;
+            pad.clear();
+        };
+
+
       
-      // Event listener for calculating employee totol hours in employee
-      document.getElementById('EmployeeTableBody').addEventListener('input', calculateEmployeeTotalHours);
+        // Event listener for calculating employee totol hours in employee
+        document.getElementById('EmployeeTableBody').addEventListener('input', calculateEmployeeTotalHours);
 
-      // Event listener for calculating equipment totol hours in employee row
-      document.getElementById('EquipmentTableBody').addEventListener('input', calculateEquipmentTotalHours);
+        // Event listener for calculating equipment totol hours in employee row
+        document.getElementById('EquipmentTableBody').addEventListener('input', calculateEquipmentTotalHours);
 
-      // Add event listener for adding employee rows
-      document.getElementById('add-employee-row').addEventListener(
-          'click',
-          function() {
-              addRow('employee');
-          });
-      // Add event listener for removing employee rows
-      document.querySelectorAll('.remove-employee-row').forEach(
-          function(button) {
-              button.addEventListener('click', function(event) {
-                  removeRow(this, 'employee');
-              });
-          });
-      // Add event listener for adding equipment rows
-      document.getElementById('add-equipment-row').addEventListener(
-          'click',
-          function() {
-              addEquipmentRow('equipment');
-          });
-      // Add event listener for removing equipment rows
-      document.querySelectorAll('.remove-equipment-row').forEach(
-          function(button) {
-              button.addEventListener('click', function(event) {
-                  removeEquipmentRow(this, 'equipment');
-              });
-          });
+        // Add event listener for adding employee rows
+        document.getElementById('add-employee-row').addEventListener(
+            'click',
+            function() {
+                addRow('employee');
+            });
+        // Add event listener for removing employee rows
+        document.querySelectorAll('.remove-employee-row').forEach(
+            function(button) {
+                button.addEventListener('click', function(event) {
+                    removeRow(this, 'employee');
+                });
+            });
+        // Add event listener for adding equipment rows
+        document.getElementById('add-equipment-row').addEventListener(
+            'click',
+            function() {
+                addEquipmentRow('equipment');
+            });
+        // Add event listener for removing equipment rows
+        document.querySelectorAll('.remove-equipment-row').forEach(
+            function(button) {
+                button.addEventListener('click', function(event) {
+                    removeEquipmentRow(this, 'equipment');
+                });
+            });
     });
 
     function addRow(type) {

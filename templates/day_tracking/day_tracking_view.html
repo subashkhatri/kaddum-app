@@ -98,17 +98,29 @@
                 <th>CONTRACTOR NAME:</th>
                 <td>{{ day_tracking.kaddum_name }}</td>
                 <th>CONTRACTOR SIGNATURE:</th>
-                <td><img src="{{ day_tracking.kaddum_sign.url }}" alt="Signature" height="50"></td>
+                <td>
+                    {% if day_tracking.kaddum_sign %}
+                        <img src="{{ day_tracking.kaddum_sign }}" alt="Kaddum Supervisor Signature" style="border: 1px solid #000; width: 400px; height: 150px;">
+                    {% else %}
+                        <p>No signature provided</p>
+                    {% endif %}
+                </td>
                 <th>DATE:</th>
-                <td>{{ day_tracking.kaddum_sign_date|date:"Y-m-d" }}</td>
+                <td>{{ day_tracking.kaddum_sign_date|date:"d/m/Y" }}</td>
             </tr>
             <tr>
                 <th>CLIENT NAME:</th>
                 <td>{{ day_tracking.client_name }}</td>
                 <th>CLIENT SIGNATURE:</th>
-                <td><img src="{{ day_tracking.client_sign.url }}" alt="Signature" height="50"></td>
+                <td>
+                    {% if day_tracking.client_sign %}
+                        <img src="{{ day_tracking.client_sign }}" alt="Client Representative Signature" style="border: 1px solid #000; width: 400px; height: 150px;">
+                    {% else %}
+                        <p>No signature provided</p>
+                    {% endif %}
+                </td>
                 <th>DATE:</th>
-                <td>{{ day_tracking.client_sign_date|date:"Y-m-d" }}</td>
+                <td>{{ day_tracking.client_sign_date|date:"d/m/Y" }}</td>
             </tr>
         </table>
     </div>

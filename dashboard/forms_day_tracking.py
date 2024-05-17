@@ -12,9 +12,13 @@ from django.core.exceptions import ValidationError
 
 class DayTrackingForm(forms.ModelForm):
 
+    kaddum_sign = forms.CharField(widget=forms.HiddenInput(), required=False)
+    client_sign = forms.CharField(widget=forms.HiddenInput(), required=False)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        self.fields['kaddum_sign'].widget = forms.HiddenInput()
+        self.fields['client_sign'].widget = forms.HiddenInput()
     
 
     record_shift = forms.ChoiceField(
@@ -42,10 +46,10 @@ class DayTrackingForm(forms.ModelForm):
             'weather': forms.TextInput(attrs={'class': 'form-control'}),
             'comments': forms.Textarea(attrs={'class': 'form-control','rows':3}),
             'kaddum_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'kaddum_sign': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'kaddum_sign': forms.TextInput(attrs={'class': 'form-control'}),
             'kaddum_sign_date': forms.DateInput(attrs={'type': 'date','class': 'form-control'}),
             'client_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'client_sign': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'client_sign': forms.TextInput(attrs={'class': 'form-control'}),
             'client_sign_date': forms.DateInput(attrs={'type': 'date','class': 'form-control'}), 
         }
         labels={
