@@ -8,9 +8,9 @@
       <i class="bi bi-person-fill"></i>
     </button>
     <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+      <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
     </ul>
-    </div>
+  </div>
 </div>
 <div class="p-4 main-content">
   <div class="row">
@@ -34,8 +34,8 @@
         </h3>
         <div class="card-body">
           <h5 class="text-center card-title"><a href="{% url 'day_tracking_create' %}"
-            style="text-decoration: none; color: black;">Daily Record</a></h5>
-        <a href="{% url 'day_tracking_create' %}" class="btn card-text">+ Add New</a>
+              style="text-decoration: none; color: black;">Daily Record</a></h5>
+          <a href="{% url 'day_tracking_create' %}" class="btn card-text">+ Add New</a>
         </div>
       </div>
     </div>
@@ -46,7 +46,8 @@
           <i class="p-3 bi bi-calculator"></i>
         </h3>
         <div class="card-body">
-          <h5 class="text-center card-title"> <a href="{% url 'all_daily_costing' %}" style="text-decoration: none; color: black;">Daily Costing</a></h5>
+          <h5 class="text-center card-title"> <a href="{% url 'all_daily_costing' %}"
+              style="text-decoration: none; color: black;">Daily Costing</a></h5>
           <a href="{% url 'all_daily_costing' %}" class="btn card-text">+ Add New</a>
         </div>
       </div>
@@ -73,8 +74,10 @@
               <div class="col-4 d-flex align-items-center">{{ dairy_record.project_no.project_name }}</div>
               <div class="col-4 d-flex align-items-center">{{ dairy_record.supervisor_id }}</div>
               <div class="col-2 d-flex align-items-center justify-content-end">
-                <a href="{% url 'view_dairy_record' dairy_record.dairy_record_id %}" class="btn py-1 px-2 view-btn">View</a>
-                <a href="{% url 'edit_dairy_record' dairy_record.dairy_record_id %}" class="btn py-1 px-2 view-btn">Edit</a>
+                <a href="{% url 'view_dairy_record' dairy_record.dairy_record_id %}"
+                  class="btn py-1 px-2 view-btn">View</a>
+                <a href="{% url 'edit_dairy_record' dairy_record.dairy_record_id %}"
+                  class="btn py-1 px-2 view-btn">Edit</a>
               </div>
             </div>
             {% empty %}
@@ -82,9 +85,6 @@
               <div class="col-12 text-center">No records found.</div>
             </div>
             {% endfor %}
-          </div>
-          <div class="table-bottom text-center" role="button">
-           <a href="{% url 'all_dairy_record' %}"> <i class="bi bi-caret-down-fill"></i></a>
           </div>
         </div>
       </div>
