@@ -124,7 +124,7 @@
                     {% csrf_token %}                    
                     <button type="submit" name="action" value="complete" class="form-group btn btn-success col-2">Complete</button>
                     <button type="submit" name="action" value="draft" class="form-group btn btn-outline-success col-2">Save as Draft</button>
-                    <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+                    <a href="{% url 'all_daily_costing' %}" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
                 </form>
             </form>
         </div>

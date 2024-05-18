@@ -105,7 +105,7 @@
                 <tr>
                     <td class="align-middle">{{ equipment.resource_id.item_type|capfirst }}</td>
                     <td class="align-middle">{{ equipment.resource_id.item_name }}</td>
-                    <td class="align-middle">{{ equipment.resource_id.item_rate|floatformat:"2" }}</td>
+                    <td class="align-middle">{{ equipment.item_rate|floatformat:"2" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -119,8 +119,8 @@
     </div>
 </div>
 <div class="text-center mt-3">
-    <button class="btn btn-primary" onclick="printPdf()">Print PDF</button>
-    <a href="#" onclick="window.history.back();" class="btn btn-danger">Cancel</a>
+    <button class="form-group btn btn-primary col-2" onclick="printPdf()">Print PDF</button>
+    <a href="{% url 'all_daily_costing' %}" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
 </div>
 {% endblock %}
 

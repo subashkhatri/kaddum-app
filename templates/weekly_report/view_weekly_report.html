@@ -140,28 +140,28 @@
                         <tr>
                             <td>{{ past_report.year_week }}</td>
                             <td>{{ past_report.start_date|date:"d/m/Y" }} - {{ past_report.end_date|date:"d/m/Y" }}</td>
-                            <td>{{ past_report.total_hours_employee }}</td>
-                            <td>{{ past_report.total_hours_employee_indigenous }}</td>
-                            <td>{{ past_report.percentage_employee_indigenous }}%</td>
-                            <td>{{ past_report.total_hours_employee_local }}</td>
-                            <td>{{ past_report.percentage_employee_local }}%</td>
+                            <td>{{ past_report.total_hours_employee |floatformat:"2"}}</td>
+                            <td>{{ past_report.total_hours_employee_indigenous|floatformat:"2" }}</td>
+                            <td>{{ past_report.percentage_employee_indigenous|floatformat:"2" }}%</td>
+                            <td>{{ past_report.total_hours_employee_local |floatformat:"2"}}</td>
+                            <td>{{ past_report.percentage_employee_local|floatformat:"2" }}%</td>
                         </tr>
                         {% endfor %}
                         <tr>
                             <td>{{ report.year_week }}</td>
                             <td>{{ report.start_date|date:"d/m/Y" }} - {{ report.end_date|date:"d/m/Y" }}</td>
-                            <td>{{ report.total_hours_employee }}</td>
-                            <td>{{ report.total_hours_employee_indigenous }}</td>
-                            <td>{{ report.percentage_employee_indigenous }}</td>
-                            <td>{{ report.total_hours_employee_local }}</td>
-                            <td>{{ report.percentage_employee_local }}%</td>
+                            <td>{{ report.total_hours_employee |floatformat:"2"}}</td>
+                            <td>{{ report.total_hours_employee_indigenous |floatformat:"2"}}</td>
+                            <td>{{ report.percentage_employee_indigenous |floatformat:"2" }}</td>
+                            <td>{{ report.total_hours_employee_local |floatformat:"2"}}</td>
+                            <td>{{ report.percentage_employee_local |floatformat:"2"}}%</td>
                         </tr>
                     </tbody>
                 </table>
                 <form method="POST" novalidate>
                     {% csrf_token %}                    
                     <button type="submit" name="action" value="complete" class="form-group btn btn-primary col-2">Save as PDF</button>                    
-                    <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+                    <a href="{% url 'all_weekly_report' %}" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
                 </form>
             </form>
         </div>

@@ -437,6 +437,8 @@ class WeeklyReportList(models.Model):
             week = int(self.year_week[4:])
             # Calculate start date based on ISO 8601 week date
             start_date = datetime.strptime(f'{year}-W{week-1}-1', "%Y-W%W-%w").date()
+            # Correcting the start date calculation
+            start_date = datetime.strptime(f'{year}-W{week}-1', "%G-W%V-%u").date()
             # Calculate end date by adding 6 days to the start date
             end_date = start_date + timedelta(days=6)
             self.start_date = start_date

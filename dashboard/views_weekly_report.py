@@ -17,44 +17,63 @@ def all_weekly_report(request):
             year_week = request.POST.get('year_week')
             project_instance = Project.objects.get(project_no=project_no)
             
-            if CostTracking.objects.filter(project_no=project_no, year_week=year_week).exists():
-                dairy_records = DairyRecord.objects.filter(project_no=project_no, year_week=year_week)
-                aggregates = dairy_records.aggregate(
-                    sum_of_jha_qty=Sum('jha_qty'),
-                    sum_of_ccc_qty=Sum('ccc_qty'),
-                    sum_of_take5_qty=Sum('take5_qty'),
-                    sum_of_stop_seek_qty=Sum('stop_seek_qty'),
-                    sum_of_mobilised_qty=Sum('mobilised_qty'),
-                    sum_of_non_manual_qty=Sum('non_manual_qty'),
-                    sum_of_manual_qty=Sum('manual_qty'),
-                    sum_of_subcontractor_qty=Sum('subcontractor_qty'),
-                    sum_of_environmental_incident_qty=Sum('environmental_incident_qty'),
-                    sum_of_near_miss_qty=Sum('near_miss_qty'),
-                    sum_of_first_aid_qty=Sum('first_aid_qty'),
-                    sum_of_medically_treated_injury_qty=Sum('medically_treated_injury_qty'),
-                    sum_of_loss_time_injury_qty=Sum('loss_time_injury_qty')
-                )
-
-                cost_trackings = CostTracking.objects.filter(project_no=project_no, year_week=year_week)
-                cost_aggregates = cost_trackings.aggregate(
-                    sum_of_total_hours_employee = Sum('total_hours_employee'),
-                    sum_of_total_hours_employee_local = Sum('total_hours_employee_local'),
-                    sum_of_total_hours_employee_indigenous = Sum('total_hours_employee_indigenous'),
-                    sum_of_total_amount_employee = Sum('total_amount_employee'),
-                    sum_of_total_hours_equipment = Sum('total_hours_equipment'),
-                    sum_of_total_amount_equipment = Sum('total_amount_equipment')
-                )                
-
-                # Create or update WeeklyReportList
-                WeeklyReportList.objects.update_or_create(
-                    project_no=project_instance,
-                    year_week=year_week,
-                    defaults={**aggregates}
-                )
-                messages.success(request, "Weekly Report created successfully.")
+            # Check if a report already exists for the specified project and week
+            if WeeklyReportList.objects.filter(project_no=project_instance, year_week=year_week).exists():
+                messages.error(request, "A report for this project and week already exists. Please delete the existing report if you wish to create a new one.")
             else:
-                messages.error(request, "No data found for the given project and week.")
+                dairy_records = DairyRecord.objects.filter(project_no=project_no, year_week=year_week)
 
+                if dairy_records.exists():
+                    aggregates = dairy_records.aggregate(
+                        sum_of_jha_qty=Sum('jha_qty'),
+                        sum_of_ccc_qty=Sum('ccc_qty'),
+                        sum_of_take5_qty=Sum('take5_qty'),
+                        sum_of_stop_seek_qty=Sum('stop_seek_qty'),
+                        sum_of_mobilised_qty=Sum('mobilised_qty'),
+                        sum_of_non_manual_qty=Sum('non_manual_qty'),
+                        sum_of_manual_qty=Sum('manual_qty'),
+                        sum_of_subcontractor_qty=Sum('subcontractor_qty'),
+                        sum_of_environmental_incident_qty=Sum('environmental_incident_qty'),
+                        sum_of_near_miss_qty=Sum('near_miss_qty'),
+                        sum_of_first_aid_qty=Sum('first_aid_qty'),
+                        sum_of_medically_treated_injury_qty=Sum('medically_treated_injury_qty'),
+                        sum_of_loss_time_injury_qty=Sum('loss_time_injury_qty')
+                    )
+                    aggregates = {key: value or 0 for key, value in aggregates.items()}
+
+                    cost_trackings = CostTracking.objects.filter(project_no=project_no, year_week=year_week)
+                    cost_aggregates = cost_trackings.aggregate(
+                        total_hours_employee=Sum('total_hours_employee'),
+                        total_hours_employee_local=Sum('total_hours_employee_local'),
+                        total_hours_employee_indigenous=Sum('total_hours_employee_indigenous'),
+                        total_amount_employee=Sum('total_amount_employee'),
+                        total_hours_equipment=Sum('total_hours_equipment'),
+                        total_amount_equipment=Sum('total_amount_equipment')
+                    )
+                    cost_aggregates = {key: value or 0 for key, value in cost_aggregates.items()}
+
+                    # Calculate percentages
+                    total_hours_employee = cost_aggregates['total_hours_employee']
+                    total_hours_employee_local = cost_aggregates['total_hours_employee_local']
+                    total_hours_employee_indigenous = cost_aggregates['total_hours_employee_indigenous']
+
+                    percentage_employee_local = (total_hours_employee_local / total_hours_employee * 100) if total_hours_employee > 0 else 0
+                    percentage_employee_indigenous = (total_hours_employee_indigenous / total_hours_employee * 100) if total_hours_employee > 0 else 0
+
+                    # Combine both aggregate dictionaries
+                    aggregates.update(cost_aggregates)
+                    aggregates['percentage_employee_local'] = percentage_employee_local
+                    aggregates['percentage_employee_indigenous'] = percentage_employee_indigenous
+
+                    # Create or update WeeklyReportList record
+                    WeeklyReportList.objects.update_or_create(
+                        project_no=project_instance,
+                        year_week=year_week,
+                        defaults=aggregates
+                    )
+                    messages.success(request, "Weekly Report created or updated successfully.")
+                else:
+                    messages.error(request, "No dairy records exist for the given project and week.")
 
         elif 'delete_report' in request.POST:
             report_id = request.POST.get('delete_report')
@@ -68,7 +87,7 @@ def all_weekly_report(request):
         'unique_projects': sorted(unique_projects, key=lambda x: x[1]),
         'unique_weeks': unique_weeks,
         'new_reports': new_reports
-    }        
+    }
     return render(request, 'weekly_report/all_weekly_report.html', context)
 
 
