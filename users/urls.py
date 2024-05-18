@@ -10,6 +10,6 @@ urlpatterns = [
     path('reset_password/', views.reset_password, name='reset_password'),
     path('employees/', views.employees_list, name='employees_list'),
     path('employee_create/', views.employee_add, name='employees_create'),
-    path('employee/<str:employee_id>/', views.employee_edit, name='employees_edit'),
-    path('delete_employee/<str:username>/', views.delete_employee, name='delete_employee'),
+    path('employee_edit/<str:username>/', views.employee_edit, name='employees_edit'),
+    path('employee_delete/<str:username>/', views.employee_delete, name='employee_delete'),
 ]

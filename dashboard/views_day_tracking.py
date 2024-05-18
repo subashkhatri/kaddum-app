@@ -83,18 +83,15 @@ def day_tracking_create(request):
     })
 
 def save_signature(image_data, filename):
-    # Remove the SVG header if present
     if image_data.startswith('data:image/svg+xml;base64,'):
         image_data = image_data.replace('data:image/svg+xml;base64,', '')
 
-    # Decode the base64-encoded SVG data
     try:
         image_data = base64.b64decode(image_data)
     except base64.binascii.Error as e:
         print(f"Error decoding base64 data: {e}")
         return
 
-    # Save the SVG file to the media directory
     file_path = os.path.join(settings.MEDIA_ROOT, filename)
     with open(file_path, 'wb') as f:
         f.write(image_data)
@@ -158,7 +155,8 @@ def day_tracking_update(request, day_tracking_id):
         'employee_formset': employee_formset,
         'equipment_formset': equipment_formset,
         'form_action': form_action,
-        'record_PK':record_PK
+        'record_PK':record_PK,
+        'day_tracking_id': day_tracking_id
     })
 
 @superuser_or_supervisor_required
@@ -204,7 +202,7 @@ def day_tracking_delete(request, day_tracking_id):
             messages.success(request, f"DayTracking {day_tracking_instance.day_tracking_id} deleted successfully.")
         except ValidationError as e:
             messages.error(request, str(e))
-        return HttpResponseRedirect(reverse('day_tracking_list'))
+        return redirect('day_tracking_list')
 
     return render(request, 'day_tracking/day_tracking_delete.html', {'record': day_tracking_instance})
 
@@ -218,5 +216,6 @@ def day_tracking_view(request, day_tracking_id):
         'day_tracking': day_tracking,
         'employee_formset': employee_formset,
         'equipment_formset': equipment_formset,
+        'day_tracking_id': day_tracking_id
     })
 

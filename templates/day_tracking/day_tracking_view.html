@@ -15,34 +15,39 @@
     <div class="container">
         <table class="details-table table-bordered"">
             <tr>
-                <th>PROJECT:</th>
+                <th>Project:</th>
                 <td>{{ day_tracking.project_no }}</td>
-                <th>CLIENT REPRESENTATIVE:</th>
-                <td>{{ day_tracking.client_representative }}</td>
-            </tr>
-            <tr>
-                <th>WORK AREA:</th>
-                <td>{{ day_tracking.work_area }}</td>
-                <th>PURCHASE ORDER:</th>
+                <th>Purchase Order:</th>
                 <td>{{ day_tracking.project_no.purchase_order_no }}</td>
+
             </tr>
             <tr>
-                <th>DATE:</th>
-                <td>{{ day_tracking.record_date|date:"Y-m-d" }}</td>
-                <th>SHIFT:</th>
+                <th>Work Area:</th>
+                <td>{{ day_tracking.work_area }}</td>
+                <th>Date:</th>
+                <td>{{ day_tracking.record_date|date:"d/m/Y" }}</td>
+            </tr>
+            <tr>
+                <th>Client Representative:</th>
+                <td>{{ day_tracking.client_representative }}</td>
+                <th>Shift:</th>
                 <td>{{ day_tracking.record_shift }}</td>
+            </tr>
+            <tr>
+                <th>Weather:</th>
+                <td colspan="3">{{ day_tracking.weather }}</td>
             </tr>
         </table>
 
         <table class="work-description-table table-bordered"">
             <thead>
                 <tr>
-                    <th>NAME</th>
-                    <th>ROLE</th>
-                    <th>START</th>
-                    <th>END</th>
-                    <th>TOTAL HOURS</th>
-                    <th>BRIEF WORK DESCRIPTION</th>
+                    <th style="width: 16%;">Name</th>
+                    <th style="width: 28%;">Role</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Total Hours</th>
+                    <th>Brief Work Description</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,7 +55,7 @@
                 {% for employee in employee_formset %}
                 <tr>
                     <td>{{ employee.employee_id }}</td>
-                    <td>{{ employee.position_id }}</td>
+                    <td>{{ employee.position_id.item_name }}</td>
                     <td>{{ employee.start_time|time:"H:i" }}</td>
                     <td>{{ employee.end_time|time:"H:i" }}</td>
                     <td>{{ employee.total_hours|floatformat:"2" }}</td>
@@ -68,11 +73,11 @@
 
             <thead>
                 <tr>
-                    <th>EQUIPMENT</th>
-                    <th>DAY RATE</th>
-                    <th>START</th>
-                    <th>FINISH</th>
-                    <th>TOTAL HOURS</th>
+                    <th style="width: 44%;">Equipment</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Total Hours</th>
+                    <th>Brief Work Description</th>
                 </tr>
             </thead>
             <tbody>
@@ -80,10 +85,10 @@
                 {% for equipment in equipment_formset %}
                 <tr>
                     <td>{{ equipment.resource_id }}</td>
-                    <td>{{ equipment.item_rate }}</td>
                     <td>{{ equipment.start_time|time:"H:i" }}</td>
                     <td>{{ equipment.end_time|time:"H:i" }}</td>
                     <td>{{ equipment.total_hours|floatformat:"2" }}</td>
+                    <td>{{ equipment.work_description }}</td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -93,41 +98,45 @@
             </tbody>
         </table>
 
-        <table class="signature-table">
+        <table class="signature-table table-bordered ">
             <tr>
-                <th>CONTRACTOR NAME:</th>
-                <td>{{ day_tracking.kaddum_name }}</td>
-                <th>CONTRACTOR SIGNATURE:</th>
-                <td>
+                <th style="width: 16%;">Kaddum Name:</th>
+                <td style="width: 28%;">{{ day_tracking.kaddum_name }}</td>
+                <th style="width: 16%;">Kaddum Signature:</th>
+                <td style="width: 20%;">
                     {% if day_tracking.kaddum_sign %}
-                        <img src="{{ day_tracking.kaddum_sign }}" alt="Kaddum Supervisor Signature" style="border: 1px solid #000; width: 400px; height: 150px;">
+                        <img src="{{ day_tracking.kaddum_sign }}" alt="Kaddum Supervisor Signature" style="width: 140px; height: 52.5px;">
                     {% else %}
                         <p>No signature provided</p>
                     {% endif %}
                 </td>
-                <th>DATE:</th>
+                <th>Date:</th>
                 <td>{{ day_tracking.kaddum_sign_date|date:"d/m/Y" }}</td>
             </tr>
             <tr>
-                <th>CLIENT NAME:</th>
+                <th>Client Name:</th>
                 <td>{{ day_tracking.client_name }}</td>
-                <th>CLIENT SIGNATURE:</th>
+                <th>Client Signature:</th>
                 <td>
                     {% if day_tracking.client_sign %}
-                        <img src="{{ day_tracking.client_sign }}" alt="Client Representative Signature" style="border: 1px solid #000; width: 400px; height: 150px;">
+                        <img src="{{ day_tracking.client_sign }}" alt="Client Representative Signature" style="width: 140px; height: 52.5px;">
                     {% else %}
                         <p>No signature provided</p>
                     {% endif %}
                 </td>
-                <th>DATE:</th>
+                <th>Date:</th>
                 <td>{{ day_tracking.client_sign_date|date:"d/m/Y" }}</td>
             </tr>
+
+
+
+
         </table>
     </div>
-    </div>
-    <div class="text-center mt-3">
-        <button class="btn btn-primary" onclick="printPdf()">Print PDF</button>
-        <a href="#" onclick="window.history.back();" class="btn btn-danger">Cancel</a>
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary me-2" onclick="printPdf()" style="width: 150px" >Print PDF</button>
+        <a href="{% url 'day_tracking_delete' day_tracking_id %}" class="btn btn-danger me-2" style="width: 150px">Delete</a>
+        <a href="{% url 'day_tracking_list' %}" class="btn btn-secondary" style="width: 150px" >Back</a>
     </div>
 </div>
 

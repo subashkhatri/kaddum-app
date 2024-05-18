@@ -115,8 +115,8 @@ def employee_add(request):
     return render(request, "users/employee_create.html", {"form": form})
 
 @superuser_required
-def employee_edit(request, employee_id):
-    employee = get_object_or_404(UserAccount, username=employee_id)
+def employee_edit(request, username):
+    employee = get_object_or_404(UserAccount, pk=username)
     if request.method == "POST":
         # Create a form instance and populate it with data from the request:
         form = UserAccountForm(request.POST, instance=employee)
@@ -130,12 +130,12 @@ def employee_edit(request, employee_id):
     else:
         form = UserAccountForm(instance=employee)
 
-    return render(request, "users/employee_edit.html", {"form": form})
+    return render(request, "users/employee_edit.html", {"form": form, 'employee':employee})
 
-def delete_employee(request, username):
-    user = get_object_or_404(UserAccount, username=username)
+def employee_delete(request, username):
+    employee = get_object_or_404(UserAccount, pk=username)
     if request.method == 'POST':
-        user.delete()
+        employee.delete()
         messages.success(request, 'User account has been deleted successfully.')
         return redirect('employees_list')
-    return render(request, 'users/confirm_delete.html', {'user': user})
+    return render(request, 'users/confirm_delete.html', {'employee': employee})

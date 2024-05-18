@@ -319,6 +319,9 @@ class DayTrackingEmployeeDetails(models.Model):
         if self.total_hours is not None and self.hour_rate is not None:
             self.total_amount = float(self.total_hours) * float(self.hour_rate)
 
+        if not self.confirmed_position_id:
+            self.confirmed_position_id = self.position_id
+
         super().save(*args, **kwargs)
 
         # Update total hours for the related DayTracking instance
@@ -382,7 +385,7 @@ class DayTrackingEquipmentDetails(models.Model):
         total_seconds = (end_time_obj - start_time_obj).total_seconds()
         self.total_hours = total_seconds / 3600  # Convert seconds to hours
 
-        if self.resource_id:
+        if not self.item_rate:
             self.item_rate = self.resource_id.item_rate
 
         super().save(*args, **kwargs)
@@ -428,11 +431,11 @@ class WeeklyReportList(models.Model):
     total_amount_equipment = models.FloatField(default=0)
     percentage_employee_local = models.FloatField(default=0)
     percentage_employee_indigenous = models.FloatField(default=0)
- 
+
     class Meta:
         app_label = 'dashboard'
         db_table = 'Report-WeeklyReportList'
-   
+
     def save(self, *args, **kwargs):
         if self.year_week:
             # Assuming year_week is in the format 'YYYYWW'
@@ -440,10 +443,12 @@ class WeeklyReportList(models.Model):
             week = int(self.year_week[4:])
             # Calculate start date based on ISO 8601 week date
             start_date = datetime.strptime(f'{year}-W{week-1}-1', "%Y-W%W-%w").date()
+            # Correcting the start date calculation
+            start_date = datetime.strptime(f'{year}-W{week}-1', "%G-W%V-%u").date()
             # Calculate end date by adding 6 days to the start date
             end_date = start_date + timedelta(days=6)
             self.start_date = start_date
             self.end_date = end_date
         super().save(*args, **kwargs)
- 
- 
+
+

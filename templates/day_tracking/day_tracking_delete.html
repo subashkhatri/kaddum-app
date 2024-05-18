@@ -8,7 +8,7 @@
         <form action="{% url 'day_tracking_delete' record.day_tracking_id %}" method="post">
             {% csrf_token %}
             <input type="submit" value="Confirm" class="btn btn-danger">
-            <a href="{% url 'day_tracking_list' %}" class="btn btn-secondary">Cancel</a>
+            <a href="#" onclick="history.back()" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </div>
