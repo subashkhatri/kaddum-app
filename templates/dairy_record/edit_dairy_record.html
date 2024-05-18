@@ -9,7 +9,7 @@
   <div class="row">
     <div class="col-md-12">
       {% url 'edit_dairy_record' dairy_record.id as form_action %}
-      {% include 'dairy_record/_form.html' with form_action=form_action dairy_record=dairy_record %}
+      {% include 'dairy_record/_form.html' with form_action=form_action dairy_record=dairy_record is_edit=True%}
     </div>
   </div>
 </div>

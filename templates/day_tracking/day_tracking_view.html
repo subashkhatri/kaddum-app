@@ -114,9 +114,6 @@
                 <td>{{ day_tracking.kaddum_sign_date|date:"d/m/Y" }}</td>
             </tr>
             <tr>
-
-            </tr>
-            <tr>
                 <th>Client Name:</th>
                 <td>{{ day_tracking.client_name }}</td>
                 <th>Client Signature:</th>
@@ -136,10 +133,10 @@
 
         </table>
     </div>
-    </div>
-    <div class="text-center mt-3">
-        <button class="btn btn-primary" onclick="printPdf()">Print PDF</button>
-        <a href="{% url 'day_tracking_list' %}" onclick="window.history.back();" class="btn btn-danger">Back</a>
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary me-2" onclick="printPdf()" style="width: 150px" >Print PDF</button>
+        <a href="{% url 'day_tracking_delete' day_tracking_id %}" class="btn btn-danger me-2" style="width: 150px">Delete</a>
+        <a href="{% url 'day_tracking_list' %}" class="btn btn-secondary" style="width: 150px" >Back</a>
     </div>
 </div>
 

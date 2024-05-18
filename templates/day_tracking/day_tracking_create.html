@@ -106,8 +106,8 @@
                 {% endfor %}
             <tbody>
         </table>
-        <div class="d-grid gap-2 d-md-block">
-            <button class="btn btn-success mb-2 col-4" type="button"
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-success" type="button"
                 id="add-employee-row">+Add New Employee</button>
         </div>
         <!-- Equipment-->
@@ -164,8 +164,8 @@
                 {% endfor %}
             <tbody>
         </table>
-        <div class="d-grid gap-2 d-md-block">
-            <button class="btn btn-success mb-2 col-4" type="button"
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-success" type="button"
                 id="add-equipment-row">+Add New Equipment</button>
         </div>
         <!-- Comment -->
@@ -180,9 +180,6 @@
         <div class="form-section-header">Acknowledgements</div>
         <table class="table table-bordered">
             <thead>
-                <tr>
-                    
-                </tr>
                 <tr>
                     <th scope="col" width="20%"></th>
                     <!-- Empty top-left corner cell -->
@@ -227,10 +224,19 @@
                 </tr>
             </tbody>
         </table>
-        <button type="submit" class="form-group btn btn-success col-2" value="complete" name="click-btn">Create</button>
-        <button type="submit" class="form-group btn btn-outline-success col-2" value="draft" name="click-btn">Save as Draft</button>
-        <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="form-group btn btn-success me-2" style="width: 150px" value="complete" name="click-btn">Create</button>
+            <button type="submit" class="form-group btn btn-primary me-2" style="width: 150px" value="draft" name="click-btn">Save as Draft</button>
+            <a href="{% url 'day_tracking_list' %}" class="form-group btn btn-secondary" style="width: 150px" value="back">Back</a>
+        </div>
     </form>
+    <script>
+        function clearSignature(padId) {
+            const pad = document.getElementById(padId);
+            const signaturePad = new SignaturePad(pad);
+            signaturePad.clear();
+        }
+    </script>
 </div>
 </div>
 </div>
@@ -260,28 +266,42 @@
                 }
 
                 if (!kaddumSignaturePad.isEmpty()) {
-                    document.getElementById('id_kaddum_sign').value = kaddumSignaturePad.toDataURL('image/svg+xml');
+                    const kaddumSvg = resizeSignature(kaddumSignaturePad.toDataURL('image/svg+xml'), 400, 150, 140, 52.5);
+                    document.getElementById('id_kaddum_sign').value = kaddumSvg;
                 } else {
                     document.getElementById('id_kaddum_sign').value = ''; // Clear the hidden input if the signature pad is empty
                 }
 
                 if (!clientSignaturePad.isEmpty()) {
-                    document.getElementById('id_client_sign').value = clientSignaturePad.toDataURL('image/svg+xml');
+                    const clientSvg = resizeSignature(clientSignaturePad.toDataURL('image/svg+xml'), 400, 150, 140, 52.5);
+                    document.getElementById('id_client_sign').value = clientSvg;
                 } else {
                     document.getElementById('id_client_sign').value = ''; // Clear the hidden input if the signature pad is empty
                 }
             });
-
-            // Add click event listener to buttons to track which button was clicked
-            document.querySelectorAll('button[type="submit"]').forEach(function(button) {
-                button.addEventListener('click', function() {
-                    document.querySelectorAll('button[type="submit"]').forEach(function(btn) {
-                        btn.removeAttribute('clicked');
-                    });
-                    button.setAttribute('clicked', 'true');
-                });
-            });
         }
+
+        function resizeSignature(dataUrl, originalWidth, originalHeight, newWidth, newHeight) {
+            const svgData = atob(dataUrl.split(',')[1]);
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(svgData, 'image/svg+xml');
+            const svgElement = doc.documentElement;
+
+            svgElement.setAttribute('width', newWidth);
+            svgElement.setAttribute('height', newHeight);
+            svgElement.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
+
+            const serializer = new XMLSerializer();
+            const resizedSvg = serializer.serializeToString(svgElement);
+            return 'data:image/svg+xml;base64,' + btoa(resizedSvg);
+        }
+
+        document.querySelectorAll('button[type="submit"]').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('button[type="submit"]').forEach(btn => btn.removeAttribute('clicked'));
+                this.setAttribute('clicked', 'true');
+            });
+        });
 
         window.clearSignature = function(padId) {
             const pad = padId === 'kaddum-signature-pad' ? kaddumSignaturePad : clientSignaturePad;

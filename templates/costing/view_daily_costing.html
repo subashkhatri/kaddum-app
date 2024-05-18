@@ -14,33 +14,30 @@
     </div>
 
     <div class="container mt-4">
-        <div class="form-section-header">Shift Information</div>
-        <div class="form-group">
-            <label>Project:</label>
-            <input type="text" class="form-control"
-                value="{{ costing.project_no.project_no }} - {{ costing.project_no.project_name }}" readonly>
-        </div>
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label>Record date:</label>
-                <input type="text" class="form-control" value="{{ costing.record_date|date:'d/m/Y' }}" readonly>
-            </div>
-            <div class="form-group col-md-6">
-                <label>Day:</label>
-                <input type="text" class="form-control" value="{{ day_of_week }}" readonly>
-            </div>
-        </div>
+        <table class="table table-bordered border-dark">
+            <tr>
+                <th>Project:</th>
+                <td>{{ costing.project_no.project_no }} - {{ costing.project_no.project_name }}</td>
+                <th>Purchase Order:</th>
+                <td>{{ costing.project_no.purchase_order_no }}</td>
 
-        <div class="form-section-header">Costing Breakdown</div>
-        <table class="table table-bordered table-responsive">
+            </tr>
+            <tr>
+                <th>Record date:</th>
+                <td>{{ costing.record_date|date:'d/m/Y' }}</td>
+                <th>Day:</th>
+                <td>{{ costing.record_date|date:"l" }}</td>
+            </tr>
+        </table>
+        <table class="table table-bordered border-dark">
             <thead>
                 <tr>
-                    <th scope="col" class="align-middle" width="23%">Name</th>
-                    <th scope="col" class="align-middle" width="33%">Position</th>
-                    <th scope="col" class="align-middle" width="15%">Rate($)</th>
+                    <th scope="col" class="align-middle" width="26%">Name</th>
+                    <th scope="col" class="align-middle" width="30%">Position</th>
+                    <th scope="col" class="align-middle" width="9%">Rate($)</th>
                     <th scope="col" class="align-middle" width="9%">Total Hours</th>
                     <th scope="col" class="align-middle" width="9%">Total Amount($)</th>
-                    <th scope="col" class="align-middle" width="2%">Indigenous</th>
+                    <th scope="col" class="align-middle" width="8%">Indigenous</th>
                     <th scope="col" class="align-middle" width="9%">Local</th>
                 </tr>
             </thead>
@@ -66,9 +63,7 @@
                 </tr>
             </tfoot>
         </table>
-
-        <div class="form-section-header">Indigenous and Local Participation</div>
-        <table class="table table-bordered">
+        <table class="table table-bordered border-dark">
             <thead>
                 <tr>
                     <th scope="col"></th>
@@ -90,9 +85,7 @@
                 </tr>
             </tbody>
         </table>
-
-        <div class="form-section-header">Equipment Cost</div>
-        <table class="table table-bordered">
+        <table class="table table-bordered border-dark">
             <thead>
                 <tr>
                     <th scope="col">Type</th>
@@ -101,26 +94,34 @@
                 </tr>
             </thead>
             <tbody id="equipmentTableBody">
-                {% for equipment in equipment_details %}
-                <tr>
-                    <td class="align-middle">{{ equipment.resource_id.item_type|capfirst }}</td>
-                    <td class="align-middle">{{ equipment.resource_id.item_name }}</td>
-                    <td class="align-middle">{{ equipment.item_rate|floatformat:"2" }}</td>
-                </tr>
-                {% endfor %}
+                {% if equipment_details %}
+                    {% for equipment in equipment_details %}
+                    <tr>
+                        <td class="align-middle">{{ equipment.resource_id.item_type|capfirst }}</td>
+                        <td class="align-middle">{{ equipment.resource_id.item_name }}</td>
+                        <td class="align-middle">{{ equipment.item_rate|floatformat:"2" }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td></td>
+                        <td class="text-center">N/A</td>
+                        <td></td>
+                    </tr>
+                {% endif %}
             </tbody>
             <tfoot>
                 <tr>
                     <th scope="row" colspan="2">Total</th>
-                    <td id="total-day-rate">{{ costing.total_day_rate|floatformat:"2" }}</td>
+                    <td id="total-day-rate">{{ costing.total_amount_equipment|floatformat:"2" }}</td>
                 </tr>
             </tfoot>
         </table>
     </div>
 </div>
-<div class="text-center mt-3">
-    <button class="form-group btn btn-primary col-2" onclick="printPdf()">Print PDF</button>
-    <a href="{% url 'all_daily_costing' %}" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+<div class="d-flex justify-content-end">
+    <button class="form-group btn btn-primary me-2" style="width: 150px" onclick="printPdf()">Print PDF</button>
+    <a href="{% url 'all_daily_costing' %}" class="form-group btn btn-secondary me-2" style="width: 150px" value="back">Back</a>
 </div>
 {% endblock %}
 

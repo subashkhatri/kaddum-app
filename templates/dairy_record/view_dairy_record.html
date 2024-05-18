@@ -24,9 +24,9 @@
 					</tr>
 					<tr>
 						<th width="10%">Date:</th>
-						<td width="15%">{{ record.record_date|date:"Y-m-d" }}</td>
+						<td width="15%">{{ record.record_date|date:"d-m-" }}</td>
 						<th width="10%">Day:</th>
-						<td width="10%">{{ record.record_date|date:"l" }}</td>
+						<td width="10%">{{ day_of_week }}</td>
 						<th>Shift:</th>
 						<td>{{ record.record_shift }}</td>
 					</tr>
@@ -164,11 +164,10 @@
 				</tr>
 			</table>
 		</table>
-		<div class="mt-3">
-			<!-- <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="btn btn-success col-2">Edit</a> -->
-			<a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="btn btn-danger col-2">Delete</a>
-			<a href="#" onclick="window.history.back();" class="btn btn-secondary col-2">Back</a>
-			<button class="btn btn-primary col-2" onclick="printPdf()">Print PDF</button>
+		<div class="d-flex justify-content-end mt-3">
+			<button class="btn btn-primary me-2" style="width: 150px" onclick="printPdf()">Print PDF</button>
+			<a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="btn btn-danger me-2" style="width: 150px">Delete</a>
+			<a href="{% url 'all_dairy_record' %}" class="btn btn-secondary" style="width: 150px">Back</a>
 		</div>
 	</div>
 </div>

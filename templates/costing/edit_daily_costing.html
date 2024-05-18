@@ -6,13 +6,19 @@
 </div>
 <div class="container mt-4">
     <div class="row">
-        <div class="col-md-12"> 
+        <div class="col-md-12">
             <form method="POST" novalidate>
                 {% csrf_token %}
                 <div class="form-section-header">Shift Information</div>
-                <div class="form-group">
-                    <label>Project:</label>
-                    <input type="text" class="form-control" value="{{ form.instance.project_no.project_no }} - {{ form.instance.project_no.project_name }}" readonly>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Project:</label>
+                        <input type="text" class="form-control" value="{{ form.instance.project_no.project_no }} - {{ form.instance.project_no.project_name }}" readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Purchase Order:</label>
+                        <input type="text" class="form-control" value="{{form.instance.project_no.purchase_order_no}}" readonly>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-6">
@@ -56,7 +62,7 @@
                             <td class="align-middle total-amount"></td> <!-- Total Amount -->
                             <td class="align-middle text-center">{{ employee.employee_id.is_indigenous | yesno:"✓, " }}</td> <!-- Indigenous -->
                             <td class="align-middle text-center">{{ employee.employee_id.is_local | yesno:"✓, " }}</td> <!-- Local -->
-                        </tr> 
+                        </tr>
                         {% endfor %}
                     </tbody>
                     <tfoot>
@@ -87,7 +93,7 @@
                             <th scope="row">Local</th> <!-- Row header -->
                             <td class="align-middle text-right">{{ instance.total_hours_employee_local|floatformat:"2" }}</td> <!-- Example data -->
                             <td class="align-middle text-right">{{ instance.total_hours_employee_local_percentage|floatformat:2 }}%</td> <!-- Example data -->
-                        </tr>       
+                        </tr>
                     </tbody>
                 </table>
                 <div class="form-section-header">Equipment Cost</div>
@@ -96,12 +102,12 @@
                         <tr>
                             <th scope="col">Type</th>
                             <th scope="col">Equipment</th>
-                            <th scope="col">Day Rate($)</th>                          
+                            <th scope="col">Day Rate($)</th>
                         </tr>
                     </thead>
                     <tbody id="equipmentTableBody">
                         {% for equipment in equipment_details %}
-                        <tr>                        
+                        <tr>
                             <td class="align-middle">{{ equipment.resource_id.item_type|capfirst }}</td>
                             <td class="align-middle">{{ equipment.resource_id.item_name }}</td>
                             <td class="align-middle">
@@ -121,10 +127,12 @@
                 <input type="hidden" name="total_amount_equipment" id="input-total-amount" value="0">
 
                 <form method="POST" novalidate>
-                    {% csrf_token %}                    
-                    <button type="submit" name="action" value="complete" class="form-group btn btn-success col-2">Complete</button>
-                    <button type="submit" name="action" value="draft" class="form-group btn btn-outline-success col-2">Save as Draft</button>
-                    <a href="{% url 'all_daily_costing' %}" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" name="action" value="complete" class="form-group btn btn-success me-2" style="width: 150px">Complete</button>
+                        <button type="submit" name="action" value="draft" class="form-group btn btn-primary me-2" style="width: 150px">Save as Draft</button>
+                        <a href="{% url 'all_daily_costing' %}" value="back" class="form-group btn btn-secondary" style="width: 150px">Back</a>
+                    </div>
                 </form>
             </form>
         </div>
