@@ -4,8 +4,7 @@
     <h1 class="text-left mb-4 h4">Day Tracking: {{record_PK}}</h1>
 </div>
 <div class="container mt-4">
-    <form method="POST" enctype="multipart/form-data"
-        action="{{ form_action }}">
+    <form id="day-tracking-form" method="POST" enctype="multipart/form-data" action="{{ form_action }}">
         {% csrf_token %}
         <div class="col-md-12">
             <div class="form-section-header">Project Information</div>
@@ -63,7 +62,7 @@
                     </th>
                     <th scope="col" class="align-middle" width="8%">Finish Time
                     </th>
-                    <th scope="col" class="align-middle" width="10%">Total Hours
+                    <th scope="col" class="align-middle" width="12%">Total Hours
                     </th>
                     <th scope="col" class="align-middle" width="20%">Brief Work
                         Description</th>
@@ -101,10 +100,8 @@
                             {{ form.work_description.errors }}
                         </td>
                         <td class="align-middle text-center">
-                            <button type="button"
-                                class="btn btn-outline-danger remove-employee-row"
-                                id="remove-employee-row"><i
-                                    class="bi bi-trash"></i></button>
+                            <input type="hidden" name="{{ form.prefix }}-DELETE" id="{{ form.prefix }}-DELETE" class="employee-delete-checkbox">
+                            <button type="button" class="btn btn-outline-danger remove-employee-row" id="remove-employee-row"><i class="bi bi-trash"></i></button>
                         </td>
                     </tr>
                 </div>
@@ -128,7 +125,7 @@
                     </th>
                     <th scope="col" class="align-middle" width="8%">Finish Time
                     </th>
-                    <th scope="col" class="align-middle" width="10%">Total Hours
+                    <th scope="col" class="align-middle" width="12%">Total Hours
                     </th>
                     <th scope="col" class="align-middle" width="20%">Brief Work
                         Description</th>
@@ -163,6 +160,7 @@
                             {{ form.work_description.errors }}
                         </td>
                         <td class="align-middle text-center">
+                            <input type="hidden" name="{{ form.prefix }}-DELETE" id="{{ form.prefix }}-DELETE" class="equipment-delete-checkbox">
                             <button type="button"
                                 class="btn btn-outline-danger remove-equipment-row"
                                 id="remove-equipment-row"><i
@@ -174,7 +172,7 @@
             <tbody>
         </table>
         <div class="d-grid gap-2 d-md-block">
-            <button class="btn btn-outline-success mb-2 col-4" type="button"
+            <button class="btn btn-success mb-2 col-4" type="button"
                 id="add-equipment-row">+Add New Equipment</button>
         </div>
         <!-- Comment -->
@@ -203,13 +201,9 @@
                         {{ form.kaddum_name.errors }}
                     </td>
                     <td class="align-middle text-right">
-                        {% if form.instance.kaddum_sign %}
-                            <img src="{{ form.instance.kaddum_sign }}" alt="Kaddum Supervisor Signature" style="border: 1px solid #000; width: 400px; height: 150px;">
-                        {% else %}
-                            <p>No signature provided</p>
-                        {% endif %}
-                        {{ form.kaddum_sign.errors }}
-                    
+                        <canvas id="kaddum-signature-pad" class="signature-pad" width="400" height="150" style="border: 1px solid #000;"></canvas>
+                        {{ form.kaddum_sign }}
+                        <button type="button" onclick="clearSignature('kaddum-signature-pad')">Clear</button>
                     </td>
                     <td class="align-middle text-right">
                         {{ form.kaddum_sign_date }}
@@ -224,13 +218,9 @@
                         {{ form.client_name.errors }}
                     </td>
                     <td class="align-middle text-right">
-                        {% if form.instance.client_sign %}
-                            <img src="{{ form.instance.client_sign }}" alt="Client Representative Signature" style="border: 1px solid #000; width: 400px; height: 150px;">
-                        {% else %}
-                            <p>No signature provided</p>
-                        {% endif %}
-                        {{ form.client_sign.errors }}
-                    
+                        <canvas id="client-signature-pad" class="signature-pad" width="400" height="150" style="border: 1px solid #000;"></canvas>
+                        {{ form.client_sign }}
+                        <button type="button" onclick="clearSignature('client-signature-pad')">Clear</button>
                     </td>
                     <td class="align-middle text-right">
                         {{ form.client_sign_date }}
@@ -256,21 +246,58 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         const kaddumSignaturePad = new SignaturePad(document.getElementById('kaddum-signature-pad'));
-        const clientSignaturePad = new SignaturePad(document.getElementById('client-signature-pad'));
+    const clientSignaturePad = new SignaturePad(document.getElementById('client-signature-pad'));
 
-        document.getElementById('day-tracking-form').addEventListener('submit', function(event) {
-            document.getElementById('id_kaddum_sign').value = kaddumSignaturePad.toDataURL('image/svg+xml');
-            document.getElementById('id_client_sign').value = clientSignaturePad.toDataURL('image/svg+xml');
+    const dayTrackingForm = document.getElementById('day-tracking-form');
+    if (dayTrackingForm) {
+        dayTrackingForm.addEventListener('submit', function(event) {
+            const clickBtnValue = document.querySelector('button[type="submit"][clicked=true]').value;
+
+            if (clickBtnValue === 'draft') {
+                if (!kaddumSignaturePad.isEmpty() || !clientSignaturePad.isEmpty()) {
+                    if (!confirm('If you save as a draft, the signatures will be cleared. Do you want to proceed?')) {
+                        event.preventDefault(); // Prevent form submission
+                        return;
+                    } else {
+                        kaddumSignaturePad.clear();
+                        clientSignaturePad.clear();
+                    }
+                }
+            }
+
+            if (!kaddumSignaturePad.isEmpty()) {
+                document.getElementById('id_kaddum_sign').value = kaddumSignaturePad.toDataURL('image/svg+xml');
+            } else {
+                document.getElementById('id_kaddum_sign').value = ''; // Clear the hidden input if the signature pad is empty
+            }
+
+            if (!clientSignaturePad.isEmpty()) {
+                document.getElementById('id_client_sign').value = clientSignaturePad.toDataURL('image/svg+xml');
+            } else {
+                document.getElementById('id_client_sign').value = ''; // Clear the hidden input if the signature pad is empty
+            }
         });
 
-        window.clearSignature = function(padId) {
-            const pad = padId === 'kaddum-signature-pad' ? kaddumSignaturePad : clientSignaturePad;
-            pad.clear();
-        };
+        // Add click event listener to buttons to track which button was clicked
+        document.querySelectorAll('button[type="submit"]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('button[type="submit"]').forEach(function(btn) {
+                    btn.removeAttribute('clicked');
+                });
+                button.setAttribute('clicked', 'true');
+            });
+        });
+    }
+
+    window.clearSignature = function(padId) {
+        const pad = padId === 'kaddum-signature-pad' ? kaddumSignaturePad : clientSignaturePad;
+        pad.clear();
+    }
+
 
         calculateEmployeeTotalHours()
         calculateEquipmentTotalHours()
-      
+
       // Event listener for calculating employee totol hours in employee
       document.getElementById('EmployeeTableBody').addEventListener('input', calculateEmployeeTotalHours);
 
@@ -324,7 +351,7 @@
         });
         // Append the cloned row to the table body
         var tableBodyId = type === 'employee' ? 'EmployeeTableBody' :
-            'EquipmentTableBody';
+            'EmployeeTableBody';
         document.getElementById(tableBodyId).appendChild(newRow);
         // Update TOTAL_FORMS value
         var totalFormsInput = document.getElementById('id_' + type +
@@ -340,15 +367,15 @@
     function removeRow(button, type) {
         var totalFormsInput = document.getElementById('id_' + type +
             '-TOTAL_FORMS');
-        if (parseInt(totalFormsInput.value) > 1) {
-            var rowToRemove = button.closest('.' + type + '-row');
-            rowToRemove.remove();
-            // Update TOTAL_FORMS value
-            totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
-        } else {
-            alert("Cannot delete the last row.");
-        }
+            if (parseInt(totalFormsInput.value) > 1) {
+        var rowToRemove = button.closest('.' + type + '-row');
+        rowToRemove.querySelector('.' + type + '-delete-checkbox').value = 'on';
+        rowToRemove.style.display = 'none';  // Optionally hide the row
+
+    } else {
+        alert("Cannot delete the last row.");
     }
+}
     function addEquipmentRow(type) {
         var totalFormsInput = document.getElementById('id_' + type +
             '-TOTAL_FORMS');
@@ -379,50 +406,58 @@
             element.id = element.id.replace('-0-', '-' + rowCount + '-');
         });
         // Append the cloned row to the table body
-        var tableBodyId = type === 'employee' ? 'EmployeeTableBody' :
+        var tableBodyId = type === 'equipment' ? 'EquipmentTableBody' :
             'EquipmentTableBody';
         document.getElementById(tableBodyId).appendChild(newRow);
         // Update TOTAL_FORMS value
+        var totalFormsInput = document.getElementById('id_' + type +
+            '-TOTAL_FORMS');
         totalFormsInput.value = rowCount + 1;
-        // Make the newly added row visible
-        newRow.style.display = 'table-row';
         // Attach event listener to the new remove button
         newRow.querySelector('.remove-' + type + '-row').addEventListener(
             'click',
             function(event) {
-                removeEquipmentRow(this, type);
+                removeRow(this, type);
             });
     }
     function removeEquipmentRow(button, type) {
-        var totalFormsInput = document.getElementById('id_' + type +
-            '-TOTAL_FORMS');
+        var totalFormsInput = document.getElementById('id_' + type + '-TOTAL_FORMS');
+        var rowToRemove = button.closest('.' + type + '-row');
+
         if (parseInt(totalFormsInput.value) > 1) {
-            var rowToRemove = button.closest('.' + type + '-row');
-            rowToRemove.remove();
-            // Update TOTAL_FORMS value
+            // Mark the row for deletion
+            var deleteCheckbox = rowToRemove.querySelector('.' + type + '-delete-checkbox');
+            if (deleteCheckbox) {
+                deleteCheckbox.value = 'on';
+            }
+            rowToRemove.style.display = 'none';  // Optionally hide the row
+
         } else {
-            // Hide the row if TOTAL_FORMS is 0
-            var rowToRemove = button.closest('.' + type + '-row');
-            rowToRemove.style.display = 'none';
+            // If it's the last row, mark it for deletion but keep it visible (optional)
+            var deleteCheckbox = rowToRemove.querySelector('.' + type + '-delete-checkbox');
+            if (deleteCheckbox) {
+                deleteCheckbox.value = 'on';
+            }
+            rowToRemove.style.display = 'none';  // Optionally hide the row
+            totalFormsInput.value = 0;
         }
-        totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
     }
     function calculateEmployeeTotalHours() {
       $('.employee-row').each(function(index) {
           var index = $(this).index('.employee-row');
           var startTime = $(this).find('#id_employee-' + index + '-start_time').val();
           var endTime = $(this).find('#id_employee-' + index + '-end_time').val();
-                  
+
           // Convert start and end times to Date objects
           var startDate = new Date('2000-01-01 ' + startTime);
-          var endDate = new Date('2000-01-01 ' + endTime);      
-        
+          var endDate = new Date('2000-01-01 ' + endTime);
+
         // Calculate the difference in milliseconds
         var timeDiff = Math.abs(endDate - startDate);
-        
+
         // Convert milliseconds to hours
         var totalHours = timeDiff / (1000 * 3600);
-        
+
         // Update the total hours input
         $(this).find('#id_employee-' + index + '-employee_total_hours').val(totalHours.toFixed(2));
     });
@@ -435,20 +470,18 @@
               console.log("index", startTime)
               console.log("startTime", startTime)
               console.log("endTime", endTime);
-                      
+
               // Convert start and end times to Date objects
               var startDate = new Date('2000-01-01 ' + startTime);
               var endDate = new Date('2000-01-01 ' + endTime);
-          
-            
+
             // Calculate the difference in milliseconds
             var timeDiff = Math.abs(endDate - startDate);
-            
+
             // Convert milliseconds to hours
             var totalHours = timeDiff / (1000 * 3600);
             console.log("total hour", index, ":",totalHours)
 
-            
             // Update the total hours input
             $(this).find('#id_equipment-' + index + '-equipment_total_hours').val(totalHours.toFixed(2));
         });
