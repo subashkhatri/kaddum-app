@@ -163,19 +163,24 @@ class DayTrackingEquipmentFormSet(BaseInlineFormSet):
 
             # Check for duplicate resource_id
             resource_id = form.cleaned_data.get('resource_id')
-            if resource_id in equipment:
-                form.add_error('resource_id', 'Employee is duplicated.')
-                duplicates = True
-            equipment.append(resource_id)
+            if resource_id:
+                if resource_id in equipment:
+                    form.add_error('resource_id', 'Resource is duplicated.')
+                    duplicates = True
+                equipment.append(resource_id)
 
-            # Check that start_time and end_time are not the same
-            start_time = form.cleaned_data.get('start_time')
-            end_time = form.cleaned_data.get('end_time')
-            if start_time == end_time:
-                form.add_error('end_time', 'End time cannot be the same as start time.')
+                # Check that start_time and end_time are not the same
+                start_time = form.cleaned_data.get('start_time')
+                end_time = form.cleaned_data.get('end_time')
+                if start_time == end_time:
+                    form.add_error('end_time', 'End time cannot be the same as start time.')
+            else:
+                # If resource_id is not selected, remove start_time and end_time from cleaned_data
+                form.cleaned_data.pop('start_time', None)
+                form.cleaned_data.pop('end_time', None)
 
         if duplicates:
-            raise ValidationError("Duplicate equipment found in the formset.")
+            raise ValidationError("Duplicate resources found in the formset.")
 
 
 DayTrackingEmployeeFormSet = inlineformset_factory(
@@ -184,7 +189,7 @@ DayTrackingEmployeeFormSet = inlineformset_factory(
     form=DayTrackingEmployeeForm,
     formset=DayTrackingEmployeeFormSet,
     can_delete=True,
-    extra=1,
+    # extra=1,
 
 )
 
@@ -195,5 +200,5 @@ DayTrackingEquipmentFormSet = inlineformset_factory(
     formset=DayTrackingEquipmentFormSet,
     can_delete=True,
     extra=1,
-    # min_num=0,
+    min_num=0,
     )

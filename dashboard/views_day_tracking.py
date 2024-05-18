@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.db import transaction
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 
 from .forms_day_tracking import DayTrackingForm, DayTrackingEmployeeFormSet, DayTrackingEquipmentFormSet
 from .models import DayTracking,  CostTracking, DayTrackingEmployeeDetails,DayTrackingEquipmentDetails
@@ -147,9 +148,12 @@ def day_tracking_update(request, day_tracking_id):
         form = DayTrackingForm(instance=day_tracking_instance)
         employee_formset = DayTrackingEmployeeFormSet(instance=day_tracking_instance, prefix='employee')
         equipment_formset = DayTrackingEquipmentFormSet(instance=day_tracking_instance, prefix='equipment')
-        extra_value = 1 if day_tracking_instance is None else 0
-        employee_formset.extra = extra_value
-        equipment_formset.extra = extra_value
+        employee_formset.extra = 0
+
+        if not equipment_formset.queryset.exists():
+            equipment_formset = DayTrackingEquipmentFormSet(queryset=DayTrackingEquipmentDetails.objects.none(), prefix='equipment', extra=1)
+        else:
+            equipment_formset.extra = 0
 
     return render(request, 'day_tracking/day_tracking_update.html', {
         'form': form,
@@ -163,9 +167,15 @@ def day_tracking_update(request, day_tracking_id):
 def day_tracking_list(request):
     draft_records_list = DayTracking.objects.filter(is_draft=True).order_by('-created_date')
     completed_records_list = DayTracking.objects.filter(is_draft=False).order_by('-created_date')
-    # Fetch all records from the DayTracking model
-    records = DayTracking.objects.all().select_related('project_no')
-    return render(request, 'day_tracking/day_tracking_list.html', {'draft_records': draft_records_list, 'completed_records':completed_records_list})
+
+
+    paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
+    page_number = request.GET.get('page')
+    completed_records_page  = paginator.get_page(page_number)
+    return render(request, 'day_tracking/day_tracking_list.html', {
+        'draft_records': draft_records_list,
+        'completed_records':completed_records_page,
+        })
 
 @superuser_or_supervisor_required
 def day_tracking_delete(request, day_tracking_id):

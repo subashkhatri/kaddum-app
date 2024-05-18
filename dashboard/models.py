@@ -259,7 +259,7 @@ class DayTracking(models.Model):
             cost_tracking_instance.total_amount_equipment = total_amount_equipment
             cost_tracking_instance.total_hours_employee_local_percentage = local_percentage
             cost_tracking_instance.total_hours_employee_indigenous_percentage = indigenous_percentage
-
+            cost_tracking_instance.last_modification_date = datetime.now()
             cost_tracking_instance.save()
 
     def __str__(self):
@@ -295,19 +295,23 @@ class DayTrackingEmployeeDetails(models.Model):
                 new_id = 1  # If no records exist, start from 1
             self.id = new_id
 
-        # Calculate total hours
+        # Calculate total hours from start_time and end_time
         if isinstance(self.start_time, str):
             self.start_time = datetime.strptime(self.start_time, '%H:%M').time()
         if isinstance(self.end_time, str):
             self.end_time = datetime.strptime(self.end_time, '%H:%M').time()
-        start_time_obj = self.start_time
-        end_time_obj = self.end_time
-        if start_time_obj and end_time_obj:
-            start_time_seconds = (start_time_obj.hour * 3600) + (start_time_obj.minute * 60) + start_time_obj.second
-            end_time_seconds = (end_time_obj.hour * 3600) + (end_time_obj.minute * 60) + end_time_obj.second
-            total_seconds = end_time_seconds - start_time_seconds
-            self.total_hours = abs(total_seconds / 3600)  # Convert seconds to hours
 
+        start_time_obj = datetime.combine(datetime.today(), self.start_time)
+        end_time_obj = datetime.combine(datetime.today(), self.end_time)
+
+        # Adjust end_time_obj to the next day if it is earlier than start_time_obj
+        if end_time_obj <= start_time_obj:
+            end_time_obj += timedelta(days=1)
+
+        total_seconds = (end_time_obj - start_time_obj).total_seconds()
+        self.total_hours = total_seconds / 3600  # Convert seconds to hours
+
+        # Set hour_rate if not already set
         if not self.hour_rate:
             self.hour_rate = self.position_id.item_rate
 
@@ -362,24 +366,28 @@ class DayTrackingEquipmentDetails(models.Model):
                 new_id = "1"  # If no records exist, start from 1
             self.id = new_id
 
-         # calculate start_time and end_time to total hours
+        # Calculate total hours from start_time and end_time
         if isinstance(self.start_time, str):
             self.start_time = datetime.strptime(self.start_time, '%H:%M').time()
         if isinstance(self.end_time, str):
             self.end_time = datetime.strptime(self.end_time, '%H:%M').time()
-        start_time_obj = self.start_time
-        end_time_obj = self.end_time
-        if start_time_obj and end_time_obj:
-            start_time_seconds = (start_time_obj.hour * 3600) + (start_time_obj.minute * 60) + start_time_obj.second
-            end_time_seconds = (end_time_obj.hour * 3600) + (end_time_obj.minute * 60) + end_time_obj.second
-            total_seconds = end_time_seconds - start_time_seconds
-            self.total_hours = abs(total_seconds / 3600)  # Convert seconds to hours
+
+        start_time_obj = datetime.combine(datetime.today(), self.start_time)
+        end_time_obj = datetime.combine(datetime.today(), self.end_time)
+
+        # Adjust end_time_obj to the next day if it is earlier than start_time_obj
+        if end_time_obj <= start_time_obj:
+            end_time_obj += timedelta(days=1)
+
+        total_seconds = (end_time_obj - start_time_obj).total_seconds()
+        self.total_hours = total_seconds / 3600  # Convert seconds to hours
 
         if self.resource_id:
             self.item_rate = self.resource_id.item_rate
 
         super().save(*args, **kwargs)
         day_tracking_instance = self.day_tracking_id
+
         if day_tracking_instance:
             total_hours_equipment = DayTrackingEquipmentDetails.objects.filter(day_tracking_id=self.day_tracking_id).aggregate(total_hours_equipment=Sum('total_hours'))['total_hours_equipment'] or 0
             total_amount_equipment = DayTrackingEquipmentDetails.objects.filter(day_tracking_id=self.day_tracking_id).aggregate(total_amount_equipment=Sum('item_rate'))['total_amount_equipment'] or 0

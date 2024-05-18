@@ -16,7 +16,7 @@ def all_weekly_report(request):
             project_no = request.POST.get('project_no')
             year_week = request.POST.get('year_week')
             project_instance = Project.objects.get(project_no=project_no)
-            
+
             if CostTracking.objects.filter(project_no=project_no, year_week=year_week).exists():
                 dairy_records = DairyRecord.objects.filter(project_no=project_no, year_week=year_week)
                 aggregates = dairy_records.aggregate(

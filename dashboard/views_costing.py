@@ -22,6 +22,7 @@ def edit_daily_costing(request, cost_tracking_id):
     employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=instance).select_related('position_id', 'employee_id')
     equipment_details = DayTrackingEquipmentDetails.objects.filter(day_tracking_id__cost_tracking_id=instance)
     positions = ResourceCost.objects.filter(item_type='personel').order_by('item_name')
+    record_PK = instance.cost_tracking_id
 
     # Calculate the total hours and total amount for the instance
     # instance.calculate_total()
@@ -30,7 +31,6 @@ def edit_daily_costing(request, cost_tracking_id):
     if request.method == 'POST':
         form = CostTrackingForm(request.POST, instance=instance)
         if form.is_valid():
-            
             if request.POST.get('action') == 'complete':
                 form.instance.is_draft = False
                 form.save()
@@ -65,7 +65,8 @@ def edit_daily_costing(request, cost_tracking_id):
         'employee_details': employee_details,
         'equipment_details': equipment_details,
         'positions': positions,
-        'instance': instance,  # This contains all the totals and percentages
+        'instance': instance,  # This contains all the totals and percentages,
+        'record_PK':record_PK,
     }
 
     return render(request, 'costing/edit_daily_costing.html', context)

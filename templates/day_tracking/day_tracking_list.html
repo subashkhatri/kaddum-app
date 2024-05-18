@@ -17,7 +17,7 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
-            <form>            
+            <form>
                 <div class="form-section-header">Draft Records</div>
                 <table class="table table-bordered" style="border-collapse: collapse;">
                     <thead>
@@ -26,9 +26,9 @@
                             <th scope="col" class="align-middle" style="border-right-style: hidden;">Date</th>
                             <th scope="col" class="align-middle" style="border-right-style: hidden;">Week</th>
                             <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No. - Project Name</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Shift</th>       
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Modification</th>       
-                            <th scope="col" class="align-middle" style="border-left-style: inset;" width="15%"></th>       
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Shift</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Modification</th>
+                            <th scope="col" class="align-middle" style="border-left-style: inset;" width="15%"></th>
                         </tr>
                     </thead>
                     <tbody id="DraftTableBody">
@@ -38,25 +38,25 @@
                             <td class="align-middle" style="border-right-style: hidden;">{{ record.record_date|date:"d/m/y" }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ record.year_week }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ record.project_no }}</td>
-                            <td class="align-middle" style="border-right-style: hidden;">{{ record.record_shift }}</td>                            
-                            <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m/y H:i" }}</td>                            
-                            <td class="align-middle" style="border-left-style: inset;">                           
+                            <td class="align-middle" style="border-right-style: hidden;">{{ record.record_shift }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m/y H:i" }}</td>
+                            <td class="align-middle" style="border-left-style: inset;">
                                 <div class="d-flex justify-content-evenly">
-                                  <a href="{% url 'day_tracking_update' record.day_tracking_id %}" class="btn btn-outline-success btn-sm">Edit</a> 
-                                  <a href="{% url 'day_tracking_delete' record.day_tracking_id %}" class="btn btn-outline-danger btn-sm">Delete</a> 
+                                  <a href="{% url 'day_tracking_update' record.day_tracking_id %}" class="btn btn-outline-success btn-sm">Edit</a>
+                                  <a href="{% url 'day_tracking_delete' record.day_tracking_id %}" class="btn btn-outline-danger btn-sm">Delete</a>
                                 </div>
-                            </td>          
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
                             <td colspan="7">No draft records found.</td>
-                        </tr>                        
+                        </tr>
                         {% endfor %}
                     <tbody>
                 </table>
-               
+
                 <div class="form-section-header" style="margin-top: 80px;">Completed Records</div>
-              
+
                 <table class="table table-bordered" style="border-collapse: collapse;">
                   <thead>
                       <tr>
@@ -64,32 +64,53 @@
                         <th scope="col" class="align-middle" style="border-right-style: hidden;">Date</th>
                         <th scope="col" class="align-middle" style="border-right-style: hidden;">Week</th>
                         <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No. - Project Name</th>
-                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Shift</th>       
-                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Modification</th>       
-                        <th scope="col" class="align-middle" style="border-left-style: inset;" width="15%"></th>             
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Shift</th>
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Modification</th>
+                        <th scope="col" class="align-middle" style="border-left-style: inset;" width="15%"></th>
                       </tr>
                   </thead>
                   <tbody id="DraftTableBody">
-                      {% for record in completed_records %}
+                    {% for record in completed_records %}
                       <tr>
                         <td class="align-middle" style="border-right-style: hidden;">{{ record.day_tracking_id }}</td>
                         <td class="align-middle" style="border-right-style: hidden;">{{ record.record_date|date:"d/m/y" }}</td>
                         <td class="align-middle" style="border-right-style: hidden;">{{ record.year_week }}</td>
                         <td class="align-middle" style="border-right-style: hidden;">{{ record.project_no }}</td>
-                        <td class="align-middle" style="border-right-style: hidden;">{{ record.record_shift }}</td>                            
-                        <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m/y H:i" }}</td>                                                       
-                        <td class="align-middle" style="border-left-style: inset;">                           
-                            <div class="d-flex justify-content-evenly"> 
-                                <a href="{% url 'day_tracking_view' record.day_tracking_id %}" class="btn btn-outline-primary btn-sm">View</a>                         
-                                <a href="{% url 'day_tracking_delete' record.day_tracking_id %}" class="btn btn-outline-danger btn-sm">Delete</a> 
-                           
-                            </div>   
-                        </td>          
-                      </tr>                        
-                      {% endfor %}
+                        <td class="align-middle" style="border-right-style: hidden;">{{ record.record_shift }}</td>
+                        <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m/y H:i" }}</td>
+                        <td class="align-middle" style="border-left-style: inset;">
+                            <div class="d-flex justify-content-evenly">
+                                <a href="{% url 'day_tracking_view' record.day_tracking_id %}" class="btn btn-outline-primary btn-sm">View</a>
+                                <a href="{% url 'day_tracking_delete' record.day_tracking_id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                            </div>
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                          <td colspan="7">No completed records found.</td>
+                      </tr>
+                    {% endfor %}
                   <tbody>
               </table>
             </form>
+            <!-- Pagination controls -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if completed_records.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ completed_records.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{ completed_records.number }} of {{ completed_records.paginator.num_pages }}</span>
+                    </li>
+                    {% if completed_records.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ completed_records.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
     </div>
 </div>

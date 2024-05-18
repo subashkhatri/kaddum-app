@@ -106,8 +106,8 @@
                 {% endfor %}
             <tbody>
         </table>
-        <div class="d-grid gap-2 d-md-block">
-            <button class="btn btn-success mb-2 col-4" type="button"
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-success" type="button"
                 id="add-employee-row">+Add New Employee</button>
         </div>
         <!-- Equipment-->
@@ -164,8 +164,8 @@
                 {% endfor %}
             <tbody>
         </table>
-        <div class="d-grid gap-2 d-md-block">
-            <button class="btn btn-success mb-2 col-4" type="button"
+        <div class="d-flex justify-content-end mb-3">
+            <button class="btn btn-success" type="button"
                 id="add-equipment-row">+Add New Equipment</button>
         </div>
         <!-- Comment -->
@@ -224,9 +224,11 @@
                 </tr>
             </tbody>
         </table>
-        <button type="submit" class="form-group btn btn-success col-2" value="complete" name="click-btn">Create</button>
-        <button type="submit" class="form-group btn btn-outline-success col-2" value="draft" name="click-btn">Save as Draft</button>
-        <a href="#" onclick="window.history.back();" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="form-group btn btn-success me-2" value="complete" name="click-btn">Create</button>
+            <button type="submit" class="form-group btn btn-primary me-2" value="draft" name="click-btn">Save as Draft</button>
+            <a href="#" onclick="window.history.back();" class="form-group btn btn-secondary" value="back">Back</a>
+        </div>
     </form>
 </div>
 </div>

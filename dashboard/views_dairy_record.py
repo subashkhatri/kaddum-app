@@ -16,10 +16,15 @@ def view_dairy_record(request, dairy_record_id):
 def all_dairy_record(request):
     draft_records_list = DairyRecord.objects.filter(is_draft=True).order_by('-created_date')
     completed_records_list = DairyRecord.objects.filter(is_draft=False).order_by('-created_date')
+
     paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
     page_number = request.GET.get('page')
-    dairy_records = paginator.get_page(page_number)
-    return render(request, 'dairy_record/all_dairy_record.html', {'draft_records': draft_records_list, 'completed_records':completed_records_list})
+    completed_records_page  = paginator.get_page(page_number)
+
+    return render(request, 'dairy_record/all_dairy_record.html', {
+    'draft_records': draft_records_list,
+    'completed_records': completed_records_page,
+    })
 
 
 @superuser_or_supervisor_required

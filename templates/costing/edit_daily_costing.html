@@ -2,11 +2,11 @@
 
 {% block page_content %}
 <div class="container mt-4">
-    <h1 class="text-left mb-4 h4">Daily Costing</h1>
+    <h1 class="text-left mb-4 h4">Daily Costing: {{ record_PK }}</h1>
 </div>
 <div class="container mt-4">
     <div class="row">
-        <div class="col-md-12"> 
+        <div class="col-md-12">
             <form method="POST" novalidate>
                 {% csrf_token %}
                 <div class="form-section-header">Shift Information</div>
