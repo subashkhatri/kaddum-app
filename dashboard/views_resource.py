@@ -1,16 +1,36 @@
-from .models import ResourceCost
-from .models_resource_cost import ResourceCost
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from .forms_resource_cost import ResourceCostForm
 from django.contrib import messages
-from users.decorators import superuser_required
 from django.core.paginator import Paginator
+from django.db.models import Q
+from django.shortcuts import render, redirect, get_object_or_404
+
+from .forms_resource_cost import ResourceCostForm
+from .models_resource_cost import ResourceCost
+from users.decorators import superuser_required
+import datetime
 
 
 @superuser_required
 def resource_cost_list(request):
-    resources = ResourceCost.objects.all().order_by('-last_modification_date')
+    query = request.GET.get('q', '').strip().lower()
+    if query:
+        try:
+            # Attempt to parse the query as a date
+            date_query = datetime.datetime.strptime(query, '%d/%m/%Y').date()
+        except ValueError:
+            date_query = None
+
+        resources = ResourceCost.objects.filter(
+            Q(item_type__icontains=query) |
+            Q(item_name__icontains=query) |
+            Q(item_id__icontains=query) |
+            Q(item_location__icontains=query) |
+            Q(unit_of_measure__icontains=query) |
+            Q(mobilisation_desc__icontains=query) |
+            Q(item_rate__icontains=query) |
+            (Q(created_date__date=date_query) | Q(last_modification_date__date=date_query) if date_query else Q())
+        ).order_by('-created_date')
+    else:
+        resources = ResourceCost.objects.all().order_by('-last_modification_date')
 
     paginator = Paginator(resources, 15)  # Show 10 records per page.
     page_number = request.GET.get('page')

@@ -1,14 +1,34 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Sum
-
+from django.db.models import Sum, Q
 from .models import DairyRecord, Project, CostTracking, WeeklyReportList
-
+import datetime
 
 
 def all_weekly_report(request):
     new_reports = WeeklyReportList.objects.all().order_by('-created_date')
+    query = request.GET.get('q', '').strip().lower()
+
+    if query:
+        try:
+            # Attempt to parse the query as a date
+            date_query = datetime.datetime.strptime(query, '%d/%m/%y').date()
+        except ValueError:
+            date_query = None
+
+        new_reports = WeeklyReportList.objects.filter(
+            Q(year_week__icontains=query) |
+            Q(project_no__project_no__icontains=query) |
+            Q(project_no__project_name__icontains=query) |
+            Q(start_date=date_query) |
+            Q(end_date=date_query) |
+            Q(created_date__date=date_query)  # Exact date match
+        ).order_by('-created_date')
+    else:
+        new_reports = WeeklyReportList.objects.all().order_by('-created_date')
+
+
     projects = Project.objects.all()
     weeks = CostTracking.objects.all().values_list('year_week', flat=True).distinct()
     unique_projects = {(project.project_no, project.project_name) for project in projects}

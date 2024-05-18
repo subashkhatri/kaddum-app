@@ -6,10 +6,6 @@
     <div class="me-auto p-2">
         <h1 class="text-left mb-4 h4">Weekly Report</h1>
     </div>
-    <div class="input-group p-2" style="width: 250px;">
-        <input type="text" class="form-control" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-secondary border border-none" type="button" style="background-color: #dee2e6;"><i class="bi bi-search"></i></button>
-    </div>
 </div>
 <div class="container mt-4">
     <div class="row">
@@ -45,15 +41,29 @@
                     </div>
                 </div>
             </form>
-            <div class="form-section-header" style="margin-top: 80px;">Completed Weekly Reports</div>
+            <!-- search bar -->
+            <div class="container d-flex justify-content-end" style="margin: 0; padding: 0;">
+                <form method="get" action="">
+                    <div class="input-group" style="width: 300px; margin-top: 80px; margin-bottom: 20px;">
+                        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-secondary border border-none" type="submit" style="background-color: #dee2e6;">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+                <a href="{% url 'all_weekly_report' %}" class="btn btn-outline-secondary" style="margin-top: 80px; margin-left: 10px; height: 38px;">
+                    Clear
+                </a>
+            </div>
+            <div class="form-section-header">Completed Weekly Reports</div>
             <table class="table table-bordered" style="border-collapse: collapse;">
                 <thead>
                     <tr>
-                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Week</th>      
-                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Period</th>                                
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Week</th>
+                        <th scope="col" class="align-middle" style="border-right-style: hidden;">Period</th>
                         <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No. - Project Name</th>
                         <th scope="col" class="align-middle" style="border-right-style: hidden;">Created Date</th>
-                        <th scope="col" class="align-middle" style="border-left-style: inset;" width="15%"></th>       
+                        <th scope="col" class="align-middle" style="border-left-style: inset;" width="15%"></th>
                     </tr>
                 </thead>
                 <tbody id="employeeTableBody">

@@ -1,12 +1,15 @@
 {% extends "partials/base.html" %}
 
 {% block page_content %}
-<div class="container mt-4">
-    <h1 class="text-left mb-4 h4">Employee List</h1>     
+<div class="container mt-4 d-flex align-items-center">
+    <div class="me-auto p-2">
+        <h1 class="text-left mb-4 h4">Employee List</h1>
+    </div>
     {% if request.user.roles == "super admin" %}
-    <a href="{% url 'employees_create' %}"  class="form-group btn btn-danger col-2 float-right" >Add</a>
+    <div class="p-2">
+        <a href="{% url 'employees_create' %}" class="btn btn-danger">+ Create New Employee</a>
+    </div>
     {% endif %}
-
     {% comment %} <div>
         <button type="submit" class="btn btn-danger btn-lg float-right">Save</button>
     </div> {% endcomment %}
@@ -14,10 +17,23 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
-            <!-- <div class="form-section-header">Employee List</div>             -->
+            <!-- search bar -->
+            <div class="container d-flex justify-content-end" style="margin: 0; padding: 0;">
+                <form method="get" action="">
+                    <div class="input-group" style="width: 300px; margin-bottom: 20px;">
+                        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-secondary border border-none" type="submit" style="background-color: #dee2e6;">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+                <a href="{% url 'project_list' %}" class="btn btn-outline-secondary" style="margin-left: 10px; height: 38px;">
+                    Clear
+                </a>
+            </div>
             <table class="table table-bordered">
                 <thead>
-                    <tr>
+                    <tr style="background-color: lightcoral;">
                         <th scope="col" class="align-middle"><small> ID</small></th>
                         <th scope="col" class="align-middle" width=><small>Full Name</small></th>
                         <th scope="col" class="align-middle" ><small>Email</small></th>
@@ -32,15 +48,20 @@
                 <tbody id="employeeTableBody">
                     {% for employee in employee_list %}
                     <tr>
-                        <td class="align-middle"><a href="{% url 'employees_edit' employee.username %}">{{ employee.username }}</a></td>
+                        <td class="align-middle"><small>{{employee.username}}</small></td>
                         <td class="align-middle"><small>{{employee.full_name}}</small></td>
                         <td class="align-middle"><small>{{employee.email}}</small></td>
                         <td class="align-middle"><small>{% if employee.is_indigenous %}Yes{% else %}No{% endif %}</small></td>
                         <td class="align-middle"><small>{% if employee.is_local %}Yes{% else %}No{% endif %}</small></td>
                         <td class="align-middle"><small>{{employee.position_id.item_name}}</small></td>
+                        {% if request.user.roles == "super admin" %}
                         <td class="align-middle"><small>{{employee.roles}}</small></td>
+                        {% endif %}
                         <td class="align-middle"><small>{% if employee.is_active %}Active{% else %} Inactive {% endif%}</small></td>
-                        <td class="align-middle"><small><a href="{% url 'delete_employee' employee.username %}" class="btn btn-sm btn-danger">X</a></small></td>
+                        <td>
+                            <a href="{% url 'employees_edit' employee.username %}" class="btn btn-outline-success btn-sm">Edit</a>
+                        </td>
+                        <!-- <td class="align-middle"><small><a href="{% url 'delete_employee' employee.username %}" class="btn btn-sm btn-danger">X</a></small></td> -->
                     </tr>
                     {% endfor%}
                 <tbody>

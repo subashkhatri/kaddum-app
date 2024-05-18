@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from .forms_dairy_record import DairyRecordForm
-from .models import DairyRecord
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from users.decorators import superuser_or_supervisor_required
+
+from .forms_dairy_record import DairyRecordForm
+from .models import DairyRecord
+from datetime import datetime
 
 @superuser_or_supervisor_required
 def view_dairy_record(request, dairy_record_id):
@@ -15,7 +18,26 @@ def view_dairy_record(request, dairy_record_id):
 @superuser_or_supervisor_required
 def all_dairy_record(request):
     draft_records_list = DairyRecord.objects.filter(is_draft=True).order_by('-created_date')
-    completed_records_list = DairyRecord.objects.filter(is_draft=False).order_by('-created_date')
+    query = request.GET.get('q', '').strip().lower()
+    if query:
+            try:
+                # Attempt to parse the date if the query is a date string
+                date_query = datetime.strptime(query, '%d/%m/%y').date()
+            except ValueError:
+                date_query = None
+
+            completed_records_list = DairyRecord.objects.filter(
+                Q(is_draft=False) &
+                (Q(dairy_record_id__icontains=query) |
+                Q(record_date=date_query) |  # Exact date match
+                Q(year_week__icontains=query) |
+                Q(project_no__project_no__icontains=query) |
+                Q(project_no__project_name__icontains=query) |
+                Q(record_shift__icontains=query) |
+                Q(last_modification_date__icontains=query))  # This will handle date part search for last_modification_date
+            ).order_by('-created_date')
+    else:
+        completed_records_list = DairyRecord.objects.filter(is_draft=False).order_by('-created_date')
 
     paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
     page_number = request.GET.get('page')

@@ -2,9 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import CostTracking, Project, DayTracking, DayTrackingEmployeeDetails, ResourceCost,DayTrackingEquipmentDetails
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.contrib import messages
+from django.db.models import Q
+
 import datetime
 from .forms_costing import CostTrackingForm
-from django.contrib import messages
 from users.decorators import superuser_required
 
 @superuser_required
@@ -74,7 +76,25 @@ def edit_daily_costing(request, cost_tracking_id):
 @superuser_required
 def all_daily_costing(request):
     draft_records_list = CostTracking.objects.filter(is_draft=True).order_by('-created_date')
-    completed_records_list = CostTracking.objects.filter(is_draft=False).order_by('-created_date')
+    query = request.GET.get('q', '').strip().lower()
+    if query:
+        try:
+            # Attempt to parse the query as a date
+            date_query = datetime.datetime.strptime(query, '%d/%m/%y').date()
+        except ValueError:
+            date_query = None
+
+        completed_records_list = CostTracking.objects.filter(
+        Q(is_draft=False) &
+        (Q(cost_tracking_id__icontains=query) |
+        Q(record_date=date_query) |  # Exact date match
+        Q(year_week__icontains=query) |
+        Q(project_no__project_no__icontains=query) |
+        Q(project_no__project_name__icontains=query) |
+        Q(last_modification_date__icontains=query))
+        ).order_by('-created_date')
+    else:
+        completed_records_list = CostTracking.objects.filter(is_draft=False).order_by('-created_date')
 
     paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
     page_number = request.GET.get('page')

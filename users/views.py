@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .models import UserAccount
 from dashboard.models import *
@@ -75,7 +76,26 @@ def logout(request):
 
 @superuser_required
 def employees_list(request):
-    employees = UserAccount.objects.order_by("username")
+    query = request.GET.get('q', '').strip().lower()
+    if query:
+        is_indigenous_query = {'indigenous': True, 'no': False}.get(query, None)
+        is_local_query = {'local': True, 'no': False}.get(query, None)
+        is_active_query = {'active': True, 'inactive': False}.get(query, None)
+
+        employees = UserAccount.objects.filter(
+            Q(username__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(full_name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(roles__icontains=query)|
+            (Q(is_indigenous=is_indigenous_query) if is_indigenous_query is not None else Q())|
+            (Q(is_local=is_local_query) if is_local_query is not None else Q())|
+            (Q(is_active=is_active_query) if is_active_query is not None else Q())
+        ).order_by('-username')
+    else:
+        employees = UserAccount.objects.all().order_by('-username')
+
     paginator = Paginator(employees, 10)  # Show 10 records per page.
     page_number = request.GET.get('page')
     employee_list  = paginator.get_page(page_number)
