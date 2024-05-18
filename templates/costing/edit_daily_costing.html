@@ -30,8 +30,8 @@
                     <thead>
                         <tr>
                             <th scope="col" class="align-middle" width="23%">Name</th>
-                            <th scope="col" class="align-middle" width="28%">Position</th>
-                            <th scope="col" class="align-middle" width="17%">Rate($)</th>
+                            <th scope="col" class="align-middle" width="33%">Position</th>
+                            <th scope="col" class="align-middle" width="15%">Rate($)</th>
                             <th scope="col" class="align-middle" width="9%">Total Hours</th>
                             <th scope="col" class="align-middle" width="9%">Total Amount($)</th>
                             <th scope="col" class="align-middle" width="2%">Indigenous</th>
@@ -43,15 +43,15 @@
                         <tr>
                             <td class="align-middle">{{ employee.employee_id }}</td>
                             <td class="align-middle">
-                                <select class="form-control" name="position[]">
+                                <select class="form-control" name="position_{{employee.id}}">
                                     <option value="">Select Position</option>
                                     {% for position in positions %}
-                                    <option value="{{ position.resource_id }}" {% if position.resource_id == employee.position_id.resource_id %}selected{% endif %}>
+                                    <option value="{{ position.resource_id }}" {% if position.resource_id == employee.confirmed_position_id.resource_id %}selected{% endif %}>
                                         {{ position.item_name }}
                                     {% endfor %}
                                 </select>
                             </td>
-                            <td><input type="number" class="form-control rate-input" name="rate_{{ employee.id }}" min="0" value="{{ employee.hour_rate|floatformat:"2" }}"></td>
+                            <td class="align-middle"><input type="number" class="form-control rate-input" name="rate_{{ employee.id }}" min="0" value="{{ employee.hour_rate|floatformat:"2" }}"></td>
                             <td class="align-middle hours-input">{{ employee.total_hours|floatformat:"2" }}</td>
                             <td class="align-middle total-amount"></td> <!-- Total Amount -->
                             <td class="align-middle text-center">{{ employee.employee_id.is_indigenous | yesno:"✓, " }}</td> <!-- Indigenous -->
@@ -105,7 +105,7 @@
                             <td class="align-middle">{{ equipment.resource_id.item_type|capfirst }}</td>
                             <td class="align-middle">{{ equipment.resource_id.item_name }}</td>
                             <td class="align-middle">
-                                <input type="number" class="form-control rate-input" name="equipment_rate_{{ equipment.id }}" value="{{ equipment.item_rate }}" >
+                                <input type="number" class="form-control rate-input" name="equipment_rate_{{ equipment.id }}" value="{{ equipment.item_rate|floatformat:"2" }}" >
                             </td>
                         </tr>
                         {% endfor %}

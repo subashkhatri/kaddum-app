@@ -289,12 +289,15 @@ class DayTrackingEmployeeDetails(models.Model):
             total_seconds = end_time_seconds - start_time_seconds
             self.total_hours = abs(total_seconds / 3600)  # Convert seconds to hours
         
-        if self.position_id:
+        if not self.hour_rate:
             self.hour_rate = self.position_id.item_rate
 
         # Calculate total amount
         if self.total_hours is not None and self.hour_rate is not None:
             self.total_amount = float(self.total_hours) * float(self.hour_rate)
+        
+        if not self.confirmed_position_id:
+            self.confirmed_position_id = self.position_id
 
         super().save(*args, **kwargs)
 
@@ -356,8 +359,10 @@ class DayTrackingEquipmentDetails(models.Model):
             total_seconds = end_time_seconds - start_time_seconds
             self.total_hours = abs(total_seconds / 3600)  # Convert seconds to hours
 
-        if self.resource_id:
+        if not self.item_rate:
             self.item_rate = self.resource_id.item_rate
+        
+        
 
         super().save(*args, **kwargs)
         day_tracking_instance = self.day_tracking_id

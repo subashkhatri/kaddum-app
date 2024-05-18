@@ -13,7 +13,6 @@ def is_employee(user):
     return user.is_authenticated and user.roles == "employee"
 
 def is_superuser_or_supervisor(user):
-    print(f"Checking user: {user}")
     return user.is_authenticated and (user.roles == "super admin" or user.roles == "supervisor")
 
 # Decorator for superuser access
