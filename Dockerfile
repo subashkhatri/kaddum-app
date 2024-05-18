@@ -21,7 +21,7 @@ RUN pip install -r requirements.txt
 COPY . /app/
 
 # Copy the .env file
-COPY .env /app/.env
+COPY .env-docker /app/.env
 
 # Expose the port the app runs on
 EXPOSE 8000
