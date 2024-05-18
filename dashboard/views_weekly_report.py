@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import DairyRecord, Project, CostTracking, WeeklyReportList
+from django.core.paginator import Paginator
 from django.db.models import Sum
+
+from .models import DairyRecord, Project, CostTracking, WeeklyReportList
+
 
 
 def all_weekly_report(request):
@@ -10,6 +13,10 @@ def all_weekly_report(request):
     weeks = CostTracking.objects.all().values_list('year_week', flat=True).distinct()
     unique_projects = {(project.project_no, project.project_name) for project in projects}
     unique_weeks = sorted(set(weeks), reverse=True)
+
+    paginator = Paginator(new_reports, 10)  # Show 10 reports per page.
+    page_number = request.GET.get('page')
+    new_reports_page = paginator.get_page(page_number)
 
     if request.method == 'POST':
         if 'create_report' in request.POST:
@@ -43,7 +50,7 @@ def all_weekly_report(request):
                     sum_of_total_amount_employee = Sum('total_amount_employee'),
                     sum_of_total_hours_equipment = Sum('total_hours_equipment'),
                     sum_of_total_amount_equipment = Sum('total_amount_equipment')
-                )                
+                )
 
                 # Create or update WeeklyReportList
                 WeeklyReportList.objects.update_or_create(
@@ -63,12 +70,12 @@ def all_weekly_report(request):
             messages.success(request, "Weekly Report deleted successfully.")
 
         return redirect('all_weekly_report')
-        
+
     context = {
         'unique_projects': sorted(unique_projects, key=lambda x: x[1]),
         'unique_weeks': unique_weeks,
-        'new_reports': new_reports
-    }        
+        'new_reports_page': new_reports_page,
+    }
     return render(request, 'weekly_report/all_weekly_report.html', context)
 
 

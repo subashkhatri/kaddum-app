@@ -14,7 +14,7 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
-            <form>            
+            <form>
                 <div class="form-section-header">Draft Forms</div>
                 <table class="table table-bordered" style="border-collapse: collapse;">
                     <thead>
@@ -41,18 +41,18 @@
                                 <div class="d-flex justify-content-evenly">
                                     <a href="{% url 'edit_daily_costing' costing_record.cost_tracking_id %}" class="btn btn-outline-success btn-sm">Edit</a>
                                 </div>
-                            </td>          
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
                             <td colspan="7">No draft records found.</td>
-                        </tr>                            
+                        </tr>
                         {% endfor %}
                     <tbody>
                 </table>
-               
+
                 <div class="form-section-header" style="margin-top: 80px;">Completed Forms</div>
-              
+
                 <table class="table table-bordered" style="border-collapse: collapse;">
                     <thead>
                         <tr>
@@ -78,12 +78,30 @@
                                 <div class="d-flex justify-content-evenly">
                                     <a href="{% url 'view_daily_costing' costing_record.cost_tracking_id %}" class="btn btn-outline-primary btn-sm">View</a>
                                 </div>
-                            </td>          
-                        </tr>      
-                        {% endfor %}                  
+                            </td>
+                        </tr>
+                        {% endfor %}
                     <tbody>
                 </table>
             </form>
+            <!-- Pagination controls -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if completed_records.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ completed_records.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{ completed_records.number }} of {{ completed_records.paginator.num_pages }}</span>
+                    </li>
+                    {% if completed_records.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ completed_records.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
     </div>
 </div>

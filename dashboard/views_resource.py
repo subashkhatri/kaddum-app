@@ -5,11 +5,17 @@ from django.urls import reverse
 from .forms_resource_cost import ResourceCostForm
 from django.contrib import messages
 from users.decorators import superuser_required
+from django.core.paginator import Paginator
+
 
 @superuser_required
 def resource_cost_list(request):
     resources = ResourceCost.objects.all().order_by('-last_modification_date')
-    return render(request, 'resource_cost/resource_cost_list.html', {'resources': resources})
+
+    paginator = Paginator(resources, 15)  # Show 10 records per page.
+    page_number = request.GET.get('page')
+    resources_list  = paginator.get_page(page_number)
+    return render(request, 'resource_cost/resource_cost_list.html', {'resources': resources_list})
 
 @superuser_required
 def create_resource_cost(request):

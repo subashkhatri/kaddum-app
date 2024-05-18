@@ -75,21 +75,14 @@ def edit_daily_costing(request, cost_tracking_id):
 def all_daily_costing(request):
     draft_records_list = CostTracking.objects.filter(is_draft=True).order_by('-created_date')
     completed_records_list = CostTracking.objects.filter(is_draft=False).order_by('-created_date')
-    paginator_draft = Paginator(draft_records_list, 10) 
-    paginator_completed = Paginator(completed_records_list, 10)
-    page_number_draft = request.GET.get('page_draft')
-    page_number_completed = request.GET.get('page_completed')
-    draft_records = paginator_draft.get_page(page_number_draft)
-    completed_records = paginator_completed.get_page(page_number_completed)
-    for record in draft_records:
-        if record.record_date:
-            record.day_of_week = record.record_date.strftime('%A')
-    for record in completed_records:
-        if record.record_date:
-            record.day_of_week = record.record_date.strftime('%A')
+
+    paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
+    page_number = request.GET.get('page')
+    completed_records_page  = paginator.get_page(page_number)
+
     context = {
-        'draft_records': draft_records,
-        'completed_records': completed_records
+        'draft_records': draft_records_list,
+        'completed_records': completed_records_page
     }
     return render(request, 'costing/all_daily_costing.html', context)
 

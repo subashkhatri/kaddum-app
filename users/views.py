@@ -3,10 +3,13 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
+
 from .models import UserAccount
 from dashboard.models import *
 from .forms import UserAccountForm, SuperUserCreationForm
 from .decorators import superuser_required, superuser_or_supervisor_required
+
 
 
 User = get_user_model()
@@ -72,7 +75,10 @@ def logout(request):
 
 @superuser_required
 def employees_list(request):
-    employee_list = UserAccount.objects.order_by("username")
+    employees = UserAccount.objects.order_by("username")
+    paginator = Paginator(employees, 10)  # Show 10 records per page.
+    page_number = request.GET.get('page')
+    employee_list  = paginator.get_page(page_number)
     return render(request, "users/employee_list.html", {"employee_list": employee_list})
 
 @superuser_required

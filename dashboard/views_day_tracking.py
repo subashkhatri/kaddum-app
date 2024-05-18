@@ -168,7 +168,6 @@ def day_tracking_list(request):
     draft_records_list = DayTracking.objects.filter(is_draft=True).order_by('-created_date')
     completed_records_list = DayTracking.objects.filter(is_draft=False).order_by('-created_date')
 
-
     paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
     page_number = request.GET.get('page')
     completed_records_page  = paginator.get_page(page_number)

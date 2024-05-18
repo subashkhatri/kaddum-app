@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 @superuser_required
 def project_list(request):
     records_list = Project.objects.order_by('-created_date')
-    paginator = Paginator(records_list, 10)  # Show 10 records per page.
+    paginator = Paginator(records_list, 15)  # Show 10 records per page.
     page_number = request.GET.get('page')
     projects = paginator.get_page(page_number)
     return render(request, 'project/project_list.html', {'records': projects})
@@ -32,7 +32,7 @@ def project_create(request):
     else:
         form = ProjectForm()
         return render(request, 'project/project_create.html', {'form': form, 'form_action': form_action})
-    
+
 @superuser_required
 def project_update(request, project_no):
     form_action = reverse('project_update', args=[project_no])
