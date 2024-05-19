@@ -21,7 +21,7 @@ def register_superuser(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Superuser created successfully.')
-            return redirect('admin:index')
+            return redirect('login')
         else:
             messages.error(request, 'Please correct the error below.')
     else:
