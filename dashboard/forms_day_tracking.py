@@ -61,17 +61,7 @@ class DayTrackingForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         is_draft = cleaned_data.get('is_draft', True) # Default to True if not provided
-
-        # Check for required fields when not a draft
-        if not is_draft:
-            required_fields = [
-                'kaddum_name', 'kaddum_sign', 'kaddum_sign_date',
-                'client_name', 'client_sign', 'client_sign_date'
-            ]
-            missing_fields = [field for field in required_fields if not cleaned_data.get(field)]
-            if missing_fields:
-                for field in missing_fields:
-                    self.add_error(field, f"This field is required when submitting.")
+        print("is_draft",is_draft)
 
         # Check if there is a CostTracking record for the same project and date that is not a draft
         project_no = cleaned_data.get('project_no')
@@ -84,6 +74,18 @@ class DayTrackingForm(forms.ModelForm):
             ).exists()
             if cost_tracking_confirmed:
                 self.add_error('record_date','Please check the record date, as Cost Tracking Record is already confirmed.')
+
+        # Check for required fields when not a draft
+        if not is_draft:
+            required_fields = [
+                'kaddum_name', 'kaddum_sign', 'kaddum_sign_date',
+                'client_name', 'client_sign', 'client_sign_date'
+            ]
+            missing_fields = [field for field in required_fields if not cleaned_data.get(field)]
+            if missing_fields:
+                for field in missing_fields:
+                    self.add_error(field, f"This field is required when submitting.")
+
         return cleaned_data
 
 
