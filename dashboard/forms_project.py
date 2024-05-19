@@ -2,11 +2,10 @@ from django import forms
 from .models import Project
 
 class ProjectForm(forms.ModelForm):
-     
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-       
-        
+
     class Meta:
         model = Project
         exclude = ['project_no', 'project_total_cost','created_date','last_modification_date']

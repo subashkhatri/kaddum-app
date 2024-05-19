@@ -28,6 +28,8 @@ class Project(models.Model):
     def __str__(self):
         return f"{self.project_no} - {self.project_name}"
 
+
+
 class DairyRecord(models.Model):
     dairy_record_id = models.CharField(max_length=10, primary_key= True)
     project_no = models.ForeignKey(Project, on_delete=models.PROTECT, db_column='project_no') # FK from project table
