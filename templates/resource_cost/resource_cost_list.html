@@ -7,49 +7,85 @@
 {% endblock %}
 
 {% block page_content %}
-<div class="container mt-4">
-    <h1 class="text-left mb-4 h4">Resource Cost List</h1>
-    <div class="mb-4">
-        <a href="{% url 'create_resource_cost' %}" class="btn btn-danger" style="background-color: #dc3545;">+ Create New Resource Cost</a>
+<div class="container mt-4 d-flex align-items-center">
+    <div class="me-auto p-2">
+        <h1 class="text-left mb-4 h4">Resource Cost List</h1>
     </div>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Item Type</th>
-                <th>Item Name</th>
-                <th>Item ID</th>
-                <th>Location</th>
-                <th>Cost Rate</th>
-                <th>Unit of Measure</th>
-                <th>Mobilisation Description</th>
-                <th>Last Modified</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for resource in resources %}
-            <tr>
-                <td>{{ resource.item_type }}</td>
-                <td>{{ resource.item_name }}</td>
-                <td>{{ resource.item_id }}</td>
-                <td>{{ resource.item_location }}</td>
-                <td>{{ resource.item_rate }}</td>
-                <td>{{ resource.unit_of_measure }}</td>
-                <td>{{ resource.mobilisation_desc }}</td>
-                <td>{{ resource.last_modification_date|date:"Y-m-d" }}</td>
-                <td>
-                    <div class="action-buttons">
-                        <a href="{% url 'edit_resource_cost' resource.resource_id %}" class="btn btn-outline-success btn-sm col-md-6">Edit</a>
-                        <a href="{% url 'delete_resource_cost' resource.resource_id %}" class="btn btn-outline-danger btn-sm col-md-8">Delete</a>
+  <div class="p-2">
+      <a href="{% url 'create_resource_cost' %}" class="btn btn-danger">+ Create New Resource</a>
+  </div>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- search bar -->
+            <div class="container d-flex justify-content-end" style="margin: 0; padding: 0;">
+                <form method="get" action="">
+                    <div class="input-group" style="width: 300px; margin-bottom: 20px;">
+                        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-secondary border border-none" type="submit" style="background-color: #dee2e6;">
+                            <i class="bi bi-search"></i>
+                        </button>
                     </div>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="9">No resource costs found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                </form>
+                <a href="{% url 'project_list' %}" class="btn btn-outline-secondary" style="margin-left: 10px; height: 38px;">
+                    Clear
+                </a>
+            </div>
+                <table class="table table-bordered">
+                    <thead >
+                        <tr style="background-color: lightcoral;">
+                            <th scope="col" class="align-middle "><small>No</small></th>
+                            <th scope="col" class="align-middle"><small>Type</small></th>
+                            <th scope="col" class="align-middle"><small>Name</small></th>
+                            <th scope="col" class="align-middle"><small>Cost Rate</small></th>
+                            <th scope="col" class="align-middle"><small>UOM</small></th>
+                            <th scope="col" class="align-middle"><small>Modification</small></th>
+                            <th scope="col" class="align-middle"><small></small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="ResourceTableBody">
+                        {% for resource in resources %}
+                        <tr>
+                            <td class="align-middle"><small>{{ resource.pk }}</small></td>
+                            <td class="align-middle"><small>{{ resource.item_type|capfirst }}</small></td>
+                            <td class="align-middle"><small>{{ resource.item_name}}</small></td>
+                            <td class="align-middle" style="text-align: right; padding-right: 15px;" ><small>{{ resource.item_rate |floatformat:"2" }}</small></td>
+                            <td class="align-middle"><small>{{ resource.unit_of_measure|capfirst }}</small></td>
+                            <td class="align-middle"><small>{{ resource.last_modification_date|date:"m/d/y H:i" }}</small></td>
+                            <td class="align-middle">
+                                <div class="action-buttons">
+                                    <a href="{% url 'edit_resource_cost' resource.resource_id %}" class="btn btn-outline-success btn-sm">Edit</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9">No resource costs found.</td>
+                        </tr>
+                        {% endfor%}
+                    <tbody>
+                </table>
+                <!-- Pagination controls -->
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if resources.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ resources.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+                        </li>
+                        {% endif %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Page {{ resources.number }} of {{ resources.paginator.num_pages }}</span>
+                        </li>
+                        {% if resources.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ resources.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -4,12 +4,12 @@
 <div class="container mt-4">
     <h1 class="text-left mb-4 h4">Update Project Details</h1>
 </div>
-<div class="form-section-header">*Required Fields</div>          
+<div class="form-section-header">*Required Fields</div>
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
             <form method="POST">
-                {% csrf_token %} 
+                {% csrf_token %}
                 {{ form.non_field_errors }}
 
                 <div class="form-group">
@@ -27,7 +27,7 @@
                 <div class="form-group">
                     {{ form.client.label_tag }}
                     {{ form.client }}
-                    {{ form.client.errors }}                   
+                    {{ form.client.errors }}
 
                 </div>
 
@@ -58,10 +58,11 @@
                     {{ form.is_active.errors }}
 
                 </div>
-
-                <button type="submit" class="form-group btn btn-success col-2" value="submit">Save</button>
-                <a href="{% url 'project_delete' record.project_no %}" class="form-group btn btn-danger col-2">Delete</a>
-                <a href="#" onclick="window.history.back();" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="form-group btn btn-success me-2" style="width: 150px" value="complete" name="click-btn">Save</button>
+                    <a href="{% url 'project_delete' record.project_no %}" class="form-group btn btn-danger me-2" style="width: 150px">Delete</a>
+                    <a href="{% url 'project_list' %}" class="form-group btn btn-secondary" style="width: 150px" value="back">Back</a>
+                </div>
             </form>
         </div>
     </div>

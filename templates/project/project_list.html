@@ -5,10 +5,7 @@
     <div class="me-auto p-2">
         <h1 class="text-left mb-4 h4">Project List</h1>
     </div>
-    <div class="input-group p-2" style="width: 200px;">
-        <input type="text" class="form-control" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-secondary border border-none" type="button" style="background-color: #dee2e6;"><i class="bi bi-search"></i></button>
-    </div>
+
     <div class="p-2">
         <a href="{% url 'project_create' %}" class="btn btn-danger">+ Create New Project</a>
     </div>
@@ -16,36 +13,72 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
-            <div class="form-section-header">Project List</div>            
+            <!-- search bar -->
+            <div class="container d-flex justify-content-end" style="margin: 0; padding: 0;">
+                <form method="get" action="">
+                    <div class="input-group" style="width: 300px; margin-bottom: 20px;">
+                        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-secondary border border-none" type="submit" style="background-color: #dee2e6;">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+                <a href="{% url 'project_list' %}" class="btn btn-outline-secondary" style="margin-left: 10px; height: 38px;">
+                    Clear
+                </a>
+            </div>
             <table class="table table-bordered">
-                <thead>
-                    <tr>
+                <thead >
+                    <tr style="background-color: lightcoral;">
                         <th scope="col" class="align-middle "><small>Project No</small></th>
                         <th scope="col" class="align-middle"><small>Project Name</small></th>
                         <th scope="col" class="align-middle"><small>Client</small></th>
                         <th scope="col" class="align-middle"><small>PO Number</small></th>
-                        <th scope="col" class="align-middle"><small>Start Date</small></th>
-                        <th scope="col" class="align-middle"><small>End Date</small></th>
                         <th scope="col" class="align-middle"><small>Budget</small></th>
                         <th scope="col" class="align-middle"><small>Status</small></th>
+                        <th scope="col" class="align-middle"><small></small></th>
                     </tr>
                 </thead>
                 <tbody id="projectTableBody">
                     {% for record in records %}
                     <tr>
-                        <td class="align-middle"><a href="{% url 'project_update' record.project_no %}">{{ record.project_no }}</a></td>
+                        <td class="align-middle"><small>{{ record.project_no }}</small></td>
                         <td class="align-middle"><small>{{record.project_name}}</small></td>
                         <td class="align-middle"><small>{{record.client}}</small></td>
                         <td class="align-middle"><small>{{record.purchase_order_no}}</small></td>
-                        <td class="align-middle" ><small>{{record.project_start_date|date:"d/m/Y"}}</small></td>
-                        <td class="align-middle"><small>{{record.project_end_date|date:"d/m/Y"}}</small></td>
-                        <td class="align-middle"><small>{{record.project_budget}}</small></td>
-                        <td class="align-middle"><small>{% if record.is_active %}Active{% else %} Inactive {% endif%}</small></td>      
+                        <td class="align-middle" style="text-align: right; padding-right: 15px;"><small>{{record.project_budget |floatformat:"2"}}</small></td>
+                        <td class="align-middle"><small>{% if record.is_active %}Active{% else %} Inactive {% endif%}</small></td>
+                        <td class="align-middle">
+                            <div class="action-buttons">
+                                <a href="{% url 'project_update' record.project_no %}" class="btn btn-outline-success btn-sm">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9">No resource costs found.</td>
                     </tr>
                     {% endfor%}
                 <tbody>
             </table>
-           
+          <!-- Pagination controls -->
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if records.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ records.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+                </li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ records.number }} of {{ records.paginator.num_pages }}</span>
+                </li>
+                {% if records.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ records.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
     </div>
 </div>
 {% endblock page_content %}

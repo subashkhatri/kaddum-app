@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist,ValidationError
 from django.db import models
 from django.db.models import Sum
 from users.models import UserAccount
@@ -20,13 +20,13 @@ class Project(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     last_modification_date = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
-        
+
     class Meta:
         app_label = 'dashboard'
         db_table = 'dashboard-Project'
 
     def __str__(self):
-        return f"{self.project_no}-{self.project_name}"
+        return f"{self.project_no} - {self.project_name}"
 
 class DairyRecord(models.Model):
     dairy_record_id = models.CharField(max_length=10, primary_key= True)
@@ -57,7 +57,7 @@ class DairyRecord(models.Model):
     delay_rework = models.BooleanField(default=False)
     delay_other = models.CharField(max_length=255, null=True, blank=True)
     delay_details = models.TextField(null=True, blank=True)
-    
+
     jha_qty = models.IntegerField(default=0)
     ccc_qty = models.IntegerField(default=0)
     take5_qty = models.IntegerField(default=0)
@@ -71,7 +71,7 @@ class DairyRecord(models.Model):
     first_aid_qty = models.IntegerField(default=0)
     medically_treated_injury_qty = models.IntegerField(default=0)
     loss_time_injury_qty = models.IntegerField(default=0)
-    
+
     # draft save
     is_draft = models.BooleanField(default=True)
 
@@ -103,12 +103,12 @@ class DairyRecord(models.Model):
 
 
 class CostTracking(models.Model):
-    cost_tracking_id = models.CharField(max_length=10, primary_key=True)  
+    cost_tracking_id = models.CharField(max_length=10, primary_key=True)
     project_no = models.ForeignKey(Project, on_delete=models.PROTECT, db_column='project_no')   #generated automatically
-    record_date = models.DateField()                                    #generated automatically   
+    record_date = models.DateField()                                    #generated automatically
     year_week = models.CharField(max_length=6, null= True, blank=True)  #generated automatically
 
-    created_date = models.DateTimeField(auto_now_add=True)  
+    created_date = models.DateTimeField(auto_now_add=True)
     last_modification_date = models.DateTimeField(auto_now=True)
     is_draft = models.BooleanField(default=True)
 
@@ -121,7 +121,6 @@ class CostTracking(models.Model):
     total_amount_employee = models.FloatField(null=True, blank= True)
     total_hours_equipment = models.FloatField(default=0)
     total_amount_equipment = models.FloatField(default=0)
-    
     class Meta:
         unique_together = ('project_no', 'record_date',)
         app_label = 'dashboard'
@@ -161,10 +160,10 @@ class DayTracking(models.Model):
     weather = models.TextField(null=True, blank=True)
     comments = models.TextField(null=True, blank=True)
     kaddum_name = models.CharField(max_length=100,null=True, blank=True)
-    kaddum_sign = models.CharField(max_length=100,null=True, blank=True)
+    kaddum_sign = models.TextField(null=True, blank=True)
     kaddum_sign_date = models.DateField(null=True, blank=True)
     client_name = models.CharField(max_length=100, null=True, blank=True)
-    client_sign = models.CharField(max_length=100, null=True, blank=True )
+    client_sign = models.TextField( null=True, blank=True )
     client_sign_date = models.DateField(null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     last_modification_date = models.DateTimeField(auto_now=True)
@@ -176,11 +175,11 @@ class DayTracking(models.Model):
     total_amount_employee = models.FloatField(null=True, blank= True)
     total_hours_equipment = models.FloatField(default=0)
     total_amount_equipment = models.FloatField(default=0)
-    
+
     class Meta:
         app_label = 'dashboard'
         db_table = 'dashboard-DayTrackingSheet'
-    
+
     def save(self, *args, **kwargs):
 
         # Set day_tracking_id numbering logic: DS00001, DS00002
@@ -207,11 +206,32 @@ class DayTracking(models.Model):
             else:
                 cost_tracking = CostTracking.objects.create(project_no=self.project_no, record_date=self.record_date)
                 self.cost_tracking_id = cost_tracking
-        super().save(*args, **kwargs)
 
-        cost_tracking_instance = self.cost_tracking_id
+        super().save(*args, **kwargs)
+        self._update_cost_tracking_statistics(self.cost_tracking_id)
+
+
+    def delete(self, *args, **kwargs):
+        '''Check if related cost_tracking has other day tracking sheets,
+        if related to other day tracking sheets, update the value, 
+        if not related to other day tracking sheets, delete cost tracking as well.'''
+        cost_tracking_instance = self. cost_tracking_id
         if cost_tracking_instance:
-            day_tracking_aggregates = DayTracking.objects.filter(cost_tracking_id=self.cost_tracking_id).aggregate(
+            if not cost_tracking_instance.is_draft:
+                raise ValidationError("Cannot delete Day Tracking Record. Cost Tracking has been confirmed.")
+            else:
+                other_day_tracking_count = DayTracking.objects.filter(cost_tracking_id=cost_tracking_instance).exclude(day_tracking_id=self.day_tracking_id).count()
+                if other_day_tracking_count == 0:
+                    cost_tracking_instance.delete()
+                else:
+                    super().delete(*args, **kwargs)
+                    self._update_cost_tracking_statistics(cost_tracking_instance)
+        else:
+            super().delete(*args, **kwargs)
+
+    def _update_cost_tracking_statistics(self, cost_tracking_instance):
+        if cost_tracking_instance:
+            day_tracking_aggregates = DayTracking.objects.filter(cost_tracking_id=cost_tracking_instance).aggregate(
                 total_hours_employee=Sum('total_hours_employee'),
                 total_hours_employee_local=Sum('total_hours_employee_local'),
                 total_hours_employee_indigenous=Sum('total_hours_employee_indigenous'),
@@ -227,8 +247,8 @@ class DayTracking(models.Model):
             total_hours_equipment = day_tracking_aggregates['total_hours_equipment'] or 0
             total_amount_equipment = day_tracking_aggregates['total_amount_equipment'] or 0
 
-            local_percentage = 0 if total_hours_employee == 0 else (total_hours_employee_local / total_hours_employee)*100
-            indigenous_percentage = 0 if total_hours_employee == 0 else (total_hours_employee_indigenous / total_hours_employee)*100
+            local_percentage = 0 if total_hours_employee == 0 else (total_hours_employee_local / total_hours_employee) * 100
+            indigenous_percentage = 0 if total_hours_employee == 0 else (total_hours_employee_indigenous / total_hours_employee) * 100
 
             # Update corresponding CostTracking instance
             cost_tracking_instance.total_hours_employee = total_hours_employee
@@ -239,9 +259,8 @@ class DayTracking(models.Model):
             cost_tracking_instance.total_amount_equipment = total_amount_equipment
             cost_tracking_instance.total_hours_employee_local_percentage = local_percentage
             cost_tracking_instance.total_hours_employee_indigenous_percentage = indigenous_percentage
-
+            cost_tracking_instance.last_modification_date = datetime.now()
             cost_tracking_instance.save()
-
 
     def __str__(self):
         return f"Day Tracking:{self.day_tracking_id} {self.record_date}"
@@ -275,26 +294,33 @@ class DayTrackingEmployeeDetails(models.Model):
             else:
                 new_id = 1  # If no records exist, start from 1
             self.id = new_id
-        
-        # Calculate total hours
+
+        # Calculate total hours from start_time and end_time
         if isinstance(self.start_time, str):
-            self.start_time = datetime.strptime(self.start_time, '%H:%M').time() 
+            self.start_time = datetime.strptime(self.start_time, '%H:%M').time()
         if isinstance(self.end_time, str):
             self.end_time = datetime.strptime(self.end_time, '%H:%M').time()
-        start_time_obj = self.start_time
-        end_time_obj = self.end_time
-        if start_time_obj and end_time_obj:
-            start_time_seconds = (start_time_obj.hour * 3600) + (start_time_obj.minute * 60) + start_time_obj.second
-            end_time_seconds = (end_time_obj.hour * 3600) + (end_time_obj.minute * 60) + end_time_obj.second
-            total_seconds = end_time_seconds - start_time_seconds
-            self.total_hours = abs(total_seconds / 3600)  # Convert seconds to hours
-        
-        if self.position_id:
+
+        start_time_obj = datetime.combine(datetime.today(), self.start_time)
+        end_time_obj = datetime.combine(datetime.today(), self.end_time)
+
+        # Adjust end_time_obj to the next day if it is earlier than start_time_obj
+        if end_time_obj <= start_time_obj:
+            end_time_obj += timedelta(days=1)
+
+        total_seconds = (end_time_obj - start_time_obj).total_seconds()
+        self.total_hours = total_seconds / 3600  # Convert seconds to hours
+
+        # Set hour_rate if not already set
+        if not self.hour_rate:
             self.hour_rate = self.position_id.item_rate
 
         # Calculate total amount
         if self.total_hours is not None and self.hour_rate is not None:
             self.total_amount = float(self.total_hours) * float(self.hour_rate)
+
+        if not self.confirmed_position_id:
+            self.confirmed_position_id = self.position_id
 
         super().save(*args, **kwargs)
 
@@ -316,7 +342,7 @@ class DayTrackingEmployeeDetails(models.Model):
 
     def __str__(self):
         return f"{self.id}: {self.day_tracking_id}"
-    
+
 class DayTrackingEquipmentDetails(models.Model):
     id = models.AutoField(primary_key= True)
     day_tracking_id = models.ForeignKey(DayTracking, on_delete=models.CASCADE, db_column='day_tracking_id')
@@ -335,7 +361,7 @@ class DayTrackingEquipmentDetails(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            last_record = DayTrackingEmployeeDetails.objects.all().order_by('-id').first()
+            last_record = DayTrackingEquipmentDetails.objects.all().order_by('-id').first()
             if last_record:
                 last_id = int(last_record.id)  # Extract numeric part of ID
                 new_id = last_id+1  # Increment ID
@@ -343,24 +369,28 @@ class DayTrackingEquipmentDetails(models.Model):
                 new_id = "1"  # If no records exist, start from 1
             self.id = new_id
 
-         # calculate start_time and end_time to total hours
+        # Calculate total hours from start_time and end_time
         if isinstance(self.start_time, str):
             self.start_time = datetime.strptime(self.start_time, '%H:%M').time()
         if isinstance(self.end_time, str):
-            self.end_time = datetime.strptime(self.end_time, '%H:%M').time()       
-        start_time_obj = self.start_time
-        end_time_obj = self.end_time
-        if start_time_obj and end_time_obj:
-            start_time_seconds = (start_time_obj.hour * 3600) + (start_time_obj.minute * 60) + start_time_obj.second
-            end_time_seconds = (end_time_obj.hour * 3600) + (end_time_obj.minute * 60) + end_time_obj.second
-            total_seconds = end_time_seconds - start_time_seconds
-            self.total_hours = abs(total_seconds / 3600)  # Convert seconds to hours
+            self.end_time = datetime.strptime(self.end_time, '%H:%M').time()
 
-        if self.resource_id:
+        start_time_obj = datetime.combine(datetime.today(), self.start_time)
+        end_time_obj = datetime.combine(datetime.today(), self.end_time)
+
+        # Adjust end_time_obj to the next day if it is earlier than start_time_obj
+        if end_time_obj <= start_time_obj:
+            end_time_obj += timedelta(days=1)
+
+        total_seconds = (end_time_obj - start_time_obj).total_seconds()
+        self.total_hours = total_seconds / 3600  # Convert seconds to hours
+
+        if not self.item_rate:
             self.item_rate = self.resource_id.item_rate
 
         super().save(*args, **kwargs)
         day_tracking_instance = self.day_tracking_id
+
         if day_tracking_instance:
             total_hours_equipment = DayTrackingEquipmentDetails.objects.filter(day_tracking_id=self.day_tracking_id).aggregate(total_hours_equipment=Sum('total_hours'))['total_hours_equipment'] or 0
             total_amount_equipment = DayTrackingEquipmentDetails.objects.filter(day_tracking_id=self.day_tracking_id).aggregate(total_amount_equipment=Sum('item_rate'))['total_amount_equipment'] or 0
@@ -368,13 +398,11 @@ class DayTrackingEquipmentDetails(models.Model):
             # Update the DayTracking instance fields
             day_tracking_instance.total_hours_equipment = total_hours_equipment
             day_tracking_instance.total_amount_equipment = total_amount_equipment
-            day_tracking_instance.save()        
+            day_tracking_instance.save()
 
-        
     def __str__(self):
         return f"{self.id}: {self.day_tracking_id}"
-   
-    
+
 class WeeklyReportList(models.Model):
     report_id = models.AutoField(primary_key=True)
     project_no = models.ForeignKey(Project, on_delete=models.PROTECT,db_column='project_no')
@@ -403,11 +431,11 @@ class WeeklyReportList(models.Model):
     total_amount_equipment = models.FloatField(default=0)
     percentage_employee_local = models.FloatField(default=0)
     percentage_employee_indigenous = models.FloatField(default=0)
- 
+
     class Meta:
         app_label = 'dashboard'
         db_table = 'Report-WeeklyReportList'
-   
+
     def save(self, *args, **kwargs):
         if self.year_week:
             # Assuming year_week is in the format 'YYYYWW'
@@ -415,10 +443,12 @@ class WeeklyReportList(models.Model):
             week = int(self.year_week[4:])
             # Calculate start date based on ISO 8601 week date
             start_date = datetime.strptime(f'{year}-W{week-1}-1', "%Y-W%W-%w").date()
+            # Correcting the start date calculation
+            start_date = datetime.strptime(f'{year}-W{week}-1', "%G-W%V-%u").date()
             # Calculate end date by adding 6 days to the start date
             end_date = start_date + timedelta(days=6)
             self.start_date = start_date
             self.end_date = end_date
         super().save(*args, **kwargs)
- 
- 
+
+

@@ -24,7 +24,7 @@ class ProjectForm(forms.ModelForm):
             'purchase_order_no': 'Purchase Order No',
             'project_name': '*Project Name',
             'client': '*Client',
-            'project_start_date': 'Start Date',
+            'project_start_date': '*Start Date',
             'project_end_date': 'End Date',
             'project_budget': 'Project Budget',
             'is_active': '*Project Status',

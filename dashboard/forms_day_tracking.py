@@ -12,10 +12,13 @@ from django.core.exceptions import ValidationError
 
 class DayTrackingForm(forms.ModelForm):
 
+    kaddum_sign = forms.CharField(widget=forms.HiddenInput(), required=False)
+    client_sign = forms.CharField(widget=forms.HiddenInput(), required=False)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-    
+        self.fields['kaddum_sign'].widget = forms.HiddenInput()
+        self.fields['client_sign'].widget = forms.HiddenInput()
 
     record_shift = forms.ChoiceField(
         label="*Record Shift",
@@ -42,10 +45,10 @@ class DayTrackingForm(forms.ModelForm):
             'weather': forms.TextInput(attrs={'class': 'form-control'}),
             'comments': forms.Textarea(attrs={'class': 'form-control','rows':3}),
             'kaddum_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'kaddum_sign': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'kaddum_sign': forms.TextInput(attrs={'class': 'form-control'}),
             'kaddum_sign_date': forms.DateInput(attrs={'type': 'date','class': 'form-control'}),
             'client_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'client_sign': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'client_sign': forms.TextInput(attrs={'class': 'form-control'}),
             'client_sign_date': forms.DateInput(attrs={'type': 'date','class': 'form-control'}), 
         }
         labels={
@@ -114,26 +117,32 @@ class DayTrackingEmployeeFormSet(BaseInlineFormSet):
         extra = kwargs.pop('extra', 1)  # Get 'extra' from kwargs, default to 1 if not provided
         super().__init__(*args, **kwargs)
         self.extra = extra  # Set the extra attribute dynamically
-    
+
     def clean(self):
         if any(self.errors):
             return
         employees = []
         duplicates = False
-        
+
         for form in self.forms:
             if self.can_delete and self._should_delete_form(form):
                 continue
+
+            # Check for duplicate resource_id
             employee_id = form.cleaned_data.get('employee_id')
             if employee_id in employees:
                 form.add_error('employee_id', 'Employee is duplicated.')
                 duplicates = True
             employees.append(employee_id)
-        
+
+            # Check that start_time and end_time are not the same
+            start_time = form.cleaned_data.get('start_time')
+            end_time = form.cleaned_data.get('end_time')
+            if start_time == end_time:
+                form.add_error('end_time', 'End time cannot be the same as start time.')
+
         if duplicates:
             raise ValidationError("Duplicate employees found in the formset.")
-
-        
 
 class DayTrackingEquipmentFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
@@ -142,20 +151,54 @@ class DayTrackingEquipmentFormSet(BaseInlineFormSet):
         self.extra = extra  # Set the extra attribute dynamically
 
 
+    def clean(self):
+        if any(self.errors):
+            return
+        equipment = []
+        duplicates = False
+
+        for form in self.forms:
+            if self.can_delete and self._should_delete_form(form):
+                continue
+
+            # Check for duplicate resource_id
+            resource_id = form.cleaned_data.get('resource_id')
+            if resource_id:
+                if resource_id in equipment:
+                    form.add_error('resource_id', 'Resource is duplicated.')
+                    duplicates = True
+                equipment.append(resource_id)
+
+                # Check that start_time and end_time are not the same
+                start_time = form.cleaned_data.get('start_time')
+                end_time = form.cleaned_data.get('end_time')
+                if start_time == end_time:
+                    form.add_error('end_time', 'End time cannot be the same as start time.')
+            else:
+                # If resource_id is not selected, remove start_time and end_time from cleaned_data
+                form.cleaned_data.pop('start_time', None)
+                form.cleaned_data.pop('end_time', None)
+
+        if duplicates:
+            raise ValidationError("Duplicate resources found in the formset.")
+
+
 DayTrackingEmployeeFormSet = inlineformset_factory(
     DayTracking,
     DayTrackingEmployeeDetails,
     form=DayTrackingEmployeeForm,
     formset=DayTrackingEmployeeFormSet,
-     extra=1,
+    can_delete=True,
+    # extra=1,
 
 )
 
 DayTrackingEquipmentFormSet = inlineformset_factory(
-        DayTracking,
-        DayTrackingEquipmentDetails,
-        form=DayTrackingEquipmentForm,
-        formset=DayTrackingEquipmentFormSet,
-        extra=1,
-        # min_num=0,
+    DayTracking,
+    DayTrackingEquipmentDetails,
+    form=DayTrackingEquipmentForm,
+    formset=DayTrackingEquipmentFormSet,
+    can_delete=True,
+    extra=1,
+    min_num=0,
     )

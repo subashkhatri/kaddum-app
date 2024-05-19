@@ -17,20 +17,24 @@
 			<table class="table-bordered">
 				<tbody>
 					<tr>
-						<th width="10%">Job Name:</th>
-						<td width="30%">{{ record.project_no }}</td>
-						<th width="10%">Day:</th>
-						<td width="10%">{{ record.record_date|date:"l" }}</td>
-						<th width="10%">Date:</th>
-						<td width="15%">{{ record.record_date|date:"Y-m-d" }}</td>
+						<th width="10%">Project:</th>
+						<td colspan="3" width="30%">{{ record.project_no }}</td>
+						<th width="10%">Purchase Order:</th>
+						<td width="15%">{{ record.project_no.purchase_order_no }}</td>
 					</tr>
 					<tr>
-						<th>Client:</th>
-						<td>{{ record.project_no.client }}</td>
+						<th width="10%">Date:</th>
+						<td width="15%">{{ record.record_date|date:"d-m-" }}</td>
+						<th width="10%">Day:</th>
+						<td width="10%">{{ day_of_week }}</td>
 						<th>Shift:</th>
 						<td>{{ record.record_shift }}</td>
+					</tr>
+					<tr>
 						<th>Supervisor:</th>
 						<td>{{ record.supervisor_id.full_name }}</td>
+						<th>Client:</th>
+						<td colspan="3">{{ record.project_no.client }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -55,24 +59,24 @@
 					<th colspan="2" class="full-width">Have Delays Occurred Today As a Result of the Following:</th>
 				</tr>
 				<tr>
-					<td>{{ record.delay_access|yesno:"✔,✖" }} Access</td>
-					<td>{{ record.delay_await_client_instruction|yesno:"✔,✖" }} Awaiting Instructions from Client</td>
+					<td>{{ record.delay_access|yesno:"✓,X" }} Access</td>
+					<td>{{ record.delay_await_client_instruction|yesno:"✓,X" }} Awaiting Instructions from Client</td>
 				</tr>
 				<tr>
-					<td>{{ record.delay_lack_of_drawing|yesno:"✔,✖" }} Lack of Drawings</td>
-					<td>{{ record.delay_subcontractors|yesno:"✔,✖" }} Subcontractors</td>
+					<td>{{ record.delay_lack_of_drawing|yesno:"✓,X" }} Lack of Drawings</td>
+					<td>{{ record.delay_subcontractors|yesno:"✓,X" }} Subcontractors</td>
 				</tr>
 				<tr>
-					<td>{{ record.delay_await_client_decision|yesno:"✔,✖" }} Awaiting Decision from Client</td>
-					<td>{{ record.awaiting_materials|yesno:"✔,✖" }} Awaiting Materials</td>
+					<td>{{ record.delay_await_client_decision|yesno:"✓,X" }} Awaiting Decision from Client</td>
+					<td>{{ record.awaiting_materials|yesno:"✓,X" }} Awaiting Materials</td>
 				</tr>
 				<tr>
-					<td>{{ record.delay_poor_weather|yesno:"✔,✖" }} Poor Weather</td>
-					<td>{{ record.delay_rework|yesno:"✔,✖" }} Re-Work</td>
+					<td>{{ record.delay_poor_weather|yesno:"✓,X" }} Poor Weather</td>
+					<td>{{ record.delay_rework|yesno:"✓,X" }} Re-Work</td>
 				</tr>
 				<tr>
-					<td>{{ record.delay_industrial_matters|yesno:"✔,✖" }} Industrial Matters</td>
-					<td>{{ record.delay_other|yesno:"✔,✖" }} Other</td>
+					<td>{{ record.delay_industrial_matters|yesno:"✓,X" }} Industrial Matters</td>
+					<td>{{ record.delay_other|yesno:"✓,X" }} Other</td>
 				</tr>
 			</table>
 			<table class="table-bordered">
@@ -119,10 +123,10 @@
 			</table>
 			<table class="safety-table table-bordered">
 				<tr>
-					<th colspan="9" class="full-width">Number of Safety Items Completed</th>
+					<th colspan="11" class="full-width">Number of Items Completed Today</th>
 				</tr>
 				<tr>
-					<th>Number Completed Today</th>
+					<th colspan="2">Safety Items:</th>
 					<th>JHA</th>
 					<td>{{ record.jha_qty }}</td>
 					<th>CCC</th>
@@ -133,7 +137,7 @@
 					<td>{{ record.stop_seek_qty }}</td>
 				</tr>
 				<tr>
-					<th>Number of Personal Onsite</th>
+					<th colspan="2">Personal Onsite:</th>
 					<th>Mobilised</th>
 					<td>{{ record.mobilised_qty }}</td>
 					<th>Non-Manual</th>
@@ -144,7 +148,7 @@
 					<td>{{ record.subcontractor_qty }}</td>
 				</tr>
 				<tr>
-					<th>Environmental Incidents: {{ record.environmental_incident_qty }}</th>
+					<th colspan="2">Accident/incidents:</th>
 					<th>Near Misses</th>
 					<td>{{ record.near_miss_qty }}</td>
 					<th>First Aid</th>
@@ -154,13 +158,16 @@
 					<th>Lost Time Injury</th>
 					<td>{{ record.loss_time_injury_qty }}</td>
 				</tr>
+				<tr>
+					<th colspan="3">Environmental Incidents:</th>
+					<td colspan="7">{{ record.environmental_incident_qty }}</td>
+				</tr>
 			</table>
 		</table>
-		<div class="mt-3">
-			<!-- <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="btn btn-success col-2">Edit</a> -->
-			<a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="btn btn-danger col-2">Delete</a>
-			<a href="#" onclick="window.history.back();" class="btn btn-secondary col-2">Back</a>
-			<button class="btn btn-primary col-2" onclick="printPdf()">Print PDF</button>
+		<div class="d-flex justify-content-end mt-3">
+			<button class="btn btn-primary me-2" style="width: 150px" onclick="printPdf()">Print PDF</button>
+			<a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="btn btn-danger me-2" style="width: 150px">Delete</a>
+			<a href="{% url 'all_dairy_record' %}" class="btn btn-secondary" style="width: 150px">Back</a>
 		</div>
 	</div>
 </div>

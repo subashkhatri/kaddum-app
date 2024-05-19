@@ -3,12 +3,18 @@
 {% block page_content %}
 
 <div class="container mt-4">
-    <h1>Edit Resource Cost</h1>
+    <div class="container mt-4">
+        <h1 class="text-left mb-4 h4">Update Resource Details</h1>
+    </div>
+    <div class="form-section-header">*Required Fields</div>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Save Changes</button>
-        <a href="{% url 'resource_cost_list' %}" class="btn btn-secondary">Back to List</a>
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="form-group btn btn-success me-2" style="width: 150px" value="complete" name="click-btn">Save</button>
+            <a href="{% url 'delete_resource_cost' resource.resource_id %}" class="form-group btn btn-danger me-2" style="width: 150px">Delete</a>
+            <a href="{% url 'resource_cost_list' %}" class="form-group btn btn-secondary" style="width: 150px" value="back">Back</a>
+        </div>
     </form>
 </div>
 {% endblock %}

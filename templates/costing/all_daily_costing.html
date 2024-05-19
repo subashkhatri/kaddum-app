@@ -6,84 +6,112 @@
     <div class="me-auto p-2">
         <h1 class="text-left mb-4 h4">Cost Tracking</h1>
     </div>
-    <div class="input-group p-2" style="width: 250px;">
-        <input type="text" class="form-control" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-secondary border border-none" type="button" style="background-color: #dee2e6;"><i class="bi bi-search"></i></button>
-    </div>
 </div>
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
-            <form>            
+            <form>
                 <div class="form-section-header">Draft Forms</div>
                 <table class="table table-bordered" style="border-collapse: collapse;">
                     <thead>
                         <tr>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="8%">No</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="12%">Record Date</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="9%">Day</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="9%">Week</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="%">Project Name</th>                            
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="14%">Modification</th>       
-                            <th scope="col" class="align-middle" style="border-left-style: inset;" width="17%"></th>       
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">No.</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Record Date</th>
+                            <!-- <th scope="col" class="align-middle" style="border-right-style: hidden;">Day</th> -->
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Week</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No. - Project Name</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Modification</th>
+                            <th scope="col" class="align-middle" style="border-left-style: inset;" width="8%"></th>
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
                         {% for costing_record in draft_records %}
                         <tr>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.cost_tracking_id }}</td>
-                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.record_date|date:"d/m/Y" }}</td>
-                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.day_of_week }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.record_date|date:"d/m/y" }}</td>
+                            <!-- <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.day_of_week }}</td> -->
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.year_week }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.project_no }}</td>
-                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.last_modification_date|date:"d/m/Y H:i" }}</td>                            
-                            <td class="align-middle" style="border-left-style: inset;">                           
-                                <div class="row justify-content-evenly">
-                                    <a href="{% url 'edit_daily_costing' costing_record.cost_tracking_id %}" class="btn btn-outline-success btn-sm col-5">Edit</a>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.last_modification_date|date:"d/m/y H:i" }}</td>
+                            <td class="align-middle" style="border-left-style: inset;">
+                                <div class="d-flex justify-content-evenly">
+                                    <a href="{% url 'edit_daily_costing' costing_record.cost_tracking_id %}" class="btn btn-outline-success btn-sm">Edit</a>
                                 </div>
-                            </td>          
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
                             <td colspan="7">No draft records found.</td>
-                        </tr>                            
+                        </tr>
                         {% endfor %}
                     <tbody>
                 </table>
-               
-                <div class="form-section-header" style="margin-top: 80px;">Completed Forms</div>
-              
+                <!-- search bar -->
+                <div class="container d-flex justify-content-end" style="margin: 0; padding: 0;">
+                    <form method="get" action="">
+                        <div class="input-group" style="width: 300px; margin-top: 80px; margin-bottom: 20px;">
+                            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-secondary border border-none" type="submit" style="background-color: #dee2e6;">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <a href="{% url 'all_daily_costing' %}" class="btn btn-outline-secondary" style="margin-top: 80px; margin-left: 10px; height: 38px;">
+                        Clear
+                    </a>
+                </div>
+                <div class="form-section-header">Completed Forms</div>
+
                 <table class="table table-bordered" style="border-collapse: collapse;">
                     <thead>
                         <tr>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="8%">No</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="12%">Record Date</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="9%">Day</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="9%">Week</th>
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="%">Project Name</th>                            
-                            <th scope="col" class="align-middle" style="border-right-style: hidden;" width="14%">Modification</th>       
-                            <th scope="col" class="align-middle" style="border-left-style: inset;" width="17%"></th>      
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">No.</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Record Date</th>
+                            <!-- <th scope="col" class="align-middle" style="border-right-style: hidden;">Day</th> -->
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Week</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No. - Project Name</th>
+                            <th scope="col" class="align-middle" style="border-right-style: hidden;">Modification</th>
+                            <th scope="col" class="align-middle" style="border-left-style: inset;"></th>
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
                         {% for costing_record in completed_records %}
                         <tr>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.cost_tracking_id }}</td>
-                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.record_date|date:"d/m/Y" }}</td>
-                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.day_of_week }}</td>
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.record_date|date:"d/m/y" }}</td>
+                            <!-- <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.day_of_week }}</td> -->
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.year_week }}</td>
                             <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.project_no }}</td>
-                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.last_modification_date|date:"d/m/Y H:i" }}</td>            
+                            <td class="align-middle" style="border-right-style: hidden;">{{ costing_record.last_modification_date|date:"d/m/y H:i" }}</td>
                             <td class="align-middle" style="border-left-style: inset;">
-                                <div class="row justify-content-evenly">
-                                    <a href="{% url 'view_daily_costing' costing_record.cost_tracking_id %}" class="btn btn-outline-primary btn-sm col-5">View</a>
+                                <div class="d-flex justify-content-evenly">
+                                    <a href="{% url 'view_daily_costing' costing_record.cost_tracking_id %}" class="btn btn-outline-primary btn-sm">View</a>
+                                    <a href="{% url 'edit_daily_costing' costing_record.cost_tracking_id %}" class="btn btn-outline-success btn-sm">Edit</a>
                                 </div>
-                            </td>          
-                        </tr>      
-                        {% endfor %}                  
+                            </td>
+                        </tr>
+                        {% endfor %}
                     <tbody>
                 </table>
             </form>
+            <!-- Pagination controls -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if completed_records.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ completed_records.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{ completed_records.number }} of {{ completed_records.paginator.num_pages }}</span>
+                    </li>
+                    {% if completed_records.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ completed_records.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
     </div>
 </div>

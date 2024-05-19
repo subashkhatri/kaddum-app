@@ -3,10 +3,14 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator
+from django.db.models import Q
+
 from .models import UserAccount
 from dashboard.models import *
 from .forms import UserAccountForm, SuperUserCreationForm
 from .decorators import superuser_required, superuser_or_supervisor_required
+
 
 
 User = get_user_model()
@@ -72,7 +76,29 @@ def logout(request):
 
 @superuser_required
 def employees_list(request):
-    employee_list = UserAccount.objects.order_by("username")
+    query = request.GET.get('q', '').strip().lower()
+    if query:
+        is_indigenous_query = {'indigenous': True, 'no': False}.get(query, None)
+        is_local_query = {'local': True, 'no': False}.get(query, None)
+        is_active_query = {'active': True, 'inactive': False}.get(query, None)
+
+        employees = UserAccount.objects.filter(
+            Q(username__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(full_name__icontains=query) |
+            Q(email__icontains=query) |
+            Q(roles__icontains=query)|
+            (Q(is_indigenous=is_indigenous_query) if is_indigenous_query is not None else Q())|
+            (Q(is_local=is_local_query) if is_local_query is not None else Q())|
+            (Q(is_active=is_active_query) if is_active_query is not None else Q())
+        ).order_by('-username')
+    else:
+        employees = UserAccount.objects.all().order_by('-username')
+
+    paginator = Paginator(employees, 10)  # Show 10 records per page.
+    page_number = request.GET.get('page')
+    employee_list  = paginator.get_page(page_number)
     return render(request, "users/employee_list.html", {"employee_list": employee_list})
 
 @superuser_required
@@ -89,8 +115,8 @@ def employee_add(request):
     return render(request, "users/employee_create.html", {"form": form})
 
 @superuser_required
-def employee_edit(request, employee_id):
-    employee = get_object_or_404(UserAccount, username=employee_id)
+def employee_edit(request, username):
+    employee = get_object_or_404(UserAccount, pk=username)
     if request.method == "POST":
         # Create a form instance and populate it with data from the request:
         form = UserAccountForm(request.POST, instance=employee)
@@ -104,12 +130,12 @@ def employee_edit(request, employee_id):
     else:
         form = UserAccountForm(instance=employee)
 
-    return render(request, "users/employee_edit.html", {"form": form})
+    return render(request, "users/employee_edit.html", {"form": form, 'employee':employee})
 
-def delete_employee(request, username):
-    user = get_object_or_404(UserAccount, username=username)
+def employee_delete(request, username):
+    employee = get_object_or_404(UserAccount, pk=username)
     if request.method == 'POST':
-        user.delete()
+        employee.delete()
         messages.success(request, 'User account has been deleted successfully.')
         return redirect('employees_list')
-    return render(request, 'users/confirm_delete.html', {'user': user})
+    return render(request, 'users/confirm_delete.html', {'employee': employee})

@@ -1,11 +1,22 @@
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 from django.db import transaction
+from django.db.models import Q
+from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
+import datetime
 from .forms_day_tracking import DayTrackingForm, DayTrackingEmployeeFormSet, DayTrackingEquipmentFormSet
 from .models import DayTracking,  CostTracking, DayTrackingEmployeeDetails,DayTrackingEquipmentDetails
-import logging
-from django.contrib import messages
+
 from users.decorators import superuser_or_supervisor_required
+import base64
+import os
+from django.conf import settings
+from django.http import HttpResponse
+
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -14,16 +25,18 @@ def day_tracking_create(request):
     form_action = reverse('day_tracking_create')
 
     if request.method == 'POST':
+        print(request.POST)
         form = DayTrackingForm(request.POST)
         employee_formset = DayTrackingEmployeeFormSet(request.POST, prefix='employee')
         equipment_formset = DayTrackingEquipmentFormSet(request.POST, prefix='equipment')
-
+        kaddum_sign_data = request.POST.get('kaddum_sign')
+        client_sign_data = request.POST.get('client_sign')
 
         if form.is_valid() and employee_formset.is_valid() and equipment_formset.is_valid():
             if not any(employee_formset.cleaned_data):
                 messages.error(request, "Please add at least one employee.")
                 return render(request, 'day_tracking/day_tracking_create.html', {'form': form, 'employee_formset': employee_formset, 'equipment_formset': equipment_formset})
-            
+
             with transaction.atomic():
                 is_draft = request.POST.get('click-btn') == 'draft'
                 day_tracking_instance = form.save(commit=False)
@@ -36,13 +49,21 @@ def day_tracking_create(request):
                         employee_detail = employee_form.save(commit=False)
                         employee_detail.day_tracking_id = day_tracking_instance
                         employee_detail.save()
-                
+
                 # Save the equipment formset
                 for equipment_form in equipment_formset:
+                    # print("equipment_form", equipment_form)
                     if equipment_form.cleaned_data:
                         equipment_detail = equipment_form.save(commit=False)
                         equipment_detail.day_tracking_id = day_tracking_instance
                         equipment_detail.save()
+
+
+                if kaddum_sign_data:
+                    day_tracking_instance.kaddum_sign = kaddum_sign_data
+
+                if client_sign_data:
+                    day_tracking_instance.client_sign = client_sign_data
 
             messages.success(request, "Day tracking record created successfully.")
             return redirect('day_tracking_list')
@@ -61,6 +82,20 @@ def day_tracking_create(request):
         'form_action': form_action,
     })
 
+def save_signature(image_data, filename):
+    if image_data.startswith('data:image/svg+xml;base64,'):
+        image_data = image_data.replace('data:image/svg+xml;base64,', '')
+
+    try:
+        image_data = base64.b64decode(image_data)
+    except base64.binascii.Error as e:
+        print(f"Error decoding base64 data: {e}")
+        return
+
+    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+    with open(file_path, 'wb') as f:
+        f.write(image_data)
+
 @superuser_or_supervisor_required
 def day_tracking_update(request, day_tracking_id):
     form_action = reverse('day_tracking_update', args=[day_tracking_id])
@@ -71,13 +106,14 @@ def day_tracking_update(request, day_tracking_id):
         form = DayTrackingForm(request.POST, instance=day_tracking_instance)
         employee_formset = DayTrackingEmployeeFormSet(request.POST, instance=day_tracking_instance, prefix='employee')
         equipment_formset = DayTrackingEquipmentFormSet(request.POST, instance=day_tracking_instance, prefix='equipment')
-
+        kaddum_sign_data = request.POST.get('kaddum_sign')
+        client_sign_data = request.POST.get('client_sign')
 
         if form.is_valid() and employee_formset.is_valid() and equipment_formset.is_valid():
             if not any(employee_formset.cleaned_data):
                 messages.error(request, "Please add at least one employee.")
                 return render(request, 'day_tracking/day_tracking_update.html', {'form': form, 'employee_formset': employee_formset, 'equipment_formset': equipment_formset})
-                
+
             with transaction.atomic():
                 is_draft = request.POST.get('click-btn') == 'draft'
                 day_tracking_instance = form.save(commit=False)
@@ -85,10 +121,18 @@ def day_tracking_update(request, day_tracking_id):
                 day_tracking_instance.save()
 
                 # Save the employee formset
-                employee_formset.save()
+                employee_formset.save(commit=True)
+
 
                 # Save the equipment formset
-                equipment_formset.save()
+                equipment_formset.save(commit=True)
+
+                if kaddum_sign_data:
+                    day_tracking_instance.kaddum_sign = kaddum_sign_data
+
+                if client_sign_data:
+                    day_tracking_instance.client_sign = client_sign_data
+
 
                 messages.success(request, "Day tracking record updated successfully.")
                 return redirect('day_tracking_list')
@@ -99,45 +143,65 @@ def day_tracking_update(request, day_tracking_id):
         form = DayTrackingForm(instance=day_tracking_instance)
         employee_formset = DayTrackingEmployeeFormSet(instance=day_tracking_instance, prefix='employee')
         equipment_formset = DayTrackingEquipmentFormSet(instance=day_tracking_instance, prefix='equipment')
-        extra_value = 1 if day_tracking_instance is None else 0
-        employee_formset.extra = extra_value
-        equipment_formset.extra = extra_value
+        employee_formset.extra = 0
+
+        if not equipment_formset.queryset.exists():
+            equipment_formset = DayTrackingEquipmentFormSet(queryset=DayTrackingEquipmentDetails.objects.none(), prefix='equipment', extra=1)
+        else:
+            equipment_formset.extra = 0
 
     return render(request, 'day_tracking/day_tracking_update.html', {
         'form': form,
         'employee_formset': employee_formset,
         'equipment_formset': equipment_formset,
         'form_action': form_action,
-        'record_PK':record_PK
+        'record_PK':record_PK,
+        'day_tracking_id': day_tracking_id
     })
 
 @superuser_or_supervisor_required
 def day_tracking_list(request):
+
     draft_records_list = DayTracking.objects.filter(is_draft=True).order_by('-created_date')
-    completed_records_list = DayTracking.objects.filter(is_draft=False).order_by('-created_date')
-    # Fetch all records from the DayTracking model
-    records = DayTracking.objects.all().select_related('project_no')
-    return render(request, 'day_tracking/day_tracking_list.html', {'draft_records': draft_records_list, 'completed_records':completed_records_list})
+    query = request.GET.get('q', '').strip().lower()
+    if query:
+            try:
+                # Attempt to parse the date if the query is a date string
+                date_query = datetime.datetime.strptime(query, '%d/%m/%y').date()
+            except ValueError:
+                date_query = None
+
+            completed_records_list = DayTracking.objects.filter(
+                Q(is_draft=False) &
+                (Q(day_tracking_id__icontains=query) |
+                Q(record_date=date_query) |  # Exact date match
+                Q(year_week__icontains=query) |
+                Q(project_no__project_no__icontains=query) |
+                Q(project_no__project_name__icontains=query) |
+                Q(record_shift__icontains=query))  # This will handle date part search for last_modification_date
+            ).order_by('-created_date')
+    else:
+        completed_records_list = DayTracking.objects.filter(is_draft=False).order_by('-created_date')
+
+    paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
+    page_number = request.GET.get('page')
+    completed_records_page  = paginator.get_page(page_number)
+    return render(request, 'day_tracking/day_tracking_list.html', {
+        'draft_records': draft_records_list,
+        'completed_records':completed_records_page,
+        'query': query,
+        })
 
 @superuser_or_supervisor_required
 def day_tracking_delete(request, day_tracking_id):
     day_tracking_instance = get_object_or_404(DayTracking, pk=day_tracking_id)
 
     if request.method == 'POST':
-        cost_tracking_instance = day_tracking_instance.cost_tracking_id
-        other_day_tracking_count = DayTracking.objects.filter(cost_tracking_id=cost_tracking_instance).exclude(day_tracking_id=day_tracking_id).count()
-
-        if not cost_tracking_instance.is_draft:            
-            messages.error(request, "Cannot delete Day Tracking Record. Cost Tracking has been confirmed.")
-            return redirect('day_tracking_list')
-
-        # Check if there are other day tracking records related to the same cost tracking, if no, delete cost tracking
-        if other_day_tracking_count == 0:
-            cost_tracking_instance.delete()
-            return redirect('day_tracking_list')      
-        
-        day_tracking_instance.delete()
-        messages.success(request, f"DayTracking {day_tracking_instance.day_tracking_id} deleted successfully.")
+        try:
+            day_tracking_instance.delete()
+            messages.success(request, f"DayTracking {day_tracking_instance.day_tracking_id} deleted successfully.")
+        except ValidationError as e:
+            messages.error(request, str(e))
         return redirect('day_tracking_list')
 
     return render(request, 'day_tracking/day_tracking_delete.html', {'record': day_tracking_instance})
@@ -147,10 +211,11 @@ def day_tracking_view(request, day_tracking_id):
     day_tracking = get_object_or_404(DayTracking, pk=day_tracking_id)
     employee_formset = DayTrackingEmployeeDetails.objects.all().filter(day_tracking_id=day_tracking)
     equipment_formset = DayTrackingEquipmentDetails.objects.all().filter(day_tracking_id=day_tracking)
-    
+
     return render(request, 'day_tracking/day_tracking_view.html', {
         'day_tracking': day_tracking,
         'employee_formset': employee_formset,
         'equipment_formset': equipment_formset,
+        'day_tracking_id': day_tracking_id
     })
 
