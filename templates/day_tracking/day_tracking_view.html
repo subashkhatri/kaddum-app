@@ -13,36 +13,36 @@
         <h1>Day Tracking Sheet</h1>
     </div>
     <div class="container">
-        <table class="details-table table-bordered"">
+        <table class="details-table table-bordered">
             <tr>
-                <th>PROJECT:</th>
+                <th>Project:</th>
                 <td>{{ day_tracking.project_no }}</td>                
-                <th>CLIENT REPRESENTATIVE:</th>
+                <th>Client Representative:</th>
                 <td>{{ day_tracking.client_representative }}</td>
             </tr>
             <tr>
-                <th>WORK AREA:</th>
+                <th>Work Area:</th>
                 <td>{{ day_tracking.work_area }}</td>
-                <th>PURCHASE ORDER:</th>
+                <th>Purchase Order:</th>
                 <td>{{ day_tracking.project_no.purchase_order_no }}</td>
             </tr>
             <tr>
-                <th>DATE:</th>
-                <td>{{ day_tracking.record_date|date:"Y-m-d" }}</td>
-                <th>SHIFT:</th>
+                <th>Date:</th>
+                <td>{{ day_tracking.record_date|date:"d-m-Y" }}</td>
+                <th>Shift:</th>
                 <td>{{ day_tracking.record_shift }}</td>
             </tr>
         </table>
 
-        <table class="work-description-table table-bordered"">
+        <table class="work-description-table table-bordered">
             <thead>
                 <tr>
-                    <th>NAME</th>
-                    <th>ROLE</th>
-                    <th>START</th>
-                    <th>END</th>
-                    <th>TOTAL HOURS</th>
-                    <th>BRIEF WORK DESCRIPTION</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Total Hours</th>
+                    <th>Brief Work Description</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,12 +53,12 @@
                     <td>{{ employee.position_id }}</td>
                     <td>{{ employee.start_time|time:"H:i" }}</td>
                     <td>{{ employee.end_time|time:"H:i" }}</td>
-                    <td>{{ employee.total_hours }}</td>
+                    <td>{{ employee.total_hours |floatformat:"2" }}</td>
                     <td>{{ employee.work_description }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6">No employee records found.</td>
+                    <td colspan="6">No employee records found!</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -68,11 +68,11 @@
      
             <thead>
                 <tr>
-                    <th>EQUIPMENT</th>
-                    <th>DAY RATE</th>
-                    <th>START</th>
-                    <th>FINISH</th>
-                    <th>TOTAL HOURS</th>
+                    <th>Equipment</th>
+                    <th>Day Rate</th>
+                    <th>Start</th>
+                    <th>Finish</th>
+                    <th>Total Hours</th>
                 </tr>
             </thead>
             <tbody>
@@ -83,32 +83,32 @@
                     <td>{{ equipment.item_rate }}</td>
                     <td>{{ equipment.start_time|time:"H:i" }}</td>
                     <td>{{ equipment.end_time|time:"H:i" }}</td>
-                    <td>{{ equipment.total_hours }}</td>
+                    <td>{{ equipment.total_hours |floatformat:"2" }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5">No equipment records found.</td>
+                    <td colspan="6">No equipment records found!</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <table class="signature-table">
+        <table class="signature-table table-bordered">
             <tr>
-                <th>CONTRACTOR NAME:</th>
+                <th>Contractor Name:</th>
                 <td>{{ day_tracking.kaddum_name }}</td>
-                <th>CONTRACTOR SIGNATURE:</th>
+                <th>Contractor Signature:</th>
                 <td><img src="{{ day_tracking.kaddum_sign.url }}" alt="Signature" height="50"></td>
-                <th>DATE:</th>
-                <td>{{ day_tracking.kaddum_sign_date|date:"Y-m-d" }}</td>
+                <th>Date:</th>
+                <td>{{ day_tracking.kaddum_sign_date|date:"d-m-Y" }}</td>
             </tr>
             <tr>
-                <th>CLIENT NAME:</th>
+                <th>Client Name:</th>
                 <td>{{ day_tracking.client_name }}</td>
-                <th>CLIENT SIGNATURE:</th>
+                <th>Client Signature:</th>
                 <td><img src="{{ day_tracking.client_sign.url }}" alt="Signature" height="50"></td>
-                <th>DATE:</th>
-                <td>{{ day_tracking.client_sign_date|date:"Y-m-d" }}</td>
+                <th>Date:</th>
+                <td>{{ day_tracking.client_sign_date|date:"d-m-Y" }}</td>
             </tr>
         </table>
     </div>

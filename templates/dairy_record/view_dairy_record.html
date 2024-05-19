@@ -10,160 +10,161 @@
 <div id="print-content">
 	<div class="header">
 		<img src="{% static 'logo.jpg' %}" alt="Kaddum Logo">
-		<h1>DAILY RECORD AND DIARY</h1>
+		<h2> Daily Record and Diary</h2>
 	</div>
+
 	<div class="container">
-		<table>
-			<table class="table-bordered">
-				<tbody>
-					<tr>
-						<th width="10%">Job Name:</th>
-						<td width="30%">{{ record.project_no }}</td>
-						<th width="10%">Day:</th>
-						<td width="10%">{{ record.record_date|date:"l" }}</td>
-						<th width="10%">Date:</th>
-						<td width="15%">{{ record.record_date|date:"Y-m-d" }}</td>
-					</tr>
-					<tr>
-						<th>Client:</th>
-						<td>{{ record.project_no.client }}</td>
-						<th>Shift:</th>
-						<td>{{ record.record_shift }}</td>
-						<th>Supervisor:</th>
-						<td>{{ record.supervisor_id.full_name }}</td>
-					</tr>
-				</tbody>
-			</table>
-			<table class="table-bordered">
+		<table class="table-bordered">
+			<tbody>
 				<tr>
-					<th class="full-width">Day's Activities Discussed:</th>
+					<th width="10%">Job Name:</th>
+					<td width="30%">{{ record.project_no }}</td>
+					<th width="10%">Day:</th>
+					<td width="10%">{{ record.record_date|date:"l" }}</td>
+					<th width="10%">Date:</th>
+					<td width="15%">{{ record.record_date|date:"d-m-Y" }}</td>
 				</tr>
 				<tr>
-					<td class="notes">{{ record.activity_discussion|linebreaksbr  }}</td>
+					<th>Client:</th>
+					<td>{{ record.project_no.client }}</td>
+					<th>Shift:</th>
+					<td>{{ record.record_shift }}</td>
+					<th>Supervisor:</th>
+					<td>{{ record.supervisor_id.full_name }}</td>
 				</tr>
-			</table>
-			<table class="table-bordered">
-				<tr>
-					<th class="full-width">Safety Issues Discussed:</th>
-				</tr>
-				<tr>
-					<td class="notes">{{ record.safety_issue_discussion |linebreaksbr  }}</td>
-				</tr>
-			</table>
-			<table class="table-bordered">
-				<tr>
-					<th colspan="2" class="full-width">Have Delays Occurred Today As a Result of the Following:</th>
-				</tr>
-				<tr>
-					<td>{{ record.delay_access|yesno:"✔,✖" }} Access</td>
-					<td>{{ record.delay_await_client_instruction|yesno:"✔,✖" }} Awaiting Instructions from Client</td>
-				</tr>
-				<tr>
-					<td>{{ record.delay_lack_of_drawing|yesno:"✔,✖" }} Lack of Drawings</td>
-					<td>{{ record.delay_subcontractors|yesno:"✔,✖" }} Subcontractors</td>
-				</tr>
-				<tr>
-					<td>{{ record.delay_await_client_decision|yesno:"✔,✖" }} Awaiting Decision from Client</td>
-					<td>{{ record.awaiting_materials|yesno:"✔,✖" }} Awaiting Materials</td>
-				</tr>
-				<tr>
-					<td>{{ record.delay_poor_weather|yesno:"✔,✖" }} Poor Weather</td>
-					<td>{{ record.delay_rework|yesno:"✔,✖" }} Re-Work</td>
-				</tr>
-				<tr>
-					<td>{{ record.delay_industrial_matters|yesno:"✔,✖" }} Industrial Matters</td>
-					<td>{{ record.delay_other|yesno:"✔,✖" }} Other</td>
-				</tr>
-			</table>
-			<table class="table-bordered">
-				<tr>
-					<th class="full-width">Details Of Delay:</th>
-				</tr>
-				<tr>
-					<td class="notes">{{ record.details_of_delay |linebreaksbr }}</td>
-				</tr>
-			</table>
-			<table class="table-bordered">
-				<tr>
-					<th>Instructions Received from Client:</th>
-					<th>Visitors On Site:</th>
-				</tr>
-				<tr>
-					<td class="notes">{{ record.instruction_from_client|linebreaksbr  }}</td>
-					<td class="notes">{{ record.visitor_on_site |linebreaksbr }}</td>
-				</tr>
-			</table>
-			<table class="table-bordered">
-				<tr>
-					<th class="full-width">Daily Progress and Description of Work Performed:</th>
-				</tr>
-				<tr>
-					<td class="notes" style="height: 100px;">{{ record.daily_progress_description|linebreaksbr  }}</td>
-				</tr>
-			</table>
-			<table class="table-bordered">
-				<tr>
-					<th class="full-width">Notes or Comments:</th>
-				</tr>
-				<tr>
-					<td class="notes">{{ record.record_comment|linebreaksbr  }}</td>
-				</tr>
-			</table>
-			<table class="table-bordered">
-				<tr>
-					<th class="full-width">Handover Notes:</th>
-				</tr>
-				<tr>
-					<td class="notes">{{ record.handover_note|linebreaksbr  }}</td>
-				</tr>
-			</table>
-			<table class="safety-table table-bordered">
-				<tr>
-					<th colspan="9" class="full-width">Number of Safety Items Completed</th>
-				</tr>
-				<tr>
-					<th>Number Completed Today</th>
-					<th>JHA</th>
-					<td>{{ record.jha_qty }}</td>
-					<th>CCC</th>
-					<td>{{ record.ccc_qty }}</td>
-					<th>Take 5</th>
-					<td>{{ record.take5_qty }}</td>
-					<th>Stop Seek</th>
-					<td>{{ record.stop_seek_qty }}</td>
-				</tr>
-				<tr>
-					<th>Number of Personal Onsite</th>
-					<th>Mobilised</th>
-					<td>{{ record.mobilised_qty }}</td>
-					<th>Non-Manual</th>
-					<td>{{ record.non_manual_qty }}</td>
-					<th>Manual</th>
-					<td>{{ record.manual_qty }}</td>
-					<th>Sub-contractor</th>
-					<td>{{ record.subcontractor_qty }}</td>
-				</tr>
-				<tr>
-					<th>Environmental Incidents: {{ record.environmental_incident_qty }}</th>
-					<th>Near Misses</th>
-					<td>{{ record.near_miss_qty }}</td>
-					<th>First Aid</th>
-					<td>{{ record.first_aid_qty }}</td>
-					<th>Medically Treated Injury</th>
-					<td>{{ record.medically_treated_injury_qty }}</td>
-					<th>Lost Time Injury</th>
-					<td>{{ record.loss_time_injury_qty }}</td>
-				</tr>
-			</table>
+			</tbody>
 		</table>
-		<div class="mt-3">
-			<!-- <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="btn btn-success col-2">Edit</a> -->
-			<a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="btn btn-danger col-2">Delete</a>
-			<a href="#" onclick="window.history.back();" class="btn btn-secondary col-2">Back</a>
-			<button class="btn btn-primary col-2" onclick="printPdf()">Print PDF</button>
-		</div>
+		<table class="table-bordered">
+			<tr>
+				<th class="full-width">Day's Activities Discussed:</th>
+			</tr>
+			<tr>
+				<td class="notes">{{ record.activity_discussion|linebreaksbr }}</td>
+			</tr>
+		</table>
+		<table class="table-bordered">
+			<tr>
+				<th class="full-width">Safety Issues Discussed:</th>
+			</tr>
+			<tr>
+				<td class="notes">{{ record.safety_issue_discussion |linebreaksbr }}</td>
+			</tr>
+		</table>
+		<table class="table-bordered">
+			<tr>
+				<th colspan="2" class="full-width">Have Delays Occurred Today As a Result of the Following:</th>
+			</tr>
+			<tr>
+				<td>{{ record.delay_access|yesno:"✔,✖" }} Access</td>
+				<td>{{ record.delay_await_client_instruction|yesno:"✔,✖" }} Awaiting Instructions from Client</td>
+			</tr>
+			<tr>
+				<td>{{ record.delay_lack_of_drawing|yesno:"✔,✖" }} Lack of Drawings</td>
+				<td>{{ record.delay_subcontractors|yesno:"✔,✖" }} Subcontractors</td>
+			</tr>
+			<tr>
+				<td>{{ record.delay_await_client_decision|yesno:"✔,✖" }} Awaiting Decision from Client</td>
+				<td>{{ record.awaiting_materials|yesno:"✔,✖" }} Awaiting Materials</td>
+			</tr>
+			<tr>
+				<td>{{ record.delay_poor_weather|yesno:"✔,✖" }} Poor Weather</td>
+				<td>{{ record.delay_rework|yesno:"✔,✖" }} Re-Work</td>
+			</tr>
+			<tr>
+				<td>{{ record.delay_industrial_matters|yesno:"✔,✖" }} Industrial Matters</td>
+				<td>{{ record.delay_other|yesno:"✔,✖" }} Other</td>
+			</tr>
+		</table>
+		<table class="table-bordered">
+			<tr>
+				<th class="full-width">Details Of Delay:</th>
+			</tr>
+			<tr>
+				<td class="notes">{{ record.details_of_delay |linebreaksbr }}</td>
+			</tr>
+		</table>
+		<table class="table-bordered">
+			<tr>
+				<th>Instructions Received from Client:</th>
+				<th>Visitors On Site:</th>
+			</tr>
+			<tr>
+				<td class="notes">{{ record.instruction_from_client|linebreaksbr }}</td>
+				<td class="notes">{{ record.visitor_on_site |linebreaksbr }}</td>
+			</tr>
+		</table>
+		<table class="table-bordered">
+			<tr>
+				<th class="full-width">Daily Progress and Description of Work Performed:</th>
+			</tr>
+			<tr>
+				<td class="notes" style="height: 100px;">{{ record.daily_progress_description|linebreaksbr }}</td>
+			</tr>
+		</table>
+		<table class="table-bordered">
+			<tr>
+				<th class="full-width">Notes or Comments:</th>
+			</tr>
+			<tr>
+				<td class="notes">{{ record.record_comment|linebreaksbr }}</td>
+			</tr>
+		</table>
+		<table class="table-bordered">
+			<tr>
+				<th class="full-width">Handover Notes:</th>
+			</tr>
+			<tr>
+				<td class="notes">{{ record.handover_note|linebreaksbr }}</td>
+			</tr>
+		</table>
+		<table class="safety-table table-bordered">
+			<tr>
+				<th colspan="9" class="full-width">Number of Safety Items Completed</th>
+			</tr>
+			<tr>
+				<th>Number Completed Today</th>
+				<th>JHA</th>
+				<td>{{ record.jha_qty }}</td>
+				<th>CCC</th>
+				<td>{{ record.ccc_qty }}</td>
+				<th>Take 5</th>
+				<td>{{ record.take5_qty }}</td>
+				<th>Stop Seek</th>
+				<td>{{ record.stop_seek_qty }}</td>
+			</tr>
+			<tr>
+				<th>Number of Personal Onsite</th>
+				<th>Mobilised</th>
+				<td>{{ record.mobilised_qty }}</td>
+				<th>Non-Manual</th>
+				<td>{{ record.non_manual_qty }}</td>
+				<th>Manual</th>
+				<td>{{ record.manual_qty }}</td>
+				<th>Sub-contractor</th>
+				<td>{{ record.subcontractor_qty }}</td>
+			</tr>
+			<tr>
+				<th>Environmental Incidents: {{ record.environmental_incident_qty }}</th>
+				<th>Near Misses</th>
+				<td>{{ record.near_miss_qty }}</td>
+				<th>First Aid</th>
+				<td>{{ record.first_aid_qty }}</td>
+				<th>Medically Treated Injury</th>
+				<td>{{ record.medically_treated_injury_qty }}</td>
+				<th>Lost Time Injury</th>
+				<td>{{ record.loss_time_injury_qty }}</td>
+			</tr>
+		</table>
 	</div>
 </div>
+
+<div class="mt-3">
+	<!-- <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="btn btn-success col-2">Edit</a> -->
+	<a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="btn btn-danger col-2">Delete</a>
+	<a href="#" onclick="window.history.back();" class="btn btn-secondary col-2">Back</a>
+	<button class="btn btn-primary col-2" onclick="printPdf()">Print PDF</button>
+</div>
+
 
 
 {% endblock %}
