@@ -1,163 +1,9 @@
 /* all custom css comes here */
 :root {
-    --form-background-color: #fff;
-    --form-border-color: #000;
-    --form-section-background-color: #dc3545;
-    --form-section-text-color: #fff;
-}
-
-.form-section-header {
-    background-color: var(--form-section-background-color);
-    color: var(--form-section-text-color);
-    padding: 10px;
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-}
-
-.form-control, .form-control:focus {
-    border-color: var(--form-border-color);
-    box-shadow: none;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-.sidenav {
-  height: 100%;
-  width: 250px;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #bf0a03;
-  overflow-x: hidden;
-  transition: 0.5s;
-}
-
-.sidenav.shrinked {
-  width: 100px;
-}
-
-#main {
-  margin-left: 190px;
-  transition: ease;
-  transition-duration: 0.5s;
-  height: 100vh !important;
-}
-
-#main.shrinked-sidebar {
-  margin-left: 100px;
-}
-
-.sidenav.shrinked a .txt {
-  display: none;
-}
-
-
-.sidenav a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 20px;
-  display: block;
-  transition: 0.3s;
-  display: flex;
-  gap: 20px;
-  color: white;
-  margin-bottom: 20px;
-  border-radius: 20px;
-}
-
-.sidenav a.active {
-  background-color: white;
-  color: #68120f;
-}
-
-.sidenav a:hover {
-  color: #f1f1f1;
-}
-
-@media screen and (max-height: 450px) {
-  .sidenav {
-    padding-top: 15px;
-  }
-
-  .sidenav a {
-    font-size: 18px;
-  }
-}
-
-.topbar {
-  background-color: white;
-}
-
-.profile-settings .btn {
-  background-color: transparent;
-  border: none;
-  color: black;
-}
-
-.card-icon i {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-}
-
-.card-text {
-  color: gray;
-}
-
-.card-icon .bi-file-earmark {
-  background-color: #b4c5cc;
-  color: #328ab4;
-}
-
-.card-icon .bi-file-earmark-text-fill {
-  background-color: #dcd0c0;
-  color: #b5823f;
-}
-
-.card-icon .bi-calculator {
-  background-color: #a1c4bb;
-  color: #529c8b;
-}
-
-.card {
-  border-radius: 8px;
-}
-
-.table-container .table-data .view-btn {
-  background-color: #7c1612;
-  color: white;
-  border-radius: 8px;
-  font-size: 12px;
-}
-
-.table-container {
-  font-size: 14px;
-}
-
-.table-container .table-header {
-  background-color: #bf0a03;
-  color: white;
-  border-radius: 8px;
-}
-
-.logo {
-  width: 100px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
-/* Daily Record CSS */
-:root {
   --form-background-color: #fff;
   --form-border-color: #000;
   --form-section-background-color: #dc3545;
   --form-section-text-color: #fff;
-}
-.flex-container {
-  display: flex;
-  justify-content: space-between;
 }
 
 .form-section-header {
@@ -168,8 +14,7 @@
   margin-bottom: 10px;
 }
 
-.form-control,
-.form-control:focus {
+.form-control, .form-control:focus {
   border-color: var(--form-border-color);
   box-shadow: none;
 }
@@ -177,32 +22,184 @@
 .form-group {
   margin-bottom: 20px;
 }
+.sidenav {
+height: 100%;
+width: 250px;
+position: fixed;
+z-index: 1;
+top: 0;
+left: 0;
+background-color: #bf0a03;
+overflow-x: hidden;
+transition: 0.5s;
+}
+
+.sidenav.shrinked {
+width: 100px;
+}
+
+#main {
+margin-left: 190px;
+transition: ease;
+transition-duration: 0.5s;
+height: 100vh !important;
+}
+
+#main.shrinked-sidebar {
+margin-left: 100px;
+}
+
+.sidenav.shrinked a .txt {
+display: none;
+}
+
+#side_bar_kaddum_logo{
+width: 70%;
+transition: width 0.5s ease;
+}
+
+#side_bar_kaddum_logo.shrinked{
+width: 95%;
+transition: width 0.5s ease;
+}
+
+.sidenav a {
+padding: 8px 8px 8px 32px;
+text-decoration: none;
+font-size: 20px;
+display: block;
+transition: 0.3s;
+display: flex;
+gap: 20px;
+color: white;
+margin-bottom: 20px;
+border-radius: 20px;
+}
+
+.sidenav a.active {
+background-color: white;
+color: #68120f;
+}
+
+.sidenav a:hover {
+color: #f1f1f1;
+}
+
+@media screen and (max-height: 450px) {
+.sidenav {
+  padding-top: 15px;
+}
+
+.sidenav a {
+  font-size: 18px;
+}
+}
+
+.topbar {
+background-color: white;
+}
+
+.profile-settings .btn {
+background-color: transparent;
+border: none;
+color: black;
+}
+
+.card-icon i {
+width: 60px;
+height: 60px;
+border-radius: 50%;
+}
+
+.card-text {
+color: gray;
+}
+
+.card-icon .bi-file-earmark {
+background-color: #b4c5cc;
+color: #328ab4;
+}
+
+.card-icon .bi-file-earmark-text-fill {
+background-color: #dcd0c0;
+color: #b5823f;
+}
+
+.card-icon .bi-calculator {
+background-color: #a1c4bb;
+color: #529c8b;
+}
+
+.card {
+border-radius: 8px;
+}
+
+.table-container .table-data .view-btn {
+background-color: #7c1612;
+color: white;
+border-radius: 8px;
+font-size: 12px;
+}
+
+.table-container {
+font-size: 14px;
+}
+
+.table-container .table-header {
+background-color: #bf0a03;
+color: white;
+border-radius: 8px;
+}
+
+
+/* Daily Record CSS */
+:root {
+--form-background-color: #fff;
+--form-border-color: #000;
+--form-section-background-color: #dc3545;
+--form-section-text-color: #fff;
+}
+.flex-container {
+display: flex;
+justify-content: space-between;
+}
+
+.form-section-header {
+background-color: var(--form-section-background-color);
+color: var(--form-section-text-color);
+padding: 10px;
+font-size: 1.2rem;
+margin-bottom: 10px;
+}
+
+.form-control,
+.form-control:focus {
+border-color: var(--form-border-color);
+box-shadow: none;
+}
+
+.form-group {
+margin-bottom: 20px;
+}
 
 .table-sm th,
 .table-sm td {
-    padding: 0.3rem;
-    /* Smaller padding for table cells */
-    font-size: 0.875rem;
-    /* Smaller font size for table content */
   padding: 0.3rem;
   /* Smaller padding for table cells */
   font-size: 0.875rem;
   /* Smaller font size for table content */
+padding: 0.3rem;
+/* Smaller padding for table cells */
+font-size: 0.875rem;
+/* Smaller font size for table content */
 }
 
 /* Make sure this comes after the Bootstrap CSS link */
 .table-sm {
-    width: auto;
-    /* Shrink the table width to fit its contents */
-    margin: 0 auto;
-    /* Center the table on the page */
-}
-
-.table td input[type="number"] {
-    width: 100%;
-    /* Full width of the cell */
-    box-sizing: border-box;
-    /* Include padding and borders in the width */
+  width: auto;
+  /* Shrink the table width to fit its contents */
+  margin: 0 auto;
+  /* Center the table on the page */
 }
 
 .table td input[type="number"] {
@@ -211,13 +208,20 @@
   box-sizing: border-box;
   /* Include padding and borders in the width */
 }
+
+.table td input[type="number"] {
+width: 100%;
+/* Full width of the cell */
+box-sizing: border-box;
+/* Include padding and borders in the width */
+}
 /* Validation error message */
 .errorlist {
-  color: red;
+color: red;
 }
 
 .alert-error {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
+color: #a94442;
+background-color: #f2dede;
+border-color: #ebccd1;
 }

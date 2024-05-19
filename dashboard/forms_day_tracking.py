@@ -61,7 +61,6 @@ class DayTrackingForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         is_draft = cleaned_data.get('is_draft', True) # Default to True if not provided
-        print("is_draft",is_draft)
 
         # Check if there is a CostTracking record for the same project and date that is not a draft
         project_no = cleaned_data.get('project_no')
