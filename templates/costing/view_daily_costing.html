@@ -13,7 +13,7 @@
         <h1>Daily Costing Report</h1>
     </div>
 
-    <div class="container mt-4">
+    <div class="container">
         <table class="table table-bordered border-dark">
             <tr>
                 <th>Project:</th>
@@ -130,7 +130,7 @@
         const element = document.getElementById('print-content');
         const opt = {
             margin: 0.2,
-            filename: '{{ costing.cost_tracking_id }}_daily_costing.pdf',
+            filename: '{{ costing.record_date|date:"dmY" }}_{{ costing.cost_tracking_id}}_{{ costing.project_no.project_no}}_{{ costing.project_no.project_name}}.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
