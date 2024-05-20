@@ -250,85 +250,76 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 <script>
 
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    const kaddumSignaturePad = new SignaturePad(document.getElementById('kaddum-signature-pad'));
+    const clientSignaturePad = new SignaturePad(document.getElementById('client-signature-pad'));
+    const dayTrackingForm = document.getElementById('day-tracking-form');
 
-        const kaddumSignaturePad = new SignaturePad(document.getElementById('kaddum-signature-pad'));
-        const clientSignaturePad = new SignaturePad(document.getElementById('client-signature-pad'));
+    dayTrackingForm.addEventListener('submit', function(event) {
+        const clickBtnValue = document.querySelector('button[type="submit"][clicked=true]').value;
 
-        const dayTrackingForm = document.getElementById('day-tracking-form');
-        if (dayTrackingForm) {
-            dayTrackingForm.addEventListener('submit', function(event) {
-                const clickBtnValue = document.querySelector('button[type="submit"][clicked=true]').value;
-
-                if (clickBtnValue === 'draft') {
-                    if (!kaddumSignaturePad.isEmpty() || !clientSignaturePad.isEmpty()) {
-                        if (!confirm('If you save as a draft, the signatures will be cleared. Do you want to proceed?')) {
-                            event.preventDefault(); // Prevent form submission
-                            return;
-                        } else {
-                            kaddumSignaturePad.clear();
-                            clientSignaturePad.clear();
-                        }
-                    }
+        // Handling Draft Submissions
+        if (clickBtnValue === 'draft') {
+            document.getElementById('id_is_draft').value = 'True';
+            // Confirm to clear signatures when saving as a draft
+            if (!kaddumSignaturePad.isEmpty() || !clientSignaturePad.isEmpty()) {
+                if (confirm('If you save as a draft, the signatures will be cleared. Do you want to proceed?')) {
+                    kaddumSignaturePad.clear();
+                    clientSignaturePad.clear();
+                }else{
+                    event.preventDefault();
+                    return;
                 }
-
-                if (!kaddumSignaturePad.isEmpty()) {
-                    const kaddumSvg = resizeSignature(kaddumSignaturePad.toDataURL('image/svg+xml'), 400, 150, 140, 52.5);
-                    document.getElementById('id_kaddum_sign').value = kaddumSvg;
-                } else {
-                    document.getElementById('id_kaddum_sign').value = ''; // Clear the hidden input if the signature pad is empty
-                }
-
-                if (!clientSignaturePad.isEmpty()) {
-                    const clientSvg = resizeSignature(clientSignaturePad.toDataURL('image/svg+xml'), 400, 150, 140, 52.5);
-                    document.getElementById('id_client_sign').value = clientSvg;
-                } else {
-                    document.getElementById('id_client_sign').value = ''; // Clear the hidden input if the signature pad is empty
-                }
-            });
+                // Do not prevent form submission here, let it proceed as a draft
+            }
+        } else if (clickBtnValue === 'complete') {
+            document.getElementById('id_is_draft').value = 'False';
+            // Handling Complete Submissions, require signatures
+            if (kaddumSignaturePad.isEmpty() || clientSignaturePad.isEmpty()) {
+                alert('Both signatures are required before creating the record.');
+                event.preventDefault(); // Prevent form submission
+                return; // Stop further processing
+            } else {
+                // Process and save signatures if not empty
+                saveSignature(kaddumSignaturePad, 'id_kaddum_sign');
+                saveSignature(clientSignaturePad, 'id_client_sign');
+            }
         }
+    });
 
-        function resizeSignature(dataUrl, originalWidth, originalHeight, newWidth, newHeight) {
-            const svgData = atob(dataUrl.split(',')[1]);
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(svgData, 'image/svg+xml');
-            const svgElement = doc.documentElement;
-
-            svgElement.setAttribute('width', newWidth);
-            svgElement.setAttribute('height', newHeight);
-            svgElement.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
-
-            const serializer = new XMLSerializer();
-            const resizedSvg = serializer.serializeToString(svgElement);
-            return 'data:image/svg+xml;base64,' + btoa(resizedSvg);
+    function saveSignature(signaturePad, inputId) {
+        if (!signaturePad.isEmpty()) {
+            const svgData = resizeSignature(signaturePad.toDataURL('image/svg+xml'), 400, 150, 140, 52.5);
+            document.getElementById(inputId).value = svgData;
+        } else {
+            document.getElementById(inputId).value = ''; // Clear the input if the signature pad is empty
         }
+    }
 
-        document.querySelectorAll('button[type="submit"]').forEach(button => {
-            button.addEventListener('click', function() {
-                document.querySelectorAll('button[type="submit"]').forEach(btn => btn.removeAttribute('clicked'));
-                this.setAttribute('clicked', 'true');
-            });
+    function resizeSignature(dataUrl, originalWidth, originalHeight, newWidth, newHeight) {
+        const svgData = atob(dataUrl.split(',')[1]);
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svgData, 'image/svg+xml');
+        const svgElement = doc.documentElement;
+
+        svgElement.setAttribute('width', newWidth);
+        svgElement.setAttribute('height', newHeight);
+        svgElement.setAttribute('viewBox', `0 0 ${originalWidth} ${originalHeight}`);
+
+        const serializer = new XMLSerializer();
+        const resizedSvg = serializer.serializeToString(svgElement);
+        return 'data:image/svg+xml;base64,' + btoa(resizedSvg);
+    }
+
+    document.querySelectorAll('button[type="submit"]').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('button[type="submit"]').forEach(btn => btn.removeAttribute('clicked'));
+            this.setAttribute('clicked', 'true');
         });
-
-        window.clearSignature = function(padId) {
-            const pad = padId === 'kaddum-signature-pad' ? kaddumSignaturePad : clientSignaturePad;
-            pad.clear();
-        }
-
+    });
 
         calculateEmployeeTotalHours()
         calculateEquipmentTotalHours()
-        // Set is_draft to True when saving as draft
-        document.getElementById('save-draft-btn').addEventListener('click', function() {
-            document.getElementById('id_is_draft').value = 'True';
-            document.getElementById('day-tracking-form').submit();
-            });
-
-        // Set is_draft to False when submitting as completed
-        document.getElementById('submit-btn').addEventListener('click', function() {
-            document.getElementById('id_is_draft').value = 'False';
-            document.getElementById('day-tracking-form').submit();
-        });
 
       // Event listener for calculating employee totol hours in employee
       document.getElementById('EmployeeTableBody').addEventListener('input', calculateEmployeeTotalHours);
@@ -461,26 +452,37 @@ function addEquipmentRow(type) {
     templateRow.style.display = 'table-row';
 }
 
-    function removeEquipmentRow(button, type) {
-        var totalFormsInput = document.getElementById('id_' + type + '-TOTAL_FORMS');
-        var rowToRemove = button.closest('.' + type + '-row');
-        var deleteCheckbox = rowToRemove.querySelector('.' + type + '-delete-checkbox');
-        var idField = rowToRemove.querySelector('input[name*="id"]');
+function removeEquipmentRow(button, type) {
+    var totalFormsInput = document.getElementById('id_' + type + '-TOTAL_FORMS');
+    var rows = document.querySelectorAll('.' + type + '-row');
+    var rowToRemove = button.closest('.' + type + '-row');
+    var deleteCheckbox = rowToRemove.querySelector('.' + type + '-delete-checkbox');
+    var idField = rowToRemove.querySelector('input[name*="id"]');
 
-        // Mark the row for deletion
+    // If only one row remains, hide it instead of removing, and update the total form count
+    if (rows.length === 1) {
+        rowToRemove.style.display = 'none'; // Hide the row
         if (deleteCheckbox) {
-            deleteCheckbox.value = 'on';
+            deleteCheckbox.checked = true; // Mark the checkbox for deletion
+        }
+        // Update the TOTAL_FORMS count but do not remove the row from DOM
+        totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
+    } else {
+        // More than one row exists, handle normally
+        if (deleteCheckbox) {
+            deleteCheckbox.checked = true; // Check the delete checkbox if it exists
         }
 
         if (idField && idField.value) {
-            // If the row has an id, it means it's an existing record, so hide the row and mark for deletion
+            // Existing record: hide the row and mark for deletion
             rowToRemove.style.display = 'none';
         } else {
-            // If the row does not have an id, it means it's a new record, so remove the row and decrement TOTAL_FORMS
+            // New record: remove the row and decrement TOTAL_FORMS
             rowToRemove.remove();
             totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
         }
     }
+}
 
 
     function calculateEmployeeTotalHours() {

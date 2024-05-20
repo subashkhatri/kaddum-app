@@ -199,6 +199,7 @@
                         <canvas id="kaddum-signature-pad" class="signature-pad" width="400" height="150" style="border: 1px solid #000;"></canvas>
                         {{ form.kaddum_sign }}
                         <button type="button" onclick="clearSignature('kaddum-signature-pad')">Clear</button>
+                        {{ form.kaddum_sign.errors }}
                     </td>
                     <td class="align-middle text-right">
                         {{ form.kaddum_sign_date }}
@@ -248,38 +249,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const kaddumSignaturePad = new SignaturePad(document.getElementById('kaddum-signature-pad'));
     const clientSignaturePad = new SignaturePad(document.getElementById('client-signature-pad'));
-
     const dayTrackingForm = document.getElementById('day-tracking-form');
-    if (dayTrackingForm) {
-        dayTrackingForm.addEventListener('submit', function(event) {
-            const clickBtnValue = document.querySelector('button[type="submit"][clicked=true]').value;
 
-            if (clickBtnValue === 'draft') {
-                if (!kaddumSignaturePad.isEmpty() || !clientSignaturePad.isEmpty()) {
-                    if (!confirm('If you save as a draft, the signatures will be cleared. Do you want to proceed?')) {
-                        event.preventDefault(); // Prevent form submission
-                        return;
-                    } else {
-                        kaddumSignaturePad.clear();
-                        clientSignaturePad.clear();
-                    }
+    dayTrackingForm.addEventListener('submit', function(event) {
+        const clickBtnValue = document.querySelector('button[type="submit"][clicked=true]').value;
+
+        // Handling Draft Submissions
+        if (clickBtnValue === 'draft') {
+            document.getElementById('id_is_draft').value = 'True';
+            // Confirm to clear signatures when saving as a draft
+            if (!kaddumSignaturePad.isEmpty() || !clientSignaturePad.isEmpty()) {
+                if (confirm('If you save as a draft, the signatures will be cleared. Do you want to proceed?')) {
+                    kaddumSignaturePad.clear();
+                    clientSignaturePad.clear();
+                }else{
+                    event.preventDefault();
+                    return;
                 }
+                // Do not prevent form submission here, let it proceed as a draft
             }
-
-            if (!kaddumSignaturePad.isEmpty()) {
-                const kaddumSvg = resizeSignature(kaddumSignaturePad.toDataURL('image/svg+xml'), 400, 150, 140, 52.5);
-                document.getElementById('id_kaddum_sign').value = kaddumSvg;
+        } else if (clickBtnValue === 'complete') {
+            document.getElementById('id_is_draft').value = 'False';
+            // Handling Complete Submissions, require signatures
+            if (kaddumSignaturePad.isEmpty() || clientSignaturePad.isEmpty()) {
+                alert('Both signatures are required before creating the record.');
+                event.preventDefault(); // Prevent form submission
+                return; // Stop further processing
             } else {
-                document.getElementById('id_kaddum_sign').value = ''; // Clear the hidden input if the signature pad is empty
+                // Process and save signatures if not empty
+                saveSignature(kaddumSignaturePad, 'id_kaddum_sign');
+                saveSignature(clientSignaturePad, 'id_client_sign');
             }
+        }
+    });
 
-            if (!clientSignaturePad.isEmpty()) {
-                const clientSvg = resizeSignature(clientSignaturePad.toDataURL('image/svg+xml'), 400, 150, 140, 52.5);
-                document.getElementById('id_client_sign').value = clientSvg;
-            } else {
-                document.getElementById('id_client_sign').value = ''; // Clear the hidden input if the signature pad is empty
-            }
-        });
+    function saveSignature(signaturePad, inputId) {
+        if (!signaturePad.isEmpty()) {
+            const svgData = resizeSignature(signaturePad.toDataURL('image/svg+xml'), 400, 150, 140, 52.5);
+            document.getElementById(inputId).value = svgData;
+        } else {
+            document.getElementById(inputId).value = ''; // Clear the input if the signature pad is empty
+        }
     }
 
     function resizeSignature(dataUrl, originalWidth, originalHeight, newWidth, newHeight) {
@@ -304,22 +314,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    window.clearSignature = function(padId) {
-        const pad = padId === 'kaddum-signature-pad' ? kaddumSignaturePad : clientSignaturePad;
-        pad.clear();
-    }
-
-    // Set is_draft to True when saving as draft
-    document.getElementById('save-draft-btn').addEventListener('click', function() {
-        document.getElementById('id_is_draft').value = 'True';
-        document.getElementById('day-tracking-form').submit();
-        });
-
-    // Set is_draft to False when submitting as completed
-    document.getElementById('submit-btn').addEventListener('click', function() {
-        document.getElementById('id_is_draft').value = 'False';
-        document.getElementById('day-tracking-form').submit();
-    });
 
     // Event listener for calculating employee totol hours in employee
     document.getElementById('EmployeeTableBody').addEventListener('input', calculateEmployeeTotalHours);

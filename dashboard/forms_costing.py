@@ -28,8 +28,6 @@ class CostTrackingForm(forms.ModelForm):
         widgets = {
             'position_id': forms.Select(attrs={'class': 'form-control'}),
             'record_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'readonly': 'readonly'}),
-            # 'total_amount_employee': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            # 'total_amount_equipment': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
