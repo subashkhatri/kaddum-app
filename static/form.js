@@ -2,10 +2,13 @@
 function toggleSideBar() {
   const sidebar = document.getElementById("sidebar");
   const mainPanel = document.getElementById("main");
+  const logo = document.getElementById("side_bar_kaddum_logo");
   if (sidebar?.classList.contains("shrinked")) {
+    logo.classList.remove("shrinked");
     sidebar.classList.remove("shrinked");
     mainPanel?.classList.remove("shrinked-sidebar");
   } else {
+    logo.classList.add("shrinked");
     sidebar?.classList.add("shrinked");
     mainPanel?.classList.add("shrinked-sidebar");
   }

@@ -53,6 +53,15 @@
   display: none;
 }
 
+#side_bar_kaddum_logo{
+  width: 70%;
+  transition: width 0.5s ease;
+}
+
+#side_bar_kaddum_logo.shrinked{
+  width: 95%;
+  transition: width 0.5s ease;
+}
 
 .sidenav a {
   padding: 8px 8px 8px 32px;
@@ -142,12 +151,7 @@
   border-radius: 8px;
 }
 
-.logo {
-  width: 100px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
+
 /* Daily Record CSS */
 :root {
   --form-background-color: #fff;
