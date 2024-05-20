@@ -1,15 +1,9 @@
 {% extends "partials/base.html" %}
 
 {% block page_content %}
-<div class="p-2 px-3 d-flex justify-content-between topbar">
-  <h4 class="header">Dashboard</h4>
-  <div class="dropdown">
-    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
-      <i class="bi bi-person-fill"></i>
-    </button>
-    <ul class="dropdown-menu">
-      <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-    </ul>
+<div class="container mt-4 d-flex align-items-center">
+  <div class="me-auto p-2">
+      <h1 class="text-left mb-4 h4">Dashboard</h1>
   </div>
 </div>
 <div class="p-4 main-content">
