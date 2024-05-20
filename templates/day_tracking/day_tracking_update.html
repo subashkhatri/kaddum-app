@@ -452,37 +452,26 @@ function addEquipmentRow(type) {
     templateRow.style.display = 'table-row';
 }
 
-function removeEquipmentRow(button, type) {
-    var totalFormsInput = document.getElementById('id_' + type + '-TOTAL_FORMS');
-    var rows = document.querySelectorAll('.' + type + '-row');
-    var rowToRemove = button.closest('.' + type + '-row');
-    var deleteCheckbox = rowToRemove.querySelector('.' + type + '-delete-checkbox');
-    var idField = rowToRemove.querySelector('input[name*="id"]');
+    function removeEquipmentRow(button, type) {
+        var totalFormsInput = document.getElementById('id_' + type + '-TOTAL_FORMS');
+        var rowToRemove = button.closest('.' + type + '-row');
+        var deleteCheckbox = rowToRemove.querySelector('.' + type + '-delete-checkbox');
+        var idField = rowToRemove.querySelector('input[name*="id"]');
 
-    // If only one row remains, hide it instead of removing, and update the total form count
-    if (rows.length === 1) {
-        rowToRemove.style.display = 'none'; // Hide the row
+        // Mark the row for deletion
         if (deleteCheckbox) {
-            deleteCheckbox.checked = true; // Mark the checkbox for deletion
-        }
-        // Update the TOTAL_FORMS count but do not remove the row from DOM
-        totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
-    } else {
-        // More than one row exists, handle normally
-        if (deleteCheckbox) {
-            deleteCheckbox.checked = true; // Check the delete checkbox if it exists
+            deleteCheckbox.value = 'on';
         }
 
         if (idField && idField.value) {
-            // Existing record: hide the row and mark for deletion
+            // If the row has an id, it means it's an existing record, so hide the row and mark for deletion
             rowToRemove.style.display = 'none';
         } else {
-            // New record: remove the row and decrement TOTAL_FORMS
+            // If the row does not have an id, it means it's a new record, so remove the row and decrement TOTAL_FORMS
             rowToRemove.remove();
             totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
         }
     }
-}
 
 
     function calculateEmployeeTotalHours() {

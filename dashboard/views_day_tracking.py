@@ -34,13 +34,9 @@ def day_tracking_create(request):
         if form.is_valid() and employee_formset.is_valid() and equipment_formset.is_valid():
             with transaction.atomic():
                 is_draft = request.POST.get('click-btn') == 'draft'
-                
-                print("is_draft",is_draft)
-                
                 day_tracking_instance = form.save(commit=False)
                 day_tracking_instance.is_draft = is_draft
-                print("day_tracking_instance_is draft", day_tracking_instance.is_draft)
-                
+
                 day_tracking_instance.save()
 
                 # Save the employee formset
