@@ -1,9 +1,12 @@
 from django import forms
+
+from .models_resource_cost import ResourceCost
 from .models import (
     DairyRecord,
     Project,
-    UserAccount,
-)  # Assuming UserAccount is the correct model
+    CostTracking,
+)
+from users.models import UserAccount
 
 SHIFT_CHOICES = [
         ('Day Shift', 'Day Shift'),
@@ -98,4 +101,18 @@ class DairyRecordForm(forms.ModelForm):
         for field_name in integer_fields:
             self.fields[field_name].validators.append(validate_non_negative)
             self.fields[field_name].widget.attrs.update({'class': 'form-control'})
-        
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Check if there is a CostTracking record for the same project and date that is not a draft
+        project_no = cleaned_data.get('project_no')
+        record_date = cleaned_data.get('record_date')
+        if project_no and record_date:
+            cost_tracking_confirmed = CostTracking.objects.filter(
+                project_no = project_no,
+                record_date = record_date,
+                is_draft = False
+            ).exists()
+            if cost_tracking_confirmed:
+                self.add_error('record_date','Please check the record date, as Cost Tracking Record is already confirmed.')

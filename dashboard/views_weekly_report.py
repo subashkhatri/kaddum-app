@@ -4,10 +4,10 @@ from django.core.paginator import Paginator
 from django.db.models import Sum, Q
 from .models import DairyRecord, Project, CostTracking, WeeklyReportList
 import datetime
+from users.decorators import superuser_or_supervisor_required
 
-
+@superuser_or_supervisor_required
 def all_weekly_report(request):
-
     query = request.GET.get('q', '').strip().lower()
 
     if query:
@@ -117,7 +117,7 @@ def all_weekly_report(request):
 
     return render(request, 'weekly_report/all_weekly_report.html', context)
 
-
+@superuser_or_supervisor_required
 def view_weekly_report(request, report_id):
     report = get_object_or_404(WeeklyReportList, pk=report_id)
     week_number = int(report.year_week[-2:])

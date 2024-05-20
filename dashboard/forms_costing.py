@@ -46,7 +46,7 @@ class CostTrackingForm(forms.ModelForm):
         self.fields['total_hours_employee_local'].required = False
         self.fields['total_hours_employee_local_percentage'].required = False
         self.fields['total_hours_equipment'].required = False
-        
+
         if self.instance and self.instance.record_date:
             self.fields['day_of_week'].initial = self.instance.record_date.strftime('%A')
 

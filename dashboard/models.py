@@ -28,6 +28,15 @@ class Project(models.Model):
     def __str__(self):
         return f"{self.project_no} - {self.project_name}"
 
+    # def save(self, *args, **kwargs):
+    #     if self.project_no is None:  # Only set if not already assigned
+    #         from django.db import connection
+    #         with connection.cursor() as cursor:
+    #             cursor.execute("SELECT nextval('project_project_no_seq')")
+    #             self.project_no = cursor.fetchone()[0]
+    #     super().save(*args, **kwargs)
+
+
 class DairyRecord(models.Model):
     dairy_record_id = models.CharField(max_length=10, primary_key= True)
     project_no = models.ForeignKey(Project, on_delete=models.PROTECT, db_column='project_no') # FK from project table
@@ -286,6 +295,7 @@ class DayTrackingEmployeeDetails(models.Model):
         db_table = 'dashboard-DayTrackingEmployeeDetails'
 
     def save(self, *args, **kwargs):
+        self.clean()
         if not self.id:
             last_record = DayTrackingEmployeeDetails.objects.all().order_by('-id').first()
             if last_record:

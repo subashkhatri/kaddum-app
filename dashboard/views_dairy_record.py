@@ -61,6 +61,12 @@ def create_dairy_record(request):
           dairy_record.save()
           messages.success(request, 'Dairy record created successfully.')
           return redirect('all_dairy_record')
+        else:
+            messages.error(request, "Form submission error. Please check the provided information.")
+            return render(request, 'dairy_record/create_dairy_record.html', {
+                'form': form,
+                'form_action': form_action
+            })
     else:
         form = DairyRecordForm()
         return render(request, 'dairy_record/create_dairy_record.html', {'form': form, 'form_action': form_action})

@@ -25,7 +25,6 @@ def day_tracking_create(request):
     form_action = reverse('day_tracking_create')
 
     if request.method == 'POST':
-        print(request.POST)
         form = DayTrackingForm(request.POST)
         employee_formset = DayTrackingEmployeeFormSet(request.POST, prefix='employee')
         equipment_formset = DayTrackingEquipmentFormSet(request.POST, prefix='equipment')
@@ -33,10 +32,6 @@ def day_tracking_create(request):
         client_sign_data = request.POST.get('client_sign')
 
         if form.is_valid() and employee_formset.is_valid() and equipment_formset.is_valid():
-            if not any(employee_formset.cleaned_data):
-                messages.error(request, "Please add at least one employee.")
-                return render(request, 'day_tracking/day_tracking_create.html', {'form': form, 'employee_formset': employee_formset, 'equipment_formset': equipment_formset})
-
             with transaction.atomic():
                 is_draft = request.POST.get('click-btn') == 'draft'
                 day_tracking_instance = form.save(commit=False)
@@ -52,21 +47,23 @@ def day_tracking_create(request):
 
                 # Save the equipment formset
                 for equipment_form in equipment_formset:
-                    # print("equipment_form", equipment_form)
                     if equipment_form.cleaned_data:
                         equipment_detail = equipment_form.save(commit=False)
                         equipment_detail.day_tracking_id = day_tracking_instance
                         equipment_detail.save()
 
+                # Save signatures only if not a draft
+                if not is_draft:
+                    kaddum_sign_data = request.POST.get('kaddum_sign')
+                    client_sign_data = request.POST.get('client_sign')
+                    if kaddum_sign_data:
+                        day_tracking_instance.kaddum_sign = kaddum_sign_data
+                    if client_sign_data:
+                        day_tracking_instance.client_sign = client_sign_data
+                    day_tracking_instance.save()
 
-                if kaddum_sign_data:
-                    day_tracking_instance.kaddum_sign = kaddum_sign_data
-
-                if client_sign_data:
-                    day_tracking_instance.client_sign = client_sign_data
-
-            messages.success(request, "Day tracking record created successfully.")
-            return redirect('day_tracking_list')
+                messages.success(request, "Day tracking record created successfully.")
+                return redirect('day_tracking_list')
         else:
             messages.error(request, "Form submission error. Please check the provided information.")
 
@@ -89,7 +86,6 @@ def save_signature(image_data, filename):
     try:
         image_data = base64.b64decode(image_data)
     except base64.binascii.Error as e:
-        print(f"Error decoding base64 data: {e}")
         return
 
     file_path = os.path.join(settings.MEDIA_ROOT, filename)
@@ -110,10 +106,6 @@ def day_tracking_update(request, day_tracking_id):
         client_sign_data = request.POST.get('client_sign')
 
         if form.is_valid() and employee_formset.is_valid() and equipment_formset.is_valid():
-            if not any(employee_formset.cleaned_data):
-                messages.error(request, "Please add at least one employee.")
-                return render(request, 'day_tracking/day_tracking_update.html', {'form': form, 'employee_formset': employee_formset, 'equipment_formset': equipment_formset})
-
             with transaction.atomic():
                 is_draft = request.POST.get('click-btn') == 'draft'
                 day_tracking_instance = form.save(commit=False)
@@ -127,11 +119,15 @@ def day_tracking_update(request, day_tracking_id):
                 # Save the equipment formset
                 equipment_formset.save(commit=True)
 
-                if kaddum_sign_data:
-                    day_tracking_instance.kaddum_sign = kaddum_sign_data
-
-                if client_sign_data:
-                    day_tracking_instance.client_sign = client_sign_data
+                # Save signatures only if not a draft
+                if not is_draft:
+                    kaddum_sign_data = request.POST.get('kaddum_sign')
+                    client_sign_data = request.POST.get('client_sign')
+                    if kaddum_sign_data:
+                        day_tracking_instance.kaddum_sign = kaddum_sign_data
+                    if client_sign_data:
+                        day_tracking_instance.client_sign = client_sign_data
+                    day_tracking_instance.save()
 
 
                 messages.success(request, "Day tracking record updated successfully.")

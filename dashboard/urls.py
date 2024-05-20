@@ -17,7 +17,7 @@ urlpatterns = [
   path('view_dairy_record/<str:dairy_record_id>/', views_dairy_record.view_dairy_record, name="view_dairy_record"),
   path('delete_dairy_record/<str:dairy_record_id>/', views_dairy_record.delete_dairy_record, name='delete_dairy_record'),
 
-  path('day_tracking_create/', views_day_tracking.day_tracking_create, name='day_tracking_create'),  
+  path('day_tracking_create/', views_day_tracking.day_tracking_create, name='day_tracking_create'),
   path('day_tracking_list/', views_day_tracking.day_tracking_list, name='day_tracking_list'),
   path('day_tracking_update/<str:day_tracking_id>/', views_day_tracking.day_tracking_update, name='day_tracking_update'),
   path('day_tracking_delete/<str:day_tracking_id>/', views_day_tracking.day_tracking_delete, name='day_tracking_delete'),
@@ -42,4 +42,6 @@ urlpatterns = [
   path('resource_cost/create/', views_resource.create_resource_cost, name='create_resource_cost'),
   path('edit_resource_cost/<int:resource_id>/', views_resource.edit_resource_cost, name='edit_resource_cost'),
   path('resource_cost/delete/<int:resource_id>/', views_resource.delete_resource_cost, name='delete_resource_cost'),
+
 ]
+
