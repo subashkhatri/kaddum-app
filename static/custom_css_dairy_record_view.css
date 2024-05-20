@@ -43,3 +43,28 @@ th, td {
 .safety-table th, .safety-table td {
     text-align: center;
 }
+/* save as pdf css */
+@media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    body {
+        margin: 1cm;
+    }
+}
+
+#print-content {
+    width: 100%;
+    max-width: 100%;
+    page-break-inside: avoid;
+}
+
+.header img {
+    max-width: 150px;
+}
+
+table {
+    width: 100%;
+}

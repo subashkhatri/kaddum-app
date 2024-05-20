@@ -3,6 +3,7 @@
 
 {% block title %}Daily Record and Diary{% endblock title %}
 {% block CSS %}
+<!-- css for pdf are also here -->
 <link rel="stylesheet" href="{% static 'custom_css_dairy_record_view.css' %}">
 {% endblock CSS %}
 
@@ -158,19 +159,24 @@
 	</div>
 </div>
 
-<div class="mt-3">
-	<!-- <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="btn btn-success col-2">Edit</a> -->
+<div class="text-center mt-3">
 	<a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="btn btn-danger col-2">Delete</a>
 	<a href="#" onclick="window.history.back();" class="btn btn-secondary col-2">Back</a>
-	<button class="btn btn-primary col-2" onclick="printPdf()">Print PDF</button>
+	<button class="btn btn-primary col-2" onclick="downloadPdf()">Download PDF</button>
 </div>
 
-
-
-{% endblock %}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 <script>
-	function printPdf() {
-		window.print();
+	function downloadPdf() {
+		const element = document.getElementById('print-content');
+		const opt = {
+			margin: 0.2,
+			filename: '{{ record.dairy_record_id }}_daily_record.pdf',
+			image: { type: 'jpeg', quality: 0.98 },
+			html2canvas: { scale: 2 },
+			jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+		};
+		html2pdf().from(element).set(opt).save();
 	}
 </script>
+{% endblock %}

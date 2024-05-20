@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block CSS %}
+<!-- css for pdf are also here -->
 <link rel="stylesheet" href="{% static 'custom_css_dairy_record_view.css' %}">
 <link rel="stylesheet" href="{% static 'css/resource.css' %}">
 {% endblock CSS %}
@@ -112,19 +113,25 @@
             </tr>
         </table>
     </div>
-    </div>
-    <div class="text-center mt-3">
-        <button class="btn btn-primary" onclick="printPdf()">Print PDF</button>
-        <a href="#" onclick="window.history.back();" class="btn btn-danger">Cancel</a>
-    </div>
 </div>
 
+<div class="text-center mt-3">
+    <a href="#" onclick="window.history.back();" class="btn btn-secondary col-2">Back</a>
+    <button class="btn btn-primary col-2" onclick="downloadPdf()">Download PDF</button>
+</div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 <script>
-    function printPdf() {
-    window.print();
+    function downloadPdf() {
+        const element = document.getElementById('print-content');
+        const opt = {
+            margin: 0.2,
+            filename: '{{ record.day_tracking_id }}_day_tracking.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().from(element).set(opt).save();
     }
 </script>
-
-
 {% endblock %}
