@@ -230,11 +230,12 @@
             </tbody>
         </table>
         <div class="d-flex justify-content-end">
-            <button type="submit" class="form-group btn btn-success me-2" style="width: 150px" value="complete" name="click-btn">Create</button>
-            <button type="submit" class="form-group btn btn-primary me-2" style="width: 150px" value="draft" name="click-btn">Save as Draft</button>
+            <button type="submit" class="form-group btn btn-success me-2" style="width: 150px" value="complete" name="click-btn" id="submit-btn">Create</button>
+            <button type="submit" class="form-group btn btn-primary me-2" style="width: 150px" value="draft" name="click-btn" id="save-draft-btn">Save as Draft</button>
             <a href="{% url 'day_tracking_delete' day_tracking_id %}" class="form-group btn btn-danger me-2" style="width: 150px">Delete</a>
             <a href="{% url 'day_tracking_list' %}" class="form-group btn btn-secondary" style="width: 150px" value="back">Back</a>
         </div>
+        <input type="hidden" name="is_draft" id="id_is_draft" value="{{ form.is_draft.value }}">
     </form>
     <script>
         function clearSignature(padId) {
@@ -317,6 +318,17 @@
 
         calculateEmployeeTotalHours()
         calculateEquipmentTotalHours()
+        // Set is_draft to True when saving as draft
+        document.getElementById('save-draft-btn').addEventListener('click', function() {
+            document.getElementById('id_is_draft').value = 'True';
+            document.getElementById('day-tracking-form').submit();
+            });
+
+        // Set is_draft to False when submitting as completed
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            document.getElementById('id_is_draft').value = 'False';
+            document.getElementById('day-tracking-form').submit();
+        });
 
       // Event listener for calculating employee totol hours in employee
       document.getElementById('EmployeeTableBody').addEventListener('input', calculateEmployeeTotalHours);

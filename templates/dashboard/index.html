@@ -12,44 +12,47 @@
     </ul>
     </div>
 </div>
+
 <div class="p-4 main-content">
   <div class="row">
     <div class="col-12 col-sm-4">
-      <div class="card">
-        <h3 class="my-3 pt-3 text-center card-icon">
-          <i class="p-3 bi bi-file-earmark"></i>
-        </h3>
-        <div class="card-body">
-          <h5 class="text-center card-title"><a href="{% url 'create_dairy_record' %}"
-              style="text-decoration: none; color: black;">Daily Record</a></h5>
-          <a href="{% url 'create_dairy_record' %}" class="btn card-text">+ Add New</a>
+      <a href="{% url 'create_dairy_record' %}" class="card-link">
+        <div class="card card-link">
+          <h3 class="my-3 pt-3 text-center card-icon">
+            <i class="p-3 bi bi-file-earmark"></i>
+          </h3>
+          <div class="card-body">
+            <h5 class="text-center card-title">Daily Record</h5>
+            <p class="btn card-text">+ Add New</p>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
-
     <div class="col-12 col-sm-4">
-      <div class="card">
-        <h3 class="my-3 pt-3 text-center card-icon">
-          <i class="p-3 bi bi-file-earmark-text-fill"></i>
-        </h3>
-        <div class="card-body">
-          <h5 class="text-center card-title"><a href="{% url 'day_tracking_create' %}"
-            style="text-decoration: none; color: black;">Daily Record</a></h5>
-        <a href="{% url 'day_tracking_create' %}" class="btn card-text">+ Add New</a>
+      <a href="{% url 'day_tracking_create' %}" class="card-link">
+        <div class="card card-link">
+          <h3 class="my-3 pt-3 text-center card-icon">
+            <i class="p-3 bi bi-file-earmark-text-fill"></i>
+          </h3>
+          <div class="card-body">
+            <h5 class="text-center card-title">Day Tracking</h5>
+            <p class="btn card-text">+ Add New</p>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
-
     <div class="col-12 col-sm-4">
-      <div class="card">
-        <h3 class="my-3 pt-3 text-center card-icon">
-          <i class="p-3 bi bi-calculator"></i>
-        </h3>
-        <div class="card-body">
-          <h5 class="text-center card-title"> <a href="{% url 'all_daily_costing' %}" style="text-decoration: none; color: black;">Daily Costing</a></h5>
-          <a href="{% url 'all_daily_costing' %}" class="btn card-text">+ Add New</a>
+      <a href="{% url 'all_daily_costing' %}" class="card-link">
+        <div class="card card-link">
+          <h3 class="my-3 pt-3 text-center card-icon">
+            <i class="p-3 bi bi-calculator"></i>
+          </h3>
+          <div class="card-body">
+            <h5 class="text-center card-title">Daily Costing</h5>
+            <p class="btn card-text">+ Add New</p>
+          </div>
         </div>
-      </div>
+      </a>
     </div>
   </div>
 
