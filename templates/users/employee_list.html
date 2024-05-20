@@ -7,9 +7,12 @@
     </div>
     {% if request.user.roles == "super admin" %}
     <div class="p-2">
-        <a href="{% url 'employees_create' %}" class="btn btn-danger">+ Create New Employee</a>
+        <a href="{% url 'reset_password' %}" class="btn btn-info">Reset Password</a>
     </div>
     {% endif %}
+    <div class="p-2">
+        <a href="{% url 'employees_create' %}" class="btn btn-danger">+ Create New Employee</a>
+    </div>
     {% comment %} <div>
         <button type="submit" class="btn btn-danger btn-lg float-right">Save</button>
     </div> {% endcomment %}
@@ -40,7 +43,9 @@
                         <th scope="col" class="align-middle" style="color: #fff;" width="8%"><small>Indigenous</small></th>
                         <th scope="col" class="align-middle" style="color: #fff;" width="8%"><small>Local</small></th>
                         <th scope="col" class="align-middle" style="color: #fff;"><small>Position</small></th>
+                        {% if request.user.roles == "super admin" %}
                         <th scope="col" class="align-middle" style="color: #fff;"><small>Role</small></th>
+                        {% endif %}
                         <th scope="col" class="align-middle" style="color: #fff;" ><small>Status</small></th>
                         <th scope="col" class="align-middle" style="color: #fff;"><small></small></th>
                     </tr>

@@ -34,6 +34,8 @@
         </div>
       </a>
     </div>
+
+  {% if request.user.roles == "super admin" %}
     <div class="col-12 col-sm-4">
       <a href="{% url 'all_daily_costing' %}" class="card-link">
         <div class="card card-link">
@@ -47,8 +49,22 @@
         </div>
       </a>
     </div>
+  {% else %}
+  <div class="col-12 col-sm-4">
+    <a href="{% url 'all_weekly_report' %}" class="card-link">
+      <div class="card card-link">
+        <h3 class="my-3 pt-3 text-center card-icon">
+          <i class="p-3 bi bi-calculator"></i>
+        </h3>
+        <div class="card-body">
+          <h5 class="text-center card-title">Weekly Report</h5>
+          <p class="btn card-text">+ Add New</p>
+        </div>
+      </div>
+    </a>
   </div>
-
+  {% endif %}
+  </div>
   <div class="row my-4">
     <div class="col">
       <div class="card">

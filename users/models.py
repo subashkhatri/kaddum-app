@@ -51,7 +51,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     is_indigenous = models.BooleanField(null=False, blank=False)
     is_local = models.BooleanField(null=False, blank=False)
     position_id = models.ForeignKey(ResourceCost, on_delete=models.PROTECT, db_column='position_id', null=True, blank=True) # job position
-    roles = models.CharField(max_length=50)  # Role permission to access the system super_admin, supervisor, restricted user
+    roles = models.CharField(max_length=50, blank=True, default='employee')  # Role permission to access the system super_admin, supervisor, restricted user
 
     # we don't change to False because when we create superuser, i won't be able to log in.
     is_active = models.BooleanField(default=True)  # whether user is employeed or not
