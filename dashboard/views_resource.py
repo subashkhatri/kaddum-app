@@ -45,6 +45,8 @@ def create_resource_cost(request):
             form.save()
             messages.success(request, "Resource cost created successfully.")
             return redirect('resource_cost_list')  # Redirect to the resource cost listing page
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = ResourceCostForm()
 
