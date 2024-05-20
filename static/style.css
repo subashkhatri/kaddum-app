@@ -106,9 +106,12 @@
 }
 
 .card-icon i {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-text {
@@ -116,22 +119,32 @@
 }
 
 .card-icon .bi-file-earmark {
-  background-color: #b4c5cc;
-  color: #328ab4;
+  background-color: #b2e5fc;
+  color: #339cc9;
 }
 
 .card-icon .bi-file-earmark-text-fill {
-  background-color: #dcd0c0;
-  color: #b5823f;
+  background-color: #fce8c6;
+  color: #e6a031;
 }
 
 .card-icon .bi-calculator {
-  background-color: #a1c4bb;
-  color: #529c8b;
+  background-color: #afede5;
+  color: #009b86;
 }
 
 .card {
   border-radius: 8px;
+}
+
+.card-link {
+  text-decoration: none;
+}
+
+.card-link:hover {
+  transform: translateY(-5px); /* Lift the card up slightly */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow for depth */
+  text-decoration: none;
 }
 
 .table-container .table-data .view-btn {
