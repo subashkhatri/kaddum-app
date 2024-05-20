@@ -7,21 +7,31 @@ body {
     background-color: #cc0000;
     color: white;
     padding: 10px;
-    text-align: center;
     position: relative;
+    text-align: center;
 }
 .header img {
     position: absolute;
-    left: 10px;
-    top: 10px;
-    height: 50px;
+    left: 30px; /* Position the image on the left */
+    top: 50%;
+    transform: translateY(-50%); /* Center the image vertically */
+    width: 9%;
 }
 .header h1 {
     margin: 0;
+    font-size: 1.2rem;
 }
-.container {
-    padding: 20px;
+.view-container {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    font-size: 0.8rem;
 }
+.table-bordered, .table-bordered th, .table-bordered td {
+    border: 0.4px solid black;
+  }
+  .table-bordered th, .table-bordered td {
+    padding: 0.2rem; /* Adjust padding as needed */
+  }
 table {
     width: 100%;
     border-collapse: collapse;

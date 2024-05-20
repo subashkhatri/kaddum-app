@@ -101,11 +101,7 @@ def all_weekly_report(request):
                 else:
                     messages.error(request, "No dairy records exist for the given project and week.")
 
-        elif 'delete_report' in request.POST:
-            report_id = request.POST.get('delete_report')
-            report = get_object_or_404(WeeklyReportList, pk=report_id)
-            report.delete()
-            messages.success(request, "Weekly Report deleted successfully.")
+
 
         return redirect('all_weekly_report')
 
@@ -119,6 +115,14 @@ def all_weekly_report(request):
 
 @superuser_or_supervisor_required
 def view_weekly_report(request, report_id):
+    if request.method == 'POST':
+        if 'delete_report' in request.POST:
+            report_id_to_delete = request.POST.get('delete_report')
+            report_to_delete = get_object_or_404(WeeklyReportList, pk=report_id_to_delete)
+            report_to_delete.delete()
+            messages.success(request, "Weekly Report deleted successfully.")
+            return redirect('all_weekly_report')
+
     report = get_object_or_404(WeeklyReportList, pk=report_id)
     week_number = int(report.year_week[-2:])
 

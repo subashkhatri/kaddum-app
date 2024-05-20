@@ -95,7 +95,7 @@ def edit_daily_costing(request, cost_tracking_id):
 
 @superuser_required
 def all_daily_costing(request):
-    draft_records_list = CostTracking.objects.filter(is_draft=True).order_by('-created_date')
+    draft_records_list = CostTracking.objects.filter(is_draft=True).order_by('-last_modification_date')
     query = request.GET.get('q', '').strip().lower()
     if query:
         try:
@@ -114,7 +114,7 @@ def all_daily_costing(request):
         Q(last_modification_date__icontains=query))
         ).order_by('-created_date')
     else:
-        completed_records_list = CostTracking.objects.filter(is_draft=False).order_by('-created_date')
+        completed_records_list = CostTracking.objects.filter(is_draft=False).order_by('-last_modification_date')
 
     paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
     page_number = request.GET.get('page')
@@ -125,42 +125,3 @@ def all_daily_costing(request):
         'completed_records': completed_records_page
     }
     return render(request, 'costing/all_daily_costing.html', context)
-
-@superuser_required
-def check_day_tracking(request):
-    project_name = request.GET.get('projectName')
-    date_input = request.GET.get('date')
-
-    try:
-        input_date = datetime.datetime.strptime(date_input, '%Y-%m-%d').date()
-    except ValueError:
-        return JsonResponse({'success': False, 'message': 'Invalid date format'})
-
-    project = Project.objects.filter(project_name=project_name, is_active=True).first()
-    if not project:
-        return JsonResponse({'success': False, 'message': 'Project not found or not active'})
-
-    day_tracking = DayTracking.objects.filter(record_date=input_date, project_no=project.project_no).first()
-    if not day_tracking:
-        return JsonResponse({'success': False, 'message': 'No matching day tracking record found'})
-
-    employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_no=day_tracking.id).values(
-        'employee_name', 'position', 'item_rate', 'total_hours'
-    )
-    employee_data = [
-        {
-            'name': emp['employee_name'],
-            'position': emp['position'],
-            'total_hours': emp['total_hours'],
-            'rate': emp['item_rate'],
-            'total_amount': float(emp['item_rate']) * float(emp['total_hours']),
-            'indigenous': '⭕',  # Assuming all are indigenous for example
-            'local': ''  # Assuming all are non-local for example
-        }
-        for emp in employee_details
-    ]
-
-    return JsonResponse({
-        'success': True,
-        'employees': employee_data
-    })

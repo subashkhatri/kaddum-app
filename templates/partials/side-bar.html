@@ -36,7 +36,7 @@
 
   {% if request.user.roles == "super admin" or request.user.roles == "supervisor" %}
   <a href="{% url 'all_weekly_report' %}" class="d-flex align-items-center {% if request.resolver_match.url_name == 'all_weekly_report' %}active{% endif %}">
-    <i class="bi bi-people-fill"></i>
+    <i class="bi bi-bar-chart-line-fill"></i>
     <span class="txt">Weekly Report</span>
   </a>
   {% endif %}
