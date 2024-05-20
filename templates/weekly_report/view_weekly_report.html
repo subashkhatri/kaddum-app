@@ -144,8 +144,9 @@
                 </table>
                 <form method="POST" novalidate>
                     {% csrf_token %}
-                    <button type="submit" name="action" value="complete" class="form-group btn btn-primary col-2">Save as PDF</button>
-                    <a href="{% url 'all_weekly_report' %}" class="form-group btn btn-outline-primary col-2" value="back">Back</a>
+                    <button type="submit" name="action" value="complete" class="form-group btn btn-primary me-2" style="width: 150px">Save as PDF</button>
+                    <button type="submit" name="delete_report" value="{{ report.report_id }}" class="form-group btn btn-danger btn me-2" style="width: 150px" onclick="return confirm('Are you sure you want to delete this report?');">Delete</button>
+                    <a href="{% url 'all_weekly_report' %}" class="form-group btn btn-secondary" style="width: 150px" value="back">Back</a>
                 </form>
             </form>
         </div>
