@@ -3,6 +3,7 @@
 
 {% block title %}Daily Record and Diary{% endblock title %}
 {% block CSS %}
+<!-- css for pdf are also here -->
 <link rel="stylesheet" href="{% static 'custom_css_dairy_record_view.css' %}">
 {% endblock CSS %}
 
@@ -10,8 +11,9 @@
 <div id="print-content">
 	<div class="header">
 		<img src="{% static 'logo.jpg' %}" alt="Kaddum Logo">
-		<h1>DAILY RECORD AND DIARY</h1>
+		<h1> Daily Record and Diary</h2>
 	</div>
+
 	<div class="container">
 		<table>
 			<table class="table-bordered">
@@ -24,9 +26,9 @@
 					</tr>
 					<tr>
 						<th width="10%">Date:</th>
-						<td width="15%">{{ record.record_date|date:"d-m-" }}</td>
+						<td width="15%">{{ record.record_date|date:"d-m-Y" }}</td>
 						<th width="10%">Day:</th>
-						<td width="10%">{{ day_of_week }}</td>
+						<td width="10%">{{ record.record_date|date:"l" }}</td>
 						<th>Shift:</th>
 						<td>{{ record.record_shift }}</td>
 					</tr>
@@ -59,24 +61,24 @@
 					<th colspan="2" class="full-width">Have Delays Occurred Today As a Result of the Following:</th>
 				</tr>
 				<tr>
-					<td>{{ record.delay_access|yesno:"✓,X" }} Access</td>
-					<td>{{ record.delay_await_client_instruction|yesno:"✓,X" }} Awaiting Instructions from Client</td>
+					<td>{{ record.delay_access|yesno:"<i class='bi bi-check2-square' ></i>,<i class='bi bi-square'></i>"|safe }} Access</td>
+					<td>{{ record.delay_await_client_instruction|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Awaiting Instructions from Client</td>
 				</tr>
 				<tr>
-					<td>{{ record.delay_lack_of_drawing|yesno:"✓,X" }} Lack of Drawings</td>
-					<td>{{ record.delay_subcontractors|yesno:"✓,X" }} Subcontractors</td>
+					<td>{{ record.delay_lack_of_drawing|yesno:"<i class='bi bi-check2-square' style='font-weight: bold'></i>,<i class='bi bi-square' ></i>"|safe }} Lack of Drawings</td>
+					<td>{{ record.delay_subcontractors|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Subcontractors</td>
 				</tr>
 				<tr>
-					<td>{{ record.delay_await_client_decision|yesno:"✓,X" }} Awaiting Decision from Client</td>
-					<td>{{ record.awaiting_materials|yesno:"✓,X" }} Awaiting Materials</td>
+					<td>{{ record.delay_await_client_decision|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Awaiting Decision from Client</td>
+					<td>{{ record.awaiting_materials|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Awaiting Materials</td>
 				</tr>
 				<tr>
-					<td>{{ record.delay_poor_weather|yesno:"✓,X" }} Poor Weather</td>
-					<td>{{ record.delay_rework|yesno:"✓,X" }} Re-Work</td>
+					<td>{{ record.delay_poor_weather|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Poor Weather</td>
+					<td>{{ record.delay_rework|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Re-Work</td>
 				</tr>
 				<tr>
-					<td>{{ record.delay_industrial_matters|yesno:"✓,X" }} Industrial Matters</td>
-					<td>{{ record.delay_other|yesno:"✓,X" }} Other</td>
+					<td>{{ record.delay_industrial_matters|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Industrial Matters</td>
+					<td>{{ record.delay_other|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Other</td>
 				</tr>
 			</table>
 			<table class="table-bordered">
@@ -165,18 +167,24 @@
 			</table>
 		</table>
 		<div class="d-flex justify-content-end mt-3">
-			<button class="btn btn-primary me-2" style="width: 150px" onclick="printPdf()">Print PDF</button>
+			<button class="btn btn-primary me-2" style="width: 150px" onclick="downloadPdf()">Download PDF</button>
 			<a href="{% url 'delete_dairy_record' record.dairy_record_id %}" class="btn btn-danger me-2" style="width: 150px">Delete</a>
 			<a href="{% url 'all_dairy_record' %}" class="btn btn-secondary" style="width: 150px">Back</a>
 		</div>
 	</div>
 </div>
-
-
-{% endblock %}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 <script>
-	function printPdf() {
-		window.print();
+	function downloadPdf() {
+		const element = document.getElementById('print-content');
+		const opt = {
+			margin: 0.2,
+			filename: '{{ record.dairy_record_id }}_daily_record.pdf',
+			image: { type: 'jpeg', quality: 0.98 },
+			html2canvas: { scale: 2 },
+			jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+		};
+		html2pdf().from(element).set(opt).save();
 	}
 </script>
+{% endblock %}

@@ -8,9 +8,9 @@
       <i class="bi bi-person-fill"></i>
     </button>
     <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+      <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
     </ul>
-    </div>
+  </div>
 </div>
 
 <div class="p-4 main-content">
@@ -76,8 +76,10 @@
               <div class="col-4 d-flex align-items-center">{{ dairy_record.project_no.project_name }}</div>
               <div class="col-4 d-flex align-items-center">{{ dairy_record.supervisor_id }}</div>
               <div class="col-2 d-flex align-items-center justify-content-end">
-                <a href="{% url 'view_dairy_record' dairy_record.dairy_record_id %}" class="btn py-1 px-2 view-btn">View</a>
-                <a href="{% url 'edit_dairy_record' dairy_record.dairy_record_id %}" class="btn py-1 px-2 view-btn">Edit</a>
+                <a href="{% url 'view_dairy_record' dairy_record.dairy_record_id %}"
+                  class="btn py-1 px-2 view-btn">View</a>
+                <a href="{% url 'edit_dairy_record' dairy_record.dairy_record_id %}"
+                  class="btn py-1 px-2 view-btn">Edit</a>
               </div>
             </div>
             {% empty %}
@@ -85,9 +87,6 @@
               <div class="col-12 text-center">No records found.</div>
             </div>
             {% endfor %}
-          </div>
-          <div class="table-bottom text-center" role="button">
-           <a href="{% url 'all_dairy_record' %}"> <i class="bi bi-caret-down-fill"></i></a>
           </div>
         </div>
       </div>
