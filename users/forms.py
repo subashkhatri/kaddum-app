@@ -53,7 +53,7 @@ class SuperUserCreationForm(forms.ModelForm):
                     ("", "Please select..."),
                     ("super admin", "Super Admin"),
                     ("supervisor", "Supervisor"),
-                    ("restricted user", "Restricted User"),
+                    ("employee", "Employee"),
                 ],
             ),
             "is_active": forms.Select(
@@ -64,7 +64,7 @@ class SuperUserCreationForm(forms.ModelForm):
         labels = {
             "first_name": "*First Name",
             "last_name": "*Last Name",
-            "email": "*Email",
+            "email": "Email",
             "is_indigenous": "*Indigenous",
             "is_local": "*Local",
             "position_id": "*Position",

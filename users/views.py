@@ -5,13 +5,15 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 
 from .models import UserAccount
 from dashboard.models import *
 from .forms import UserAccountForm, SuperUserCreationForm
 from .decorators import superuser_required, superuser_or_supervisor_required
-
-
+from datetime import datetime, timedelta, timezone
+from django.conf import settings
+import jwt
 
 User = get_user_model()
 
@@ -39,8 +41,23 @@ def login(request):
         user = auth.authenticate(username=username, password=password)
 
         if user is not None:
+            # Check user roles for permission to access the system
+            if user.roles not in ['supervisor', 'super admin']:
+                messages.error(request, "You do not have authorization to log in.")
+                return render(request, "users/login.html", {"username": username})
+
+            # User first long in to system
+            if user.last_login is None:
+                token = jwt.encode({
+                    'user_id': user.pk,
+                    'exp': datetime.now(timezone.utc) + timedelta(hours=24)
+                }, settings.SECRET_KEY, algorithm='HS256')
+                reset_url = reverse('reset_password_initial', args=[user.username]) + f"?token={token}"
+                return redirect(reset_url)
+
+            # User normally log in
             auth.login(request, user)
-            messages.success(request, 'Welcome to Kaddum App!')
+            messages.success(request, 'Welcome to Kaddum System!')
             return redirect("/")
 
         else:
@@ -62,7 +79,7 @@ def reset_password(request):
             user.set_password(new_password)
             user.save()
             messages.success(request, 'Your password has been updated successfully!')
-            return redirect("login")
+            return redirect("employees_list")
         except User.DoesNotExist:
             messages.info(request, "User with this username does not exist.")
             return redirect("reset_password")
@@ -70,11 +87,37 @@ def reset_password(request):
         return render(request, "users/reset_password.html")
 
 
+def reset_password_initial(request, username):
+    token = request.GET.get('token')
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        user_id = payload['user_id']
+        user = get_user_model().objects.get(pk=user_id)
+    except (jwt.ExpiredSignatureError, jwt.DecodeError, get_user_model().DoesNotExist):
+        return HttpResponse("Invalid or expired token.")
+
+    if request.method == "POST":
+        username = request.POST["username"]
+        new_password = request.POST["password"]
+        try:
+            user = User.objects.get(username=username)
+            user.set_password(new_password)
+            user.last_login = datetime.now(timezone.utc)
+            user.save(update_fields=['password','last_login'])
+            messages.success(request, 'Your password has been updated successfully!')
+            return redirect("login")
+        except User.DoesNotExist:
+            messages.info(request, "User with this username does not exist.")
+            return redirect("reset_password_initial")
+    else:
+        return render(request, "users/reset_password_intial.html", {'user': user})
+
+
 def logout(request):
     auth.logout(request)
     return redirect("login")
 
-@superuser_required
+@superuser_or_supervisor_required
 def employees_list(request):
     query = request.GET.get('q', '').strip().lower()
     if query:
@@ -101,7 +144,7 @@ def employees_list(request):
     employee_list  = paginator.get_page(page_number)
     return render(request, "users/employee_list.html", {"employee_list": employee_list})
 
-@superuser_required
+@superuser_or_supervisor_required
 def employee_add(request):
     if request.method == "POST":
         form = UserAccountForm(request.POST)
@@ -114,7 +157,7 @@ def employee_add(request):
 
     return render(request, "users/employee_create.html", {"form": form})
 
-@superuser_required
+@superuser_or_supervisor_required
 def employee_edit(request, username):
     employee = get_object_or_404(UserAccount, pk=username)
     if request.method == "POST":
@@ -132,6 +175,7 @@ def employee_edit(request, username):
 
     return render(request, "users/employee_edit.html", {"form": form, 'employee':employee})
 
+@superuser_or_supervisor_required
 def employee_delete(request, username):
     employee = get_object_or_404(UserAccount, pk=username)
     if request.method == 'POST':

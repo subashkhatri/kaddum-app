@@ -47,21 +47,26 @@
                     {{ form.position_id.label_tag }}
                     {{ form.position_id }}
                 </div>
-
+            {% if request.user.roles == "super admin" %}
                 <div class="form-group">
                     {{ form.roles.errors }}
                     {{ form.roles.label_tag }}
                     {{ form.roles }}
                 </div>
-
+            {% elif request.user.roles == "supervisor" %}
+                <div class="form-group">
+                    <label for="id_roles">*System Role:</label>
+                    <select name="roles" class="form-control" id="id_roles" required aria-readonly="true">
+                        <option value="employee" selected>Employee</option>
+                    </select>
+                </div>
+            {% endif %}
                 <div class="form-group">
                     {{ form.is_active.errors }}
                     {{ form.is_active.label_tag }}
                     {{ form.is_active }}
                 </div>
 
-                <!-- <button type="submit" class="btn btn-danger btn-lg">Save</button> -->
-                <!-- <button type="button" class="btn btn-secondary btn-lg" onclick="location.href='{% url 'all_daily_costing' %}';">Cancel</button> -->
                 <button type="submit" class="form-group btn btn-success col-2" value="submit">Create</button>
                 <a href="{% url 'employees_list' %}" type="submit" class="form-group btn btn-primary col-2"
                     value="back">Cancel</a>

@@ -36,6 +36,7 @@ def day_tracking_create(request):
                 is_draft = request.POST.get('click-btn') == 'draft'
                 day_tracking_instance = form.save(commit=False)
                 day_tracking_instance.is_draft = is_draft
+
                 day_tracking_instance.save()
 
                 # Save the employee formset

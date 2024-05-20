@@ -47,13 +47,18 @@
                     {{ form.position_id.label_tag }}
                     {{ form.position_id }}
                 </div>
-
+            {% if request.user.roles == "super admin" %}
                 <div class="form-group">
                     {{ form.roles.errors }}
                     {{ form.roles.label_tag }}
                     {{ form.roles }}
                 </div>
-
+            {% elif request.user.roles == "supervisor" %}
+                <div class="form-group" style="display: none;">
+                    <label for="id_roles">*System Role:</label>
+                    <input name="roles" type="text" class="form-control" id="id_roles" value="{{ form.instance.roles}}" readonly>
+                </div>
+            {% endif %}
                 <div class="form-group">
                     {{ form.is_active.errors }}
                     {{ form.is_active.label_tag }}
@@ -61,7 +66,9 @@
                 </div>
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="form-group btn btn-success me-2" style="width: 150px" value="complete" name="click-btn">Save</button>
+                {% if request.user.roles == "super admin" %}
                     <a href="{% url 'employee_delete' employee.username %}" class="form-group btn btn-danger me-2" style="width: 150px">Delete</a>
+                {% endif %}
                     <a href="{% url 'employees_list' %}" class="form-group btn btn-secondary" style="width: 150px" value="back">Back</a>
                 </div>
             </form>
