@@ -19,4 +19,3 @@ class ResourceCost(models.Model):
 
     def __str__(self):
         return f"{self.item_type.upper()}-{self.item_name}"
- 

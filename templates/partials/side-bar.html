@@ -67,8 +67,8 @@
 
   <!-- Add a separator line -->
   <div class="sidebar-divider"></div>
+  <a href="{% url 'logout' %}" class="d-flex align-items-center" onclick="return confirm('Are you sure you want to log out?');">
 
-  <a href="{% url 'logout' %}" class="d-flex align-items-center logout-btn">
     <i class="bi bi-box-arrow-right"></i>
     <span class="txt">Logout</span>
   </a>

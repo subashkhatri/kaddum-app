@@ -52,20 +52,34 @@ def edit_daily_costing(request, cost_tracking_id):
     if request.method == 'POST':
         form = CostTrackingForm(request.POST, instance=instance)
         if form.is_valid():
+            errors = []
             # Update the hour_rate for each employee
             for employee in employee_details:
                 employee_id = str(employee.id)
                 hour_rate = request.POST.get(f'rate_{employee_id}')
-                new_position = request.POST.get(f'position_{employee_id}')
-                new_position_id = ResourceCost.objects.get(resource_id=new_position)
-                employee.hour_rate = hour_rate
-                employee.confirmed_position_id = new_position_id
-                employee.save()
+                if float(hour_rate) < 0:
+                    errors.append(f"Employee: {employee.employee_id.full_name} hour rate is incorrect.")
+                else:
+                    new_position = request.POST.get(f'position_{employee_id}')
+                    new_position_id = ResourceCost.objects.get(resource_id=new_position)
+                    employee.hour_rate = hour_rate
+                    employee.confirmed_position_id = new_position_id
+                    employee.save()
 
             for equipment in equipment_details:
-                new_item_rate = request.POST.get(f'equipment_rate_{equipment.id}')
-                equipment.item_rate = float(new_item_rate) if new_item_rate else 0  # Convert to float or default to 0
-                equipment.save()
+                equipment_id = str(equipment.id)
+                item_rate = request.POST.get(f'equipment_rate_{equipment_id}', 0)
+                if float(item_rate) < 0:
+                    errors.append(f"Equipment: {equipment.resource_id.item_name} day rate is incorrect.")
+                else:
+                    equipment.item_rate = float(item_rate)
+                    equipment.save()
+
+            if errors:
+                for error in errors:
+                    messages.error(request, error)
+                return redirect('edit_daily_costing', cost_tracking_id=cost_tracking_id)
+
 
             if request.POST.get('action') == 'complete':
                 form.instance.is_draft = False

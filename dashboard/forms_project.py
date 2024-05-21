@@ -3,9 +3,6 @@ from .models import Project
 
 class ProjectForm(forms.ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     class Meta:
         model = Project
         exclude = ['project_no', 'project_total_cost','created_date','last_modification_date']
@@ -28,3 +25,19 @@ class ProjectForm(forms.ModelForm):
             'project_budget': 'Project Budget',
             'is_active': '*Project Status',
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        budget = cleaned_data.get('project_budget')
+
+        if budget is not None:
+            try:
+                # Attempt to convert to integer to ensure no scientific notation or decimals
+                int_budget = int(budget)
+                if int_budget < 0:
+                    self.add_error('project_budget', "Project budget cannot be negative.")
+            except ValueError:
+                self.add_error('project_budget', "Please enter a valid integer for the project budget.")
+
+
+        return cleaned_data

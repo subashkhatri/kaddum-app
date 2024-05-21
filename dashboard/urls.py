@@ -43,5 +43,6 @@ urlpatterns = [
   path('edit_resource_cost/<int:resource_id>/', views_resource.edit_resource_cost, name='edit_resource_cost'),
   path('resource_cost/delete/<int:resource_id>/', views_resource.delete_resource_cost, name='delete_resource_cost'),
 
+  path('api/get_purchase_order/<int:project_id>/', views_day_tracking.get_purchase_order, name='get_purchase_order'),
 ]
 
