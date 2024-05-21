@@ -326,6 +326,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    window.clearSignature = function(padId) {
+        const pad = padId === 'kaddum-signature-pad' ? kaddumSignaturePad : clientSignaturePad;
+        pad.clear();
+    }
 
     // Event listener for calculating employee totol hours in employee
     document.getElementById('EmployeeTableBody').addEventListener('input', calculateEmployeeTotalHours);

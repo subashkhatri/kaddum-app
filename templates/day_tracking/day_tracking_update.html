@@ -331,6 +331,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    window.clearSignature = function(padId) {
+        const pad = padId === 'kaddum-signature-pad' ? kaddumSignaturePad : clientSignaturePad;
+        pad.clear();
+    }
+
     calculateEmployeeTotalHours()
     calculateEquipmentTotalHours()
 
