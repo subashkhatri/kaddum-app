@@ -26,19 +26,13 @@ body {
     margin-right: 0.5rem;
     font-size: 0.8rem;
 }
-.table-bordered, .table-bordered th, .table-bordered td {
-    border: 0.4px solid black;
-  }
   .table-bordered th, .table-bordered td {
-    padding: 0.2rem; /* Adjust padding as needed */
+    padding: 0.2rem;
   }
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 10px;
-}
-table, th, td {
-    border: 1px solid black;
 }
 th, td {
     padding: 5px;
