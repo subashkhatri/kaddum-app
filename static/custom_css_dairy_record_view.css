@@ -28,21 +28,34 @@ body {
 }
   .table-bordered th, .table-bordered td {
     padding: 0.2rem;
+    border: 0.4px solid black;
   }
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 10px;
+    border: 0.4px solid black;
 }
 th, td {
     padding: 5px;
     text-align: left;
+    border: 0.4px solid black;
+}
+.section-text {
+    font-size: 16px;
+    margin-top: 0.7rem;
+    margin-bottom: 0.4rem;
+    font-weight: bold;
+    color: firebrick;
 }
 .full-width {
     width: 100%;
 }
 .notes {
     height: 50px;
+}
+.break-table {
+    page-break-inside: avoid;
 }
 .safety-table th, .safety-table td {
     text-align: center;
@@ -58,7 +71,6 @@ th, td {
         margin: 1cm;
     }
 }
-
 #print-content {
     width: 100%;
     max-width: 100%;

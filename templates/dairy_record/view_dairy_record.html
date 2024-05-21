@@ -122,7 +122,7 @@
 					<td class="notes">{{ record.handover_note|linebreaksbr  }}</td>
 				</tr>
 			</table>
-			<table class="safety-table table-bordered">
+			<table class="safety-table break-table table-bordered">
 				<tr>
 					<th colspan="11" class="full-width">Number of Items Completed Today</th>
 				</tr>
@@ -177,11 +177,12 @@
 	function downloadPdf() {
 		const element = document.getElementById('print-content');
 		const opt = {
-			margin: 0.2,
+			margin: [0.2, 0.25, 0.3, 0.25],
 			filename: '{{ record.record_date|date:"dmY"}}_{{ record.dairy_record_id }}_{{ record.project_no.project_no}}_{{ record.project_no.project_name}}.pdf',
 			image: { type: 'jpeg', quality: 0.98 },
 			html2canvas: { scale: 2 },
-			jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+			jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+			pagebreak: { mode: 'css', break:'.break-table'},
 		};
 		html2pdf().from(element).set(opt).save();
 	}
