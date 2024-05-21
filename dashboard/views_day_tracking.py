@@ -162,7 +162,7 @@ def day_tracking_update(request, day_tracking_id):
 @superuser_or_supervisor_required
 def day_tracking_list(request):
 
-    draft_records_list = DayTracking.objects.filter(is_draft=True).order_by('-created_date')
+    draft_records_list = DayTracking.objects.filter(is_draft=True).order_by('-last_modification_date')
     query = request.GET.get('q', '').strip().lower()
     if query:
             try:
@@ -179,9 +179,9 @@ def day_tracking_list(request):
                 Q(project_no__project_no__icontains=query) |
                 Q(project_no__project_name__icontains=query) |
                 Q(record_shift__icontains=query))  # This will handle date part search for last_modification_date
-            ).order_by('-created_date')
+            ).order_by('-last_modification_date')
     else:
-        completed_records_list = DayTracking.objects.filter(is_draft=False).order_by('-created_date')
+        completed_records_list = DayTracking.objects.filter(is_draft=False).order_by('-last_modification_date')
 
     paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
     page_number = request.GET.get('page')

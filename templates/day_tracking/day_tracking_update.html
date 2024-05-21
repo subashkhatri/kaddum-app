@@ -200,13 +200,13 @@
                         {{ form.kaddum_name.errors }}
                     </td>
                     <td class="align-middle text-right">
+                        {{ form.kaddum_sign_date }}
+                        {{ form.kaddum_sign_date.errors }}
+                    </td>
+                    <td class="align-middle text-right">
                         <canvas id="kaddum-signature-pad" class="signature-pad" width="400" height="150" style="border: 1px solid #000;"></canvas>
                         {{ form.kaddum_sign }}
                         <button type="button" onclick="clearSignature('kaddum-signature-pad')">Clear</button>
-                    </td>
-                    <td class="align-middle text-right">
-                        {{ form.kaddum_sign_date }}
-                        {{ form.kaddum_sign_date.errors }}
                     </td>
                 </tr>
                 <tr>
@@ -217,14 +217,15 @@
                         {{ form.client_name.errors }}
                     </td>
                     <td class="align-middle text-right">
+                        {{ form.client_sign_date }}
+                        {{ form.client_sign_date.errors }}
+                    </td>
+                    <td class="align-middle text-right">
                         <canvas id="client-signature-pad" class="signature-pad" width="400" height="150" style="border: 1px solid #000;"></canvas>
                         {{ form.client_sign }}
                         <button type="button" onclick="clearSignature('client-signature-pad')">Clear</button>
                     </td>
-                    <td class="align-middle text-right">
-                        {{ form.client_sign_date }}
-                        {{ form.client_sign_date.errors }}
-                    </td>
+
                 </tr>
             </tbody>
         </table>
