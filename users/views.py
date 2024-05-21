@@ -17,19 +17,19 @@ import jwt
 
 User = get_user_model()
 
-def register_superuser(request):
-    if request.method == 'POST':
-        form = SuperUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Superuser created successfully.')
-            return redirect('admin:index')
-        else:
-            messages.error(request, 'Please correct the error below.')
-    else:
-        form = SuperUserCreationForm()
+# def register_superuser(request):
+#     if request.method == 'POST':
+#         form = SuperUserCreationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Superuser created successfully.')
+#             return redirect('admin:index')
+#         else:
+#             messages.error(request, 'Please correct the error below.')
+#     else:
+#         form = SuperUserCreationForm()
 
-    return render(request, 'users/register_superuser.html', {'form': form})
+#     return render(request, 'users/register_superuser.html', {'form': form})
 
 
 
