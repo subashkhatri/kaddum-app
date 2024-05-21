@@ -81,7 +81,7 @@ def reset_password(request):
             messages.success(request, 'Your password has been updated successfully!')
             return redirect("employees_list")
         except User.DoesNotExist:
-            messages.info(request, "User with this username does not exist.")
+            messages.error(request, "User with this username does not exist.")
             return redirect("reset_password")
     else:
         return render(request, "users/reset_password.html")

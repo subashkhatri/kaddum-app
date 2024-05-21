@@ -141,6 +141,10 @@ color: gray;
   background-color: #afede5;
   color: #009b86;
 }
+.card-icon .bi-bar-chart-line-fill {
+  background-color: #afede5;
+  color: #009b86;
+}
 
 .card {
 border-radius: 8px;
