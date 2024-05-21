@@ -24,7 +24,7 @@ class DayTrackingForm(forms.ModelForm):
     )
 
     project_no = forms.ModelChoiceField(
-        queryset=Project.objects.all(),
+        queryset=Project.objects.all().order_by('-project_no'),
         label="*Project",
         empty_label="Please select...",
         widget=forms.Select(attrs={'class': 'form-control'}),
