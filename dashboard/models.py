@@ -270,6 +270,8 @@ class DayTracking(models.Model):
             cost_tracking_instance.total_hours_employee_indigenous_percentage = indigenous_percentage
             cost_tracking_instance.last_modification_date = datetime.now()
             cost_tracking_instance.save()
+            print("cost_tracking_instance.total_amount_employee",cost_tracking_instance.total_amount_employee)
+            print("cost_tracking_instance",cost_tracking_instance)
 
     def __str__(self):
         return f"Day Tracking:{self.day_tracking_id} {self.record_date}"
@@ -325,9 +327,11 @@ class DayTrackingEmployeeDetails(models.Model):
         if not self.hour_rate:
             self.hour_rate = self.position_id.item_rate
 
+
         # Calculate total amount
+        hour_rate = self.hour_rate
         if self.total_hours is not None and self.hour_rate is not None:
-            self.total_amount = float(self.total_hours) * float(self.hour_rate)
+            self.total_amount = float(self.total_hours) * float(hour_rate)
 
         if not self.confirmed_position_id:
             self.confirmed_position_id = self.position_id
@@ -460,5 +464,3 @@ class WeeklyReportList(models.Model):
             self.start_date = start_date
             self.end_date = end_date
         super().save(*args, **kwargs)
-
-

@@ -144,10 +144,10 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(event) {
         let valid = true;
         document.querySelectorAll('.rate-input').forEach(input => {
-            // Check if the input value is a number and is an integer
-            const value = input.value;
-            if (!value || parseFloat(value) < 0 || !Number.isInteger(parseFloat(value))) {
-                alert('Rate value incorrect.');
+            // Check if the input value is a valid number and greater than zero
+            const value = parseFloat(input.value);
+            if (isNaN(value) || value <= 0) { // Checking if value is not a number or is less than or equal to zero
+                alert('Please enter a valid rate value.');
                 input.style.borderColor = 'red'; // Highlight the input box in red
                 valid = false;
             } else {

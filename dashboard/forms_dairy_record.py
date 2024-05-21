@@ -14,7 +14,7 @@ SHIFT_CHOICES = [
     ]
 def validate_non_negative(value):
       if value < 0:
-          raise forms.ValidationError("The {value} quantity cannot be less than 0.")
+          raise forms.ValidationError("The quantity cannot be less than 0.")
 
 class DairyRecordForm(forms.ModelForm):
 

@@ -53,6 +53,8 @@ def day_tracking_create(request):
                         equipment_detail = equipment_form.save(commit=False)
                         equipment_detail.day_tracking_id = day_tracking_instance
                         equipment_detail.save()
+                day_tracking_instance.save()
+
 
                 # Save signatures only if not a draft
                 if not is_draft:
@@ -225,4 +227,3 @@ def get_purchase_order(request, project_id):
         return JsonResponse({'purchase_order_no': project.purchase_order_no})
     except Project.DoesNotExist:
         return JsonResponse({'error': 'Project not found'}, status=404)
-
