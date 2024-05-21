@@ -138,5 +138,28 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        let valid = true;
+        document.querySelectorAll('.rate-input').forEach(input => {
+            // Check if the input value is a number and is an integer
+            const value = input.value;
+            if (!value || parseFloat(value) < 0 || !Number.isInteger(parseFloat(value))) {
+                alert('Rate value incorrect.');
+                input.style.borderColor = 'red'; // Highlight the input box in red
+                valid = false;
+            } else {
+                input.style.borderColor = ''; // Reset the border color
+            }
+        });
+
+        if (!valid) {
+            event.preventDefault(); // Stop the form from submitting
+        }
+    });
+});
+</script>
 
 {% endblock page_content %}
