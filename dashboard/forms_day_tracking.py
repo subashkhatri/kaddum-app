@@ -61,10 +61,12 @@ class DayTrackingForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         is_draft = cleaned_data.get('is_draft', True) # Default to True if not provided
-
-        # Check if there is a CostTracking record for the same project and date that is not a draft
         project_no = cleaned_data.get('project_no')
         record_date = cleaned_data.get('record_date')
+        kaddum_sign_date = cleaned_data.get('kaddum_sign_date')
+        client_sign_date = cleaned_data.get('client_sign_date')
+
+        # Check if there is a CostTracking record for the same project and date that is not a draft
         if project_no and record_date:
             cost_tracking_confirmed = CostTracking.objects.filter(
                 project_no = project_no,
@@ -84,6 +86,11 @@ class DayTrackingForm(forms.ModelForm):
             if missing_fields:
                 for field in missing_fields:
                     self.add_error(field, f"This field is required when submitting.")
+
+            if kaddum_sign_date and kaddum_sign_date < record_date:
+                self.add_error('kaddum_sign_date', 'Kaddum sign date cannot be earlier than the record date.')
+            if client_sign_date and client_sign_date < record_date:
+                self.add_error('client_sign_date', 'Client sign date cannot be earlier than the record date.')
 
         return cleaned_data
 
