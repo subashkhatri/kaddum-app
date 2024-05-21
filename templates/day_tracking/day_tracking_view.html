@@ -63,7 +63,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6">No employee records found!</td>
+                        <td colspan="6">No employee records found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -96,7 +96,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-			<table class="table-bordered">
+			<table class="table-bordered break-table">
 				<tr>
 					<th class="full-width">Additional Comment:</th>
 				</tr>
@@ -104,7 +104,7 @@
 					<td class="notes">{{ day_tracking.comments|linebreaksbr  }}</td>
 				</tr>
 			</table>
-            <table class="table-bordered">
+            <table class="table-bordered break-table">
                 <tr>
                     <th style="width: 16%;">Kaddum Name:</th>
                     <td style="width: 28%;">{{ day_tracking.kaddum_name }}</td>
@@ -137,7 +137,7 @@
         </table>
     </div>
 </div>
-<div class="d-flex justify-content-end">
+<div class="d-flex justify-content-end mt-3">
     <button class="btn btn-primary me-2" onclick="downloadPdf()" style="width: 150px" >Download PDF</button>
     <a href="{% url 'day_tracking_delete' day_tracking_id %}" class="btn btn-danger me-2" style="width: 150px">Delete</a>
     <a href="{% url 'day_tracking_list' %}" class="btn btn-secondary" style="width: 150px" >Back</a>
@@ -151,7 +151,8 @@
             filename: '{{ day_tracking.record_date|date:"dmY" }}_{{ day_tracking.day_tracking_id}}_{{ day_tracking.project_no.project_no}}_{{ day_tracking.project_no.project_name}}.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+			pagebreak: { mode: 'css', break:'.break-table'},
         };
         html2pdf().from(element).set(opt).save();
     }
