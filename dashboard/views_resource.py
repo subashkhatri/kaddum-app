@@ -44,12 +44,12 @@ def create_resource_cost(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Resource cost created successfully.")
-            return redirect('resource_cost_list')  # Redirect to the resource cost listing page
+            return redirect('resource_cost_list')  # Ensure this is the correct name of the URL pattern for the listing page
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
-        form = ResourceCostForm()
 
+        form = ResourceCostForm()
     return render(request, 'resource_cost/resource_cost_create.html', {'form': form})
 
 @superuser_required
