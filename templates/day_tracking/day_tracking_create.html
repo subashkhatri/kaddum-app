@@ -15,7 +15,7 @@
                     {{ form.project_no.errors }}
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="day">Purchase Order No.</label>
+                    <label for="purchase_order_no">Purchase Order No.</label>
                     <input type="text" class="form-control"
                         id="purchase_order_no" readonly>
                 </div>
@@ -250,6 +250,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const kaddumSignaturePad = new SignaturePad(document.getElementById('kaddum-signature-pad'));
     const clientSignaturePad = new SignaturePad(document.getElementById('client-signature-pad'));
     const dayTrackingForm = document.getElementById('day-tracking-form');
+    const projectSelector = document.getElementById('id_project_no');
+    const purchaseOrderDisplay = document.getElementById('purchase_order_no');
+
+    // handling project selection changes
+    projectSelector.addEventListener('change', function() {
+        updatePurchaseOrder(this.value, purchaseOrderDisplay);
+    });
+
+    // Trigger the change event on page load if a project is already selected
+    if (projectSelector.value) {
+        updatePurchaseOrder(projectSelector.value, purchaseOrderDisplay);
+    }
 
     dayTrackingForm.addEventListener('submit', function(event) {
         const clickBtnValue = document.querySelector('button[type="submit"][clicked=true]').value;
@@ -348,6 +360,27 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 });
+
+function updatePurchaseOrder(projectId, displayElement) {
+    if (projectId) {
+        fetch(`/api/get_purchase_order/${projectId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.purchase_order_no) {
+                    displayElement.value = data.purchase_order_no;
+                } else {
+                    displayElement.value = 'None'; // Clear on error or if no number found
+                    console.error('No purchase order number found');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching purchase order:', error);
+                displayElement.value = '';
+            });
+    } else {
+        displayElement.value = '';  // Clear if no project is selected
+    }
+}
 
 function addRow(type) {
     var templateRow = document.querySelector('.' + type + '-row');

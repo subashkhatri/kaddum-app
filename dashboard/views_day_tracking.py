@@ -6,10 +6,11 @@ from django.db import transaction
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 import datetime
 from .forms_day_tracking import DayTrackingForm, DayTrackingEmployeeFormSet, DayTrackingEquipmentFormSet
-from .models import DayTracking,  CostTracking, DayTrackingEmployeeDetails,DayTrackingEquipmentDetails
-
+from .models import DayTracking,  CostTracking, DayTrackingEmployeeDetails,DayTrackingEquipmentDetails, Project
+from .models_resource_cost import ResourceCost
 from users.decorators import superuser_or_supervisor_required
 import base64
 import os
@@ -98,6 +99,7 @@ def day_tracking_update(request, day_tracking_id):
     form_action = reverse('day_tracking_update', args=[day_tracking_id])
     day_tracking_instance = get_object_or_404(DayTracking, day_tracking_id=day_tracking_id)
     record_PK = day_tracking_instance.day_tracking_id
+    initial_purchase_order_no = day_tracking_instance.project_no.purchase_order_no if day_tracking_instance.project_no else "None"
 
     if request.method == 'POST':
         form = DayTrackingForm(request.POST, instance=day_tracking_instance)
@@ -153,7 +155,8 @@ def day_tracking_update(request, day_tracking_id):
         'equipment_formset': equipment_formset,
         'form_action': form_action,
         'record_PK':record_PK,
-        'day_tracking_id': day_tracking_id
+        'day_tracking_id': day_tracking_id,
+        'initial_purchase_order_no':initial_purchase_order_no
     })
 
 @superuser_or_supervisor_required
@@ -215,4 +218,11 @@ def day_tracking_view(request, day_tracking_id):
         'equipment_formset': equipment_formset,
         'day_tracking_id': day_tracking_id
     })
+
+def get_purchase_order(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+        return JsonResponse({'purchase_order_no': project.purchase_order_no})
+    except Project.DoesNotExist:
+        return JsonResponse({'error': 'Project not found'}, status=404)
 
