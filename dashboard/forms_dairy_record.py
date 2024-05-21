@@ -19,7 +19,7 @@ def validate_non_negative(value):
 class DairyRecordForm(forms.ModelForm):
 
     project_no = forms.ModelChoiceField(
-        queryset=Project.objects.all(),
+        queryset=Project.objects.all().order_by('-project_no'),
         label="*Project",
         empty_label="Select a Project",
         widget=forms.Select(attrs={'class': 'form-control'}),

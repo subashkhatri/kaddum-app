@@ -2,38 +2,51 @@
 
 {% block page_content %}
 <div class="container mt-4">
-  <h1>Create New Resource Cost</h1>
+  <h1 class="text-left mb-4 h4">Create New Resource</h1>
+</div>
+<div class="form-section-header">*Required Fields</div>
+<div class="container mt-4">
+  <div class="row">
+      <div class="col-md-12">
   <form method="post" action="{% url 'create_resource_cost' %}">
     {% csrf_token %}
     <div class="form-group mb-3">
       {{ form.item_type.label_tag }}
       {{ form.item_type }}
+      {{ form.item_type.error }}
     </div>
     <div class="form-group mb-3">
       {{ form.item_name.label_tag }}
       {{ form.item_name }}
+      {{ form.item_name.error }}
     </div>
     <div class="form-group mb-3">
       {{ form.item_id.label_tag }}
       {{ form.item_id }}
+      {{ form.item_id.error }}
     </div>
     <div class="form-group mb-3">
       {{ form.item_location.label_tag }}
       {{ form.item_location }}
+      {{ form.item_location.error }}
     </div>
     <div class="form-group mb-3">
       {{ form.item_rate.label_tag }}
       {{ form.item_rate }}
+      {{ form.item_rate.error }}
     </div>
     <div class="form-group mb-3">
       {{ form.unit_of_measure.label_tag }}
       {{ form.unit_of_measure }}
+      {{ form.unit_of_measure.error }}
     </div>
     <div class="form-group mb-3">
       {{ form.mobilisation_desc.label_tag }}
       {{ form.mobilisation_desc }}
+      {{ form.mobilisation_desc.error }}
     </div>
-    <button type="submit" class="btn btn-primary">Save Resource Cost</button>
+    <button type="submit" class="form-group btn btn-success col-2" value="submit">Create</button>
+    <a href="{% url 'resource_cost_list' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
   </form>
 </div>
 {% endblock %}

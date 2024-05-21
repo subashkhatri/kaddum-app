@@ -10,6 +10,7 @@ class ResourceCostForm(forms.ModelForm):
         if 'last_modification_date' in self.fields:
             self.fields['last_modification_date'].disabled = True
 
+
     class Meta:
         model = ResourceCost
         fields = '__all__'  # Includes all fields, you can exclude fields if necessary
@@ -23,14 +24,15 @@ class ResourceCostForm(forms.ModelForm):
             'mobilisation_desc': forms.TextInput(attrs={'class': 'form-control'}),
         }
         labels = {
-            'item_type': 'Item Type',
-            'item_name': 'Item Name',
+            'item_type': '*Item Type',
+            'item_name': '*Item Name',
             'item_id': 'Item ID',
             'item_location': 'Location',
-            'item_rate': 'Cost Rate',
-            'unit_of_measure': 'Unit of Measure',
+            'item_rate': '*Cost Rate',
+            'unit_of_measure': '*Unit of Measure',
             'mobilisation_desc': 'Mobilisation Description',
         }
+
 
     def clean_last_modification_date(self):
         return self.instance.last_modification_date if self.instance else None
