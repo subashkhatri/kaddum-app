@@ -85,6 +85,15 @@ color: #68120f;
 color: #f1f1f1;
 }
 
+.sidebar-divider {
+  border-top: 0.5px solid gainsboro;
+  margin: 20px;
+}
+
+.logout-btn {
+  margin-top: auto;
+}
+
 @media screen and (max-height: 450px) {
 .sidenav {
   padding-top: 15px;

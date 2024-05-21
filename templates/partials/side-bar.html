@@ -8,6 +8,9 @@
     <img src="{% static 'kaddum-logo1.svg' %}" id="side_bar_kaddum_logo" alt="Kaddum Logo" class="col-4">
   </div>
 
+  <!-- Add a separator line -->
+  <div class="sidebar-divider"></div>
+
   <a href="{% url 'index' %}" class="d-flex align-items-center menu-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
     <i class="bi bi-grid-fill"></i>
     <span class="txt">Dashboard</span>
@@ -62,7 +65,10 @@
   </a>
   {% endif %}
 
-  <a href="{% url 'logout' %}" class="d-flex align-items-center">
+  <!-- Add a separator line -->
+  <div class="sidebar-divider"></div>
+
+  <a href="{% url 'logout' %}" class="d-flex align-items-center logout-btn">
     <i class="bi bi-box-arrow-right"></i>
     <span class="txt">Logout</span>
   </a>
