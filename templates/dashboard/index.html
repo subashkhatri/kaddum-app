@@ -68,35 +68,81 @@
   <div class="row my-4">
     <div class="col">
       <div class="card">
-        <h4 class="card-header bg-white border-0">History</h4>
+        <h4 class="card-header bg-white border-0">Draft History</h4>
         <div class="p-3 table-container">
-          <div class="table-header p-1 px-2">
-            <div class="row">
-              <div class="col-2">Record Date</div>
-              <div class="col-4">Project No</div>
-              <div class="col-4">Supervisor</div>
-              <div class="col-2">Action</div>
-            </div>
-          </div>
-          <div class="table-data p-1 px-2">
-            {% for dairy_record in records %}
-            <div class="my-1 row">
-              <div class="col-2 d-flex align-items-center">{{ dairy_record.record_date|date:"d/m/Y" }}</div>
-              <div class="col-4 d-flex align-items-center">{{ dairy_record.project_no.project_name }}</div>
-              <div class="col-4 d-flex align-items-center">{{ dairy_record.supervisor_id }}</div>
-              <div class="col-2 d-flex align-items-center justify-content-end">
-                <a href="{% url 'view_dairy_record' dairy_record.dairy_record_id %}"
-                  class="btn py-1 px-2 view-btn">View</a>
-                <a href="{% url 'edit_dairy_record' dairy_record.dairy_record_id %}"
-                  class="btn py-1 px-2 view-btn">Edit</a>
-              </div>
-            </div>
-            {% empty %}
-            <div class="my-1 row">
-              <div class="col-12 text-center">No records found.</div>
-            </div>
-            {% endfor %}
-          </div>
+          
+          <div class="form-section-header">Daily Records</div>
+          <table class="table table-bordered" style="border-collapse: collapse;">
+              <thead>
+                  <tr>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">No.</th>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">Date</th>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">Week</th>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No. - Project Name</th>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">Shift</th>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">Modification</th>
+                      <th scope="col" class="align-middle" style="border-left-style: inset;" width="8%"></th>
+                  </tr>
+              </thead>
+              <tbody id="DraftTableBody">
+                {% for record in dairy_records %}
+                  <tr>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.dairy_record_id }}</td>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.record_date|date:"d/m/y" }}</td>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.year_week }}</td>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.project_no }}</td>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.record_shift }}</td>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m/y H:i" }}</td>
+                      <td class="align-middle" style="border-left-style: inset;">
+                          <div class="col-2 d-flex align-items-center justify-content-end">
+                            <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="btn btn-danger me-2">Edit</a>
+                          </div>
+                      </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                      <td colspan="7">No draft records found.</td>
+                  </tr>
+                  {% endfor %}
+              <tbody>
+          </table>
+
+
+          <div class="form-section-header">Day Tracking Records</div>
+          <table class="table table-bordered" style="border-collapse: collapse;">
+              <thead>
+                  <tr>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">No.</th>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">Date</th>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">Week</th>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">Project No. - Project Name</th>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">Shift</th>
+                      <th scope="col" class="align-middle" style="border-right-style: hidden;">Modification</th>
+                      <th scope="col" class="align-middle" style="border-left-style: inset;" width="8%"></th>
+                  </tr>
+              </thead>
+              <tbody id="DraftTableBody">
+                  {% for record in day_trackings %}
+                  <tr>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.day_tracking_id }}</td>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.record_date|date:"d/m/y" }}</td>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.year_week }}</td>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.project_no }}</td>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.record_shift }}</td>
+                      <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m/y H:i" }}</td>
+                      <td class="align-middle" style="border-left-style: inset;">
+                          <div class="col-2 d-flex align-items-center justify-content-end">
+                            <a href="{% url 'day_tracking_update' record.day_tracking_id %}" class="btn btn-danger me-2">Edit</a>
+                          </div>
+                      </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                      <td colspan="7">No draft records found.</td>
+                  </tr>
+                  {% endfor %}
+              <tbody>
+          </table>  
         </div>
       </div>
     </div>
