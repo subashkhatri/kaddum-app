@@ -14,12 +14,12 @@ SHIFT_CHOICES = [
     ]
 def validate_non_negative(value):
       if value < 0:
-          raise forms.ValidationError("The {value} quantity cannot be less than 0.")
+          raise forms.ValidationError("The quantity cannot be less than 0.")
 
 class DairyRecordForm(forms.ModelForm):
 
     project_no = forms.ModelChoiceField(
-        queryset=Project.objects.all(),
+        queryset=Project.objects.all().order_by('-project_no'),
         label="*Project",
         empty_label="Select a Project",
         widget=forms.Select(attrs={'class': 'form-control'}),

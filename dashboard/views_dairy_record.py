@@ -17,7 +17,7 @@ def view_dairy_record(request, dairy_record_id):
 
 @superuser_or_supervisor_required
 def all_dairy_record(request):
-    draft_records_list = DairyRecord.objects.filter(is_draft=True).order_by('-created_date')
+    draft_records_list = DairyRecord.objects.filter(is_draft=True).order_by('-last_modification_date')
     query = request.GET.get('q', '').strip().lower()
     if query:
             try:
@@ -35,9 +35,9 @@ def all_dairy_record(request):
                 Q(project_no__project_name__icontains=query) |
                 Q(record_shift__icontains=query) |
                 Q(last_modification_date__icontains=query))  # This will handle date part search for last_modification_date
-            ).order_by('-created_date')
+            ).order_by('-last_modification_date')
     else:
-        completed_records_list = DairyRecord.objects.filter(is_draft=False).order_by('-created_date')
+        completed_records_list = DairyRecord.objects.filter(is_draft=False).order_by('-last_modification_date')
 
     paginator = Paginator(completed_records_list, 10)  # Show 10 records per page.
     page_number = request.GET.get('page')

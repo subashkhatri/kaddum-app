@@ -1,18 +1,14 @@
 from django import forms
 from .models import CostTracking, Project, UserAccount
+from django.core.exceptions import ValidationError
 
-SHIFT_CHOICES = [
-    ('morning', 'Day Shift'),
-    ('evening', 'Night Shift'),
-]
 
 def validate_non_negative(value):
     if value < 0:
-        raise forms.ValidationError("The quantity cannot be less than 0.")
+        raise forms.ValidationError("This field cannot have negative values.")
 
 class CostTrackingForm(forms.ModelForm):
     day_of_week = forms.CharField(required=False, label="Day", widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-
 
     def get_day_of_week(self):
         # Calculate day of week from the record_date

@@ -55,13 +55,15 @@ def project_create(request):
           form.save()
           messages.success(request, 'Project created successfully.')
           return redirect('project_list')
+        else:
+            messages.error(request, 'Failed to create a Project. Please check the errors below.')
     else:
         form = ProjectForm()
-        return render(request, 'project/project_create.html', {'form': form, 'form_action': form_action})
+
+    return render(request, 'project/project_create.html', {'form': form, 'form_action': form_action})
 
 @superuser_required
 def project_update(request, project_no):
-    form_action = reverse('project_update', args=[project_no])
     record = get_object_or_404(Project, pk=project_no)
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=record)
@@ -69,9 +71,15 @@ def project_update(request, project_no):
           form.save()
           messages.success(request, 'Project updated successfully.')
           return redirect('project_list')
+        else:
+            messages.error(request, 'Failed to create a Project. Please check the errors below.')
     else:
         form = ProjectForm(instance=record)
-        return render(request, 'project/project_update.html', {'form': form, 'record': record, 'form_action': form_action})
+
+    form_action = reverse('project_update', args=[project_no])
+    return render(request, 'project/project_update.html', {'form': form, 'record': record, 'form_action': form_action})
+
+
 
 @superuser_required
 def project_delete(request, project_no):

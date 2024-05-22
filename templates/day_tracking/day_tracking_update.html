@@ -15,9 +15,8 @@
                     {{ form.project_no.errors }}
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="day">Purchase Order No.</label>
-                    <input type="text" class="form-control"
-                        id="purchase_order_no" readonly>
+                    <label for="purchase_order_no">Purchase Order No.</label>
+                    <input type="text" class="form-control" id="purchase_order_no" value="{{ initial_purchase_order_no }}" readonly>
                 </div>
                 <div class="form-group col-md-4">
                     {{ form.client_representative.label_tag }}
@@ -55,12 +54,12 @@
             <thead>
                 <tr>
                     <th scope="col" class="align-middle" width="0%" style="display: none;">id</th>
-                    <th scope="col" class="align-middle" width="25%">Name</th>
-                    <th scope="col" class="align-middle" width="20%">Position
+                    <th scope="col" class="align-middle" width="25%">*Name</th>
+                    <th scope="col" class="align-middle" width="20%">*Position
                     </th>
-                    <th scope="col" class="align-middle" width="8%">Start Time
+                    <th scope="col" class="align-middle" width="8%">*Start Time
                     </th>
-                    <th scope="col" class="align-middle" width="8%">Finish Time
+                    <th scope="col" class="align-middle" width="8%">*Finish Time
                     </th>
                     <th scope="col" class="align-middle" width="12%">Total Hours
                     </th>
@@ -182,15 +181,15 @@
             {{ form.comments.errors }}
         </div>
         <!-- Acknowledgements -->
-        <div class="form-section-header">Acknowledgements</div>
+        <div class="form-section-header">Acknowledgements(*Required when creating the form)</div>
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th scope="col" width="20%"></th>
                     <!-- Empty top-left corner cell -->
-                    <th scope="col" width="25%">Name</th>
-                    <th scope="col" width="40%">Signature</th>
-                    <th scope="col" width="15%">Date</th>
+                    <th scope="col" width="25%">*Name</th>
+                    <th scope="col" width="40%">*Signature</th>
+                    <th scope="col" width="15%">*Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -201,13 +200,13 @@
                         {{ form.kaddum_name.errors }}
                     </td>
                     <td class="align-middle text-right">
+                        {{ form.kaddum_sign_date }}
+                        {{ form.kaddum_sign_date.errors }}
+                    </td>
+                    <td class="align-middle text-right">
                         <canvas id="kaddum-signature-pad" class="signature-pad" width="400" height="150" style="border: 1px solid #000;"></canvas>
                         {{ form.kaddum_sign }}
                         <button type="button" onclick="clearSignature('kaddum-signature-pad')">Clear</button>
-                    </td>
-                    <td class="align-middle text-right">
-                        {{ form.kaddum_sign_date }}
-                        {{ form.kaddum_sign_date.errors }}
                     </td>
                 </tr>
                 <tr>
@@ -218,14 +217,15 @@
                         {{ form.client_name.errors }}
                     </td>
                     <td class="align-middle text-right">
+                        {{ form.client_sign_date }}
+                        {{ form.client_sign_date.errors }}
+                    </td>
+                    <td class="align-middle text-right">
                         <canvas id="client-signature-pad" class="signature-pad" width="400" height="150" style="border: 1px solid #000;"></canvas>
                         {{ form.client_sign }}
                         <button type="button" onclick="clearSignature('client-signature-pad')">Clear</button>
                     </td>
-                    <td class="align-middle text-right">
-                        {{ form.client_sign_date }}
-                        {{ form.client_sign_date.errors }}
-                    </td>
+
                 </tr>
             </tbody>
         </table>
@@ -254,6 +254,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const kaddumSignaturePad = new SignaturePad(document.getElementById('kaddum-signature-pad'));
     const clientSignaturePad = new SignaturePad(document.getElementById('client-signature-pad'));
     const dayTrackingForm = document.getElementById('day-tracking-form');
+    const projectSelector = document.getElementById('id_project_no');
+    const purchaseOrderDisplay = document.getElementById('purchase_order_no');
+
+    // handling project selection changes
+    projectSelector.addEventListener('change', function() {
+        updatePurchaseOrder(this.value, purchaseOrderDisplay);
+    });
+
+    // Trigger the change event on page load if a project is already selected
+    if (projectSelector.value) {
+        updatePurchaseOrder(projectSelector.value, purchaseOrderDisplay);
+    }
+
 
     dayTrackingForm.addEventListener('submit', function(event) {
         const clickBtnValue = document.querySelector('button[type="submit"][clicked=true]').value;
@@ -318,82 +331,108 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-        calculateEmployeeTotalHours()
-        calculateEquipmentTotalHours()
-
-      // Event listener for calculating employee totol hours in employee
-      document.getElementById('EmployeeTableBody').addEventListener('input', calculateEmployeeTotalHours);
-
-      // Event listener for calculating equipment totol hours in employee row
-      document.getElementById('EquipmentTableBody').addEventListener('input', calculateEquipmentTotalHours);
-
-      // Add event listener for adding employee rows
-      document.getElementById('add-employee-row').addEventListener(
-          'click',
-          function() {
-            addEmployeeRow('employee');
-          });
-      // Add event listener for removing employee rows
-      document.querySelectorAll('.remove-employee-row').forEach(
-          function(button) {
-              button.addEventListener('click', function(event) {
-                removeEmployeeRow(this, 'employee');
-              });
-          });
-      // Add event listener for adding equipment rows
-      document.getElementById('add-equipment-row').addEventListener(
-          'click',
-          function() {
-              addEquipmentRow('equipment');
-          });
-      // Add event listener for removing equipment rows
-      document.querySelectorAll('.remove-equipment-row').forEach(
-          function(button) {
-              button.addEventListener('click', function(event) {
-                  removeEquipmentRow(this, 'equipment');
-              });
-          });
-    });
-
-    function addEmployeeRow() {
-        var totalFormsInput = document.getElementById('id_employee-TOTAL_FORMS');
-        var rowCount = parseInt(totalFormsInput.value, 10);
-
-        // Clone the last row or create a new row
-        var templateRow = document.querySelector('.employee-row:last-child').cloneNode(true);
-
-        // Clear input values in the cloned row
-        templateRow.querySelectorAll('input').forEach(function(input) {
-            input.value = '';
-        });
-
-        // Clear select options in the cloned row
-        templateRow.querySelectorAll('select').forEach(function(select) {
-            select.selectedIndex = 0;
-        });
-
-        // Update input field names with the appropriate index
-        templateRow.querySelectorAll('input, select').forEach(function(element) {
-            element.name = element.name.replace(/-\d+-/, '-' + rowCount + '-');
-            element.id = element.id.replace(/-\d+-/, '-' + rowCount + '-');
-        });
-
-        // Append the cloned row to the table body
-        document.getElementById('EmployeeTableBody').appendChild(templateRow);
-
-        // Update TOTAL_FORMS value
-        totalFormsInput.value = rowCount + 1;
-
-        // Attach event listener to the new remove button
-        templateRow.querySelector('.remove-employee-row').addEventListener('click', function(event) {
-            removeEmployeeRow(this);
-        });
-
-        // Show the newly added row
-        templateRow.style.display = 'table-row';
+    window.clearSignature = function(padId) {
+        const pad = padId === 'kaddum-signature-pad' ? kaddumSignaturePad : clientSignaturePad;
+        pad.clear();
     }
 
-    function removeEmployeeRow(button) {
+    calculateEmployeeTotalHours()
+    calculateEquipmentTotalHours()
+
+    // Event listener for calculating employee totol hours in employee
+    document.getElementById('EmployeeTableBody').addEventListener('input', calculateEmployeeTotalHours);
+
+    // Event listener for calculating equipment totol hours in employee row
+    document.getElementById('EquipmentTableBody').addEventListener('input', calculateEquipmentTotalHours);
+
+    // Add event listener for adding employee rows
+    document.getElementById('add-employee-row').addEventListener(
+        'click',
+        function() {
+        addEmployeeRow('employee');
+        });
+    // Add event listener for removing employee rows
+    document.querySelectorAll('.remove-employee-row').forEach(
+        function(button) {
+            button.addEventListener('click', function(event) {
+            removeEmployeeRow(this, 'employee');
+            });
+        });
+    // Add event listener for adding equipment rows
+    document.getElementById('add-equipment-row').addEventListener(
+        'click',
+        function() {
+            addEquipmentRow('equipment');
+        });
+    // Add event listener for removing equipment rows
+    document.querySelectorAll('.remove-equipment-row').forEach(
+        function(button) {
+            button.addEventListener('click', function(event) {
+                removeEquipmentRow(this, 'equipment');
+            });
+        });
+
+});
+
+function updatePurchaseOrder(projectId, displayElement) {
+    if (projectId) {
+        fetch(`/api/get_purchase_order/${projectId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.purchase_order_no) {
+                    displayElement.value = data.purchase_order_no;
+                } else {
+                    displayElement.value = 'None'; // Clear on error or if no number found
+                    console.error('No purchase order number found');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching purchase order:', error);
+                displayElement.value = '';
+            });
+    } else {
+        displayElement.value = '';  // Clear if no project is selected
+    }
+}
+function addEmployeeRow() {
+    var totalFormsInput = document.getElementById('id_employee-TOTAL_FORMS');
+    var rowCount = parseInt(totalFormsInput.value, 10);
+
+    // Clone the last row or create a new row
+    var templateRow = document.querySelector('.employee-row:last-child').cloneNode(true);
+
+    // Clear input values in the cloned row
+    templateRow.querySelectorAll('input').forEach(function(input) {
+        input.value = '';
+    });
+
+    // Clear select options in the cloned row
+    templateRow.querySelectorAll('select').forEach(function(select) {
+        select.selectedIndex = 0;
+    });
+
+    // Update input field names with the appropriate index
+    templateRow.querySelectorAll('input, select').forEach(function(element) {
+        element.name = element.name.replace(/-\d+-/, '-' + rowCount + '-');
+        element.id = element.id.replace(/-\d+-/, '-' + rowCount + '-');
+    });
+
+    // Append the cloned row to the table body
+    document.getElementById('EmployeeTableBody').appendChild(templateRow);
+
+    // Update TOTAL_FORMS value
+    totalFormsInput.value = rowCount + 1;
+
+    // Attach event listener to the new remove button
+    templateRow.querySelector('.remove-employee-row').addEventListener('click', function(event) {
+        removeEmployeeRow(this);
+    });
+
+    // Show the newly added row
+    templateRow.style.display = 'table-row';
+}
+
+function removeEmployeeRow(button) {
     var totalFormsInput = document.getElementById('id_employee-TOTAL_FORMS');
     var rowToRemove = button.closest('.employee-row');
     var deleteCheckbox = rowToRemove.querySelector('.employee-delete-checkbox');

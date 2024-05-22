@@ -17,19 +17,19 @@ import jwt
 
 User = get_user_model()
 
-def register_superuser(request):
-    if request.method == 'POST':
-        form = SuperUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Superuser created successfully.')
-            return redirect('admin:index')
-        else:
-            messages.error(request, 'Please correct the error below.')
-    else:
-        form = SuperUserCreationForm()
+# def register_superuser(request):
+#     if request.method == 'POST':
+#         form = SuperUserCreationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Superuser created successfully.')
+#             return redirect('admin:index')
+#         else:
+#             messages.error(request, 'Please correct the error below.')
+#     else:
+#         form = SuperUserCreationForm()
 
-    return render(request, 'users/register_superuser.html', {'form': form})
+#     return render(request, 'users/register_superuser.html', {'form': form})
 
 
 
@@ -81,7 +81,7 @@ def reset_password(request):
             messages.success(request, 'Your password has been updated successfully!')
             return redirect("employees_list")
         except User.DoesNotExist:
-            messages.info(request, "User with this username does not exist.")
+            messages.error(request, "User with this username does not exist.")
             return redirect("reset_password")
     else:
         return render(request, "users/reset_password.html")

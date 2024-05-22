@@ -26,29 +26,36 @@ body {
     margin-right: 0.5rem;
     font-size: 0.8rem;
 }
-.table-bordered, .table-bordered th, .table-bordered td {
-    border: 0.4px solid black;
-  }
   .table-bordered th, .table-bordered td {
-    padding: 0.2rem; /* Adjust padding as needed */
+    padding: 0.2rem;
+    border: 0.4px solid black;
   }
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 10px;
-}
-table, th, td {
-    border: 1px solid black;
+    border: 0.4px solid black;
 }
 th, td {
     padding: 5px;
     text-align: left;
+    border: 0.4px solid black;
+}
+.section-text {
+    font-size: 16px;
+    margin-top: 0.7rem;
+    margin-bottom: 0.4rem;
+    font-weight: bold;
+    color: firebrick;
 }
 .full-width {
     width: 100%;
 }
 .notes {
     height: 50px;
+}
+.break-table {
+    page-break-inside: avoid;
 }
 .safety-table th, .safety-table td {
     text-align: center;
@@ -64,7 +71,6 @@ th, td {
         margin: 1cm;
     }
 }
-
 #print-content {
     width: 100%;
     max-width: 100%;

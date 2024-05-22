@@ -3,11 +3,12 @@ from .models import CostTracking, Project, DayTracking, DayTrackingEmployeeDetai
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.contrib import messages
-from django.db.models import Q
-
+from django.db.models import Q,Sum
+from django.db import transaction
 import datetime
 from .forms_costing import CostTrackingForm
 from users.decorators import superuser_required
+
 
 @superuser_required
 def view_daily_costing(request, cost_tracking_id):
@@ -52,31 +53,52 @@ def edit_daily_costing(request, cost_tracking_id):
     if request.method == 'POST':
         form = CostTrackingForm(request.POST, instance=instance)
         if form.is_valid():
-            # Update the hour_rate for each employee
-            for employee in employee_details:
-                employee_id = str(employee.id)
-                hour_rate = request.POST.get(f'rate_{employee_id}')
-                new_position = request.POST.get(f'position_{employee_id}')
-                new_position_id = ResourceCost.objects.get(resource_id=new_position)
-                employee.hour_rate = hour_rate
-                employee.confirmed_position_id = new_position_id
-                employee.save()
+            if form.is_valid():
+                with transaction.atomic():  # Ensure all changes are made in a single transaction
+                    form.save()  # Save changes to CostTracking
+                    errors = []
+                    # Update the hour_rate for each employee
+                    for employee in employee_details:
+                        employee_id = str(employee.id)
+                        hour_rate = request.POST.get(f'rate_{employee_id}')
+                        if float(hour_rate) < 0:
+                            errors.append(f"Employee: {employee.employee_id.full_name} hour rate is incorrect.")
+                        else:
+                            new_position = request.POST.get(f'position_{employee_id}')
+                            new_position_id = ResourceCost.objects.get(resource_id=new_position)
+                            employee.hour_rate = hour_rate
+                            employee.confirmed_position_id = new_position_id
+                            employee.save()
 
-            for equipment in equipment_details:
-                new_item_rate = request.POST.get(f'equipment_rate_{equipment.id}')
-                equipment.item_rate = float(new_item_rate) if new_item_rate else 0  # Convert to float or default to 0
-                equipment.save()
+                    for equipment in equipment_details:
+                        equipment_id = str(equipment.id)
+                        item_rate = request.POST.get(f'equipment_rate_{equipment_id}', 0)
+                        if float(item_rate) < 0:
+                            errors.append(f"Equipment: {equipment.resource_id.item_name} day rate is incorrect.")
+                        else:
+                            equipment.item_rate = float(item_rate)
+                            equipment.save()
 
-            if request.POST.get('action') == 'complete':
-                form.instance.is_draft = False
-                form.save()
-                messages.success(request, 'Form completed successfully.')
-            elif request.POST.get('action') == 'draft':
-                form.instance.is_draft = True
-                form.save()
-                messages.success(request, 'Form saved as draft.')
+                    if request.POST.get('action') == 'complete':
+                        form.instance.is_draft = False
+                        form.save()
+                        messages.success(request, 'Form completed successfully.')
+                    elif request.POST.get('action') == 'draft':
+                        form.instance.is_draft = True
+                        form.save()
+                        messages.success(request, 'Form saved as draft.')
 
-            return redirect('all_daily_costing')
+                    if not errors:
+                        # Call the method to update CostTracking statistics
+                        _update_cost_tracking_statistics(instance)
+                        messages.success(request, 'Cost tracking and associated details updated successfully.')
+                        return redirect('all_daily_costing')
+                    else:
+                        for error in errors:
+                            messages.error(request, error)
+
+                messages.success(request, 'Cost tracking and associated details updated successfully.')
+                return redirect('all_daily_costing')
         else:
             messages.error(request, 'Please correct the form errors.')
 
@@ -125,3 +147,42 @@ def all_daily_costing(request):
         'completed_records': completed_records_page
     }
     return render(request, 'costing/all_daily_costing.html', context)
+
+
+def _update_cost_tracking_statistics(cost_tracking_instance):
+    if cost_tracking_instance:
+        # Aggregate various totals from DayTracking records associated with this CostTracking instance
+        day_tracking_aggregates = DayTracking.objects.filter(cost_tracking_id=cost_tracking_instance).aggregate(
+            total_hours_employee=Sum('total_hours_employee'),
+            total_hours_employee_local=Sum('total_hours_employee_local'),
+            total_hours_employee_indigenous=Sum('total_hours_employee_indigenous'),
+            total_amount_employee=Sum('total_amount_employee'),
+            total_hours_equipment=Sum('total_hours_equipment'),
+            total_amount_equipment=Sum('total_amount_equipment')
+        )
+
+        # Extract aggregates and provide defaults if None
+        total_hours_employee = day_tracking_aggregates.get('total_hours_employee', 0) or 0
+        total_hours_employee_local = day_tracking_aggregates.get('total_hours_employee_local', 0) or 0
+        total_hours_employee_indigenous = day_tracking_aggregates.get('total_hours_employee_indigenous', 0) or 0
+        total_amount_employee = day_tracking_aggregates.get('total_amount_employee', 0) or 0
+        total_hours_equipment = day_tracking_aggregates.get('total_hours_equipment', 0) or 0
+        total_amount_equipment = day_tracking_aggregates.get('total_amount_equipment', 0) or 0
+
+        # Calculate percentages for local and indigenous hours if total hours employee is not zero
+        local_percentage = (total_hours_employee_local / total_hours_employee * 100) if total_hours_employee else 0
+        indigenous_percentage = (total_hours_employee_indigenous / total_hours_employee * 100) if total_hours_employee else 0
+
+        # Update the CostTracking instance with these aggregates
+        cost_tracking_instance.total_hours_employee = total_hours_employee
+        cost_tracking_instance.total_hours_employee_local = total_hours_employee_local
+        cost_tracking_instance.total_hours_employee_indigenous = total_hours_employee_indigenous
+        cost_tracking_instance.total_amount_employee = total_amount_employee
+        cost_tracking_instance.total_hours_equipment = total_hours_equipment
+        cost_tracking_instance.total_amount_equipment = total_amount_equipment
+        cost_tracking_instance.total_hours_employee_local_percentage = local_percentage
+        cost_tracking_instance.total_hours_employee_indigenous_percentage = indigenous_percentage
+        cost_tracking_instance.last_modification_date = datetime.datetime.now()
+
+        # Save the updated CostTracking instance
+        cost_tracking_instance.save()
