@@ -36,3 +36,9 @@ class ResourceCostForm(forms.ModelForm):
 
     def clean_last_modification_date(self):
         return self.instance.last_modification_date if self.instance else None
+
+    def clean_item_rate(self):
+        item_rate = self.cleaned_data.get('item_rate')
+        if item_rate <= 0:
+            raise forms.ValidationError('Item rate cannot be negative.')
+        return item_rate
