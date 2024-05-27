@@ -17,49 +17,49 @@
   </a>
 
   {% if request.user.roles == "super admin" or request.user.roles == "supervisor" %}
-  <a href="{% url 'all_dairy_record' %}" class="d-flex align-items-center {% if request.resolver_match.url_name == 'all_dairy_record' %}active{% endif %}">
+  <a href="{% url 'all_dairy_record' %}" class="d-flex align-items-center {% if 'dairy_record' in request.resolver_match.url_name %}active{% endif %}">
     <i class="bi bi-file-earmark"></i>
     <span class="txt">Daily Record</span>
   </a>
   {% endif %}
 
   {% if request.user.roles == "super admin" or request.user.roles == "supervisor" %}
-  <a href="{% url 'day_tracking_list' %}" class="d-flex align-items-center {% if request.resolver_match.url_name == 'day_tracking_list' %}active{% endif %}">
+  <a href="{% url 'day_tracking_list' %}" class="d-flex align-items-center {% if 'day_tracking' in request.resolver_match.url_name %}active{% endif %}">
     <i class="bi bi-file-earmark-text-fill"></i>
     <span class="txt">Day Tracking</span>
   </a>
   {% endif %}
 
   {% if request.user.roles == "super admin" %}
-  <a href="{% url 'all_daily_costing' %}" class="d-flex align-items-center {% if request.resolver_match.url_name == 'all_daily_costing' %}active{% endif %}">
+  <a href="{% url 'all_daily_costing' %}" class="d-flex align-items-center {% if 'costing' in request.resolver_match.url_name %}active{% endif %}">
     <i class="bi bi-calculator"></i>
     <span class="txt">Daily Costing</span>
   </a>
   {% endif %}
 
   {% if request.user.roles == "super admin" or request.user.roles == "supervisor" %}
-  <a href="{% url 'all_weekly_report' %}" class="d-flex align-items-center {% if request.resolver_match.url_name == 'all_weekly_report' %}active{% endif %}">
+  <a href="{% url 'all_weekly_report' %}" class="d-flex align-items-center {% if 'weekly_report' in request.resolver_match.url_name %}active{% endif %}">
     <i class="bi bi-bar-chart-line-fill"></i>
     <span class="txt">Weekly Report</span>
   </a>
   {% endif %}
 
   {% if request.user.roles == "super admin" or request.user.roles == "supervisor" %}
-  <a href="{% url 'employees_list' %}" class="d-flex align-items-center {% if request.resolver_match.url_name == 'employees_list' %}active{% endif %}">
+  <a href="{% url 'employees_list' %}" class="d-flex align-items-center {% if 'employee' in request.resolver_match.url_name %}active{% endif %}">
     <i class="bi bi-people-fill"></i>
     <span class="txt">Employees</span>
   </a>
   {% endif %}
 
   {% if request.user.roles == "super admin" %}
-  <a href="{% url 'project_list' %}" class="d-flex align-items-center {% if request.resolver_match.url_name == 'project_list' %}active{% endif %}">
+  <a href="{% url 'project_list' %}" class="d-flex align-items-center {% if 'project' in request.resolver_match.url_name %}active{% endif %}">
     <i class="bi bi-briefcase"></i>
     <span class="txt">Projects</span>
   </a>
   {% endif %}
 
   {% if request.user.roles == "super admin" %}
-  <a href="{% url 'resource_cost_list' %}" class="d-flex align-items-center {% if request.resolver_match.url_name == 'resource_cost_list' %}active{% endif %}">
+  <a href="{% url 'resource_cost_list' %}" class="d-flex align-items-center {% if 'resource_cost' in request.resolver_match.url_name %}active{% endif %}">
     <i class="bi bi-tools"></i>
     <span class="txt">Resource Costs</span>
   </a>

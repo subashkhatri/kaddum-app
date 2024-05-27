@@ -64,9 +64,10 @@
                         {% endif %}
                         <td class="align-middle"><small>{% if employee.is_active %}Active{% else %} Inactive {% endif%}</small></td>
                         <td>
-                            <a href="{% url 'employees_edit' employee.username %}" class="btn btn-outline-success btn-sm">Edit</a>
+                            <div class="d-flex justify-content-evenly">
+                                <a href="{% url 'employees_edit' employee.username %}" class="btn btn-outline-success btn-sm">Edit</a>
+                            </div>
                         </td>
-                        <!-- <td class="align-middle"><small><a href="{% url 'employee_delete' employee.username %}" class="btn btn-sm btn-danger">X</a></small></td> -->
                     </tr>
                     {% endfor%}
                 <tbody>
