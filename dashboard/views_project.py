@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, ProtectedError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
@@ -86,10 +86,14 @@ def project_delete(request, project_no):
     record = get_object_or_404(Project, pk=project_no)
 
     if request.method == 'POST':
-        record.delete()
-        messages.success(request, "Project deleted successfully.")
-        return redirect('project_list')
+        try:
+            record.delete()
+            messages.success(request, "Project deleted successfully.")
+            return redirect('project_list')
+        except ProtectedError as e:
+            # Extracting information from the ProtectedError
+            message = f"Cannot delete this project because '{record}' is referenced by other records. Please set the project status to inactive."
+            messages.error(request, message)
+            return redirect('project_list')  # Redirect to the list or some error page
 
     return render(request, 'project/project_delete_confirm.html', {'record': record})
-
-

@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, ProtectedError
 from users.decorators import superuser_or_supervisor_required
 
 from .forms_dairy_record import DairyRecordForm
@@ -93,8 +93,13 @@ def delete_dairy_record(request, dairy_record_id):
     record = get_object_or_404(DairyRecord, pk=dairy_record_id)
 
     if request.method == 'POST':
-        record.delete()
-        messages.success(request, "Dairy record deleted successfully.")
-        return redirect('all_dairy_record')
-
+        try:
+            record.delete()
+            messages.success(request, "Dairy record deleted successfully.")
+            return redirect('all_dairy_record')
+        except ProtectedError as e:
+            # Extracting information from the ProtectedError
+            message = f"Cannot delete this record because '{record}' is referenced by other records."
+            messages.error(request, message)
+            return redirect('all_dairy_record')  # Redirect to the list or some error page
     return render(request, 'dairy_record/confirm_delete.html', {'record': record})

@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, ProtectedError
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms_resource_cost import ResourceCostForm
@@ -73,8 +73,15 @@ def delete_resource_cost(request, resource_id):
     resource = get_object_or_404(ResourceCost, pk=resource_id)
 
     if request.method == 'POST':
-        resource.delete()
-        messages.success(request, "Resource cost deleted successfully.")
-        return redirect('resource_cost_list')
+        try:
+            resource.delete()
+            messages.success(request, "Resource cost deleted successfully.")
+            return redirect('resource_cost_list')
+        except ProtectedError as e:
+            # Extracting information from the ProtectedError
+            message = f"Cannot delete this resource because '{resource}' is referenced by other records."
+            messages.error(request, message)
+            return redirect('resource_cost_list')  # Redirect to the list or some error page
+
 
     return render(request, 'resource_cost/resource_delete_confirm.html', {'resource': resource})

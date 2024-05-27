@@ -70,7 +70,6 @@
       <div class="card">
         <h4 class="card-header bg-white border-0">Draft History</h4>
         <div class="p-3 table-container">
-          
           <div class="form-section-header">Daily Records</div>
           <table class="table table-bordered" style="border-collapse: collapse;">
               <thead>
@@ -94,8 +93,8 @@
                       <td class="align-middle" style="border-right-style: hidden;">{{ record.record_shift }}</td>
                       <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m/y H:i" }}</td>
                       <td class="align-middle" style="border-left-style: inset;">
-                          <div class="col-2 d-flex align-items-center justify-content-end">
-                            <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="btn btn-danger me-2">Edit</a>
+                          <div class="d-flex justify-content-evenly">
+                            <a href="{% url 'edit_dairy_record' record.dairy_record_id %}" class="btn btn-outline-success btn-sm">Edit</a>
                           </div>
                       </td>
                   </tr>
@@ -131,8 +130,8 @@
                       <td class="align-middle" style="border-right-style: hidden;">{{ record.record_shift }}</td>
                       <td class="align-middle" style="border-right-style: hidden;">{{ record.last_modification_date|date:"d/m/y H:i" }}</td>
                       <td class="align-middle" style="border-left-style: inset;">
-                          <div class="col-2 d-flex align-items-center justify-content-end">
-                            <a href="{% url 'day_tracking_update' record.day_tracking_id %}" class="btn btn-danger me-2">Edit</a>
+                          <div class="d-flex justify-content-evenly">
+                            <a href="{% url 'day_tracking_update' record.day_tracking_id %}" class="btn btn-outline-success btn-sm">Edit</a>
                           </div>
                       </td>
                   </tr>

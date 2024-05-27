@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, ProtectedError
 from django.http import HttpResponse
 
 from .models import UserAccount
@@ -179,7 +179,14 @@ def employee_edit(request, username):
 def employee_delete(request, username):
     employee = get_object_or_404(UserAccount, pk=username)
     if request.method == 'POST':
-        employee.delete()
-        messages.success(request, 'User account has been deleted successfully.')
-        return redirect('employees_list')
+        try:
+            employee.delete()
+            messages.success(request, 'User account has been deleted successfully.')
+            return redirect('employees_list')
+        except ProtectedError as e:
+            # Extracting information from the ProtectedError
+            message = f"Cannot delete this employee because '{employee}' is referenced by other records. Please set the employee status to inactive."
+            messages.error(request, message)
+            return redirect('employees_list')  # Redirect to the list or some error page
+
     return render(request, 'users/confirm_delete.html', {'employee': employee})
