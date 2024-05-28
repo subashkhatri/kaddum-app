@@ -1,9 +1,9 @@
 {% extends "partials/base.html" %}
 {% block page_content %}
-<div class="container mt-4">
-    <h1 class="text-left mb-4 h4">Day Tracking</h1>
+<div class="container">
+    <h4 class="text-left mb-4">Day Tracking</h4>
 </div>
-<div class="container mt-4">
+<div class="container">
     <form id="day-tracking-form" method="POST" enctype="multipart/form-data" action="{{ form_action }}">
         {% csrf_token %}
         <div class="col-md-12">

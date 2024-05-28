@@ -2,7 +2,7 @@
 
 {% block page_content %}
 <div class="container mt-12">
-  <h1 class="text-left mb-4 h4">Create Day Tracking Record</h1>
+  <h4 class="text-left mb-4">Create Day Tracking Record</h4>
   <form method="POST" enctype="multipart/form-data" action="{% url 'day_tracking_create' %}">
     {% csrf_token %}
 
