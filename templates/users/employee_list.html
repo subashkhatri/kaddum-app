@@ -1,9 +1,9 @@
 {% extends "partials/base.html" %}
 
 {% block page_content %}
-<div class="container mt-4 d-flex align-items-center">
+<div class="container d-flex align-items-center">
     <div class="me-auto p-2">
-        <h1 class="text-left mb-4 h4">Employee List</h1>
+        <h4 class="text-left mb-4">Employee List</h4>
     </div>
     {% if request.user.roles == "super admin" %}
     <div class="p-2">
@@ -17,7 +17,7 @@
         <button type="submit" class="btn btn-danger btn-lg float-right">Save</button>
     </div> {% endcomment %}
 </div>
-<div class="container mt-4">
+<div class="container">
     <div class="row">
         <div class="col-md-12">
             <!-- search bar -->
@@ -34,44 +34,46 @@
                     Clear
                 </a>
             </div>
-            <table class="table table-bordered">
-                <thead>
-                    <tr style="background-color: #dc3545;">
-                        <th scope="col" class="align-middle" style="color: #fff;"><small> ID</small></th>
-                        <th scope="col" class="align-middle" style="color: #fff;" width=><small>Full Name</small></th>
-                        <th scope="col" class="align-middle" style="color: #fff;" ><small>Email</small></th>
-                        <th scope="col" class="align-middle" style="color: #fff;" width="8%"><small>Indigenous</small></th>
-                        <th scope="col" class="align-middle" style="color: #fff;" width="8%"><small>Local</small></th>
-                        <th scope="col" class="align-middle" style="color: #fff;"><small>Position</small></th>
-                        {% if request.user.roles == "super admin" %}
-                        <th scope="col" class="align-middle" style="color: #fff;"><small>Role</small></th>
-                        {% endif %}
-                        <th scope="col" class="align-middle" style="color: #fff;" ><small>Status</small></th>
-                        <th scope="col" class="align-middle" style="color: #fff;"><small></small></th>
-                    </tr>
-                </thead>
-                <tbody id="employeeTableBody">
-                    {% for employee in employee_list %}
-                    <tr>
-                        <td class="align-middle"><small>{{employee.username}}</small></td>
-                        <td class="align-middle"><small>{{employee.full_name}}</small></td>
-                        <td class="align-middle"><small>{{employee.email}}</small></td>
-                        <td class="align-middle"><small>{% if employee.is_indigenous %}Yes{% else %}No{% endif %}</small></td>
-                        <td class="align-middle"><small>{% if employee.is_local %}Yes{% else %}No{% endif %}</small></td>
-                        <td class="align-middle"><small>{{employee.position_id.item_name}}</small></td>
-                        {% if request.user.roles == "super admin" %}
-                        <td class="align-middle"><small>{{employee.roles}}</small></td>
-                        {% endif %}
-                        <td class="align-middle"><small>{% if employee.is_active %}Active{% else %} Inactive {% endif%}</small></td>
-                        <td>
-                            <div class="d-flex justify-content-evenly">
-                                <a href="{% url 'employees_edit' employee.username %}" class="btn btn-outline-success btn-sm">Edit</a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor%}
-                <tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr style="background-color: #dc3545;">
+                            <th scope="col" class="align-middle" style="color: #fff;"><small> ID</small></th>
+                            <th scope="col" class="align-middle" style="color: #fff;" width=><small>Full Name</small></th>
+                            <th scope="col" class="align-middle" style="color: #fff;" ><small>Email</small></th>
+                            <th scope="col" class="align-middle" style="color: #fff;" width="8%"><small>Indigenous</small></th>
+                            <th scope="col" class="align-middle" style="color: #fff;" width="8%"><small>Local</small></th>
+                            <th scope="col" class="align-middle" style="color: #fff;"><small>Position</small></th>
+                            {% if request.user.roles == "super admin" %}
+                            <th scope="col" class="align-middle" style="color: #fff;"><small>Role</small></th>
+                            {% endif %}
+                            <th scope="col" class="align-middle" style="color: #fff;" ><small>Status</small></th>
+                            <th scope="col" class="align-middle" style="color: #fff;"><small></small></th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        {% for employee in employee_list %}
+                        <tr>
+                            <td class="align-middle"><small>{{employee.username}}</small></td>
+                            <td class="align-middle"><small>{{employee.full_name}}</small></td>
+                            <td class="align-middle"><small>{{employee.email}}</small></td>
+                            <td class="align-middle"><small>{% if employee.is_indigenous %}Yes{% else %}No{% endif %}</small></td>
+                            <td class="align-middle"><small>{% if employee.is_local %}Yes{% else %}No{% endif %}</small></td>
+                            <td class="align-middle"><small>{{employee.position_id.item_name}}</small></td>
+                            {% if request.user.roles == "super admin" %}
+                            <td class="align-middle"><small>{{employee.roles}}</small></td>
+                            {% endif %}
+                            <td class="align-middle"><small>{% if employee.is_active %}Active{% else %} Inactive {% endif%}</small></td>
+                            <td>
+                                <div class="d-flex justify-content-evenly">
+                                    <a href="{% url 'employees_edit' employee.username %}" class="btn btn-outline-success btn-sm">Edit</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor%}
+                    <tbody>
+                </table>
+            </div>
             <!-- Pagination controls -->
             <nav aria-label="Page navigation example">
             <ul class="pagination">

@@ -39,8 +39,9 @@ width: 100px;
 }
 
 #main {
-margin-left: 190px;
-transition: ease;
+margin-left: 200px;
+transition: margin-left;
+padding: 20px;
 transition-duration: 0.5s;
 height: 100vh !important;
 }
@@ -54,7 +55,7 @@ display: none;
 }
 
 #side_bar_kaddum_logo{
-  width: 70%;
+  width: 65%;
   transition: width 0.5s ease;
 }
 
@@ -95,9 +96,6 @@ color: #f1f1f1;
 }
 
 @media screen and (max-height: 450px) {
-.sidenav {
-  padding-top: 15px;
-}
 
 .sidenav a {
   font-size: 18px;
@@ -198,12 +196,6 @@ font-size: 1.2rem;
 margin-bottom: 10px;
 }
 
-.form-control,
-.form-control:focus {
-border-color: var(--form-border-color);
-box-shadow: none;
-}
-
 .form-group {
 margin-bottom: 20px;
 }
@@ -250,4 +242,72 @@ color: red;
 color: #a94442;
 background-color: #f2dede;
 border-color: #ebccd1;
+}
+
+@media (max-width: 1190px) {
+  .sidenav {
+    width: 200px; /* Fixed width for sidebar on smaller screens */
+  }
+
+  .sidenav a {
+    padding: 8px 8px 8px 25px;
+    font-size: 15px;
+    }
+
+  .sidenav.shrinked {
+    width: 80px;
+  }
+
+  #main {
+      margin-left: 200px; /* Adjust the margin of the main content */
+  }
+
+  #main.shrinked-sidebar {
+    margin-left: 80px;
+  }
+
+  #side_bar_kaddum_logo{
+    width: 60%;
+  }
+
+  #side_bar_kaddum_logo.shrinked{
+    width: 95%;
+  }
+
+  .form-group label, button, .table th, .table td {
+    font-size: 0.8rem; /* Smaller font size for sidebar links, labels, and table headers */
+  }
+
+.form-control {
+    font-size: 0.5rem; /* Smaller font size for form inputs */
+  }
+
+  .btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;  /* Match button font size to input text size */
+  }
+
+  .container {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .container, .form-group {
+    padding: 0.5rem; /* Adjust container and form-group padding for tighter layout */
+  }
+
+  .form-section-header {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .table-sm th, .table-sm td {
+    padding: 0.2rem; /* Smaller padding for table cells */
+  }
+
+  .delete-message {
+    font-size: 1rem;
+  }
+
 }

@@ -1,13 +1,11 @@
 {% extends "partials/base.html" %}
 
 {% block page_content %}
-<div class="container mt-4">
-  <h1 class="text-left mb-4 h4">Create New Resource</h1>
+<div class="container">
+  <h4 class="text-left mb-4">Create New Resource</h4>
 </div>
-<div class="form-section-header">*Required Fields</div>
-<div class="container mt-4">
-  <div class="row">
-      <div class="col-md-12">
+<div class="container">
+  <div class="form-section-header">*Required Fields</div>
   <form method="post" action="{% url 'create_resource_cost' %}">
     {% csrf_token %}
     <div class="form-group mb-3">
@@ -45,8 +43,10 @@
       {{ form.mobilisation_desc }}
       {{ form.mobilisation_desc.error }}
     </div>
-    <button type="submit" class="form-group btn btn-success col-2" value="submit">Create</button>
-    <a href="{% url 'resource_cost_list' %}" type="submit" class="form-group btn btn-primary col-2" value="back">Cancel</a>
+    <div class="d-flex justify-content-end mt-3">
+        <button type="submit" class="form-group btn btn-success me-2" style="width: 150px" value="submit">Create</button>
+        <a href="{% url 'resource_cost_list' %}" type="submit" class="form-group btn btn-secondary me-2" style="width: 150px" value="back">Cancel</a>
+    </div>
   </form>
 </div>
 {% endblock %}

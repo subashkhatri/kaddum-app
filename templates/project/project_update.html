@@ -1,70 +1,67 @@
 {% extends "partials/base.html" %}
 
 {% block page_content %}
-<div class="container mt-4">
-    <h1 class="text-left mb-4 h4">Update Project Details</h1>
+<div class="container">
+    <h4 class="text-left mb-4">Update Project Details</h4>
 </div>
-<div class="form-section-header">*Required Fields</div>
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.non_field_errors }}
+<div class="container">
+    <div class="form-section-header">*Required Fields</div>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
 
-                <div class="form-group">
-                    {{ form.project_name.label_tag }}
-                    {{ form.project_name }}
-                    {{ form.project_name.errors }}
-                </div>
+            <div class="form-group">
+                {{ form.project_name.label_tag }}
+                {{ form.project_name }}
+                {{ form.project_name.errors }}
+            </div>
 
-                <div class="form-group">
-                    {{ form.purchase_order_no.label_tag }}
-                    {{ form.purchase_order_no }}
-                    {{ form.purchase_order_no.errors }}
-                </div>
+            <div class="form-group">
+                {{ form.purchase_order_no.label_tag }}
+                {{ form.purchase_order_no }}
+                {{ form.purchase_order_no.errors }}
+            </div>
 
-                <div class="form-group">
-                    {{ form.client.label_tag }}
-                    {{ form.client }}
-                    {{ form.client.errors }}
+            <div class="form-group">
+                {{ form.client.label_tag }}
+                {{ form.client }}
+                {{ form.client.errors }}
 
-                </div>
+            </div>
 
-                <div class="form-group">
-                    {{ form.project_start_date.label_tag }}
-                    {{ form.project_start_date }}
-                    {{ form.project_start_date.errors }}
+            <div class="form-group">
+                {{ form.project_start_date.label_tag }}
+                {{ form.project_start_date }}
+                {{ form.project_start_date.errors }}
 
-                </div> 
+            </div>
 
-                <div class="form-group">
-                    {{ form.project_end_date.label_tag }}
-                    {{ form.project_end_date }}
-                    {{ form.project_end_date.errors }}
+            <div class="form-group">
+                {{ form.project_end_date.label_tag }}
+                {{ form.project_end_date }}
+                {{ form.project_end_date.errors }}
 
-                </div>
+            </div>
 
-                <div class="form-group">
-                    {{ form.project_budget.label_tag }}
-                    {{ form.project_budget }}
-                    {{ form.project_budget.errors }}
+            <div class="form-group">
+                {{ form.project_budget.label_tag }}
+                {{ form.project_budget }}
+                {{ form.project_budget.errors }}
 
-                </div>
+            </div>
 
-                <div class="form-group">
-                    {{ form.is_active.label_tag }}
-                    {{ form.is_active }}
-                    {{ form.is_active.errors }}
+            <div class="form-group">
+                {{ form.is_active.label_tag }}
+                {{ form.is_active }}
+                {{ form.is_active.errors }}
 
-                </div>
-                <div class="d-flex justify-content-end">
-                    <button type="submit" class="form-group btn btn-success me-2" style="width: 150px" value="complete" name="click-btn">Save</button>
-                    <a href="{% url 'project_delete' record.project_no %}" class="form-group btn btn-danger me-2" style="width: 150px">Delete</a>
-                    <a href="{% url 'project_list' %}" class="form-group btn btn-secondary" style="width: 150px" value="back">Back</a>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="form-group btn btn-success me-2" style="width: 150px" value="complete" name="click-btn">Save</button>
+                <a href="{% url 'project_delete' record.project_no %}" class="form-group btn btn-danger me-2" style="width: 150px">Delete</a>
+                <a href="{% url 'project_list' %}" class="form-group btn btn-secondary" style="width: 150px" value="back">Back</a>
+            </div>
+        </form>
     </div>
 </div>
 

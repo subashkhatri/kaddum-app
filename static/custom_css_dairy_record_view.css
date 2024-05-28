@@ -26,10 +26,10 @@ body {
     margin-right: 0.5rem;
     font-size: 0.8rem;
 }
-  .table-bordered th, .table-bordered td {
-    padding: 0.2rem;
-    border: 0.4px solid black;
-  }
+.table-bordered th, .table-bordered td {
+padding: 0.2rem;
+border: 0.4px solid black;
+}
 table {
     width: 100%;
     border-collapse: collapse;
