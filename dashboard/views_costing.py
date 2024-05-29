@@ -86,7 +86,6 @@ def edit_daily_costing(request, cost_tracking_id):
                     elif request.POST.get('action') == 'draft':
                         form.instance.is_draft = True
                         form.save()
-                        messages.success(request, 'Form saved as draft.')
 
                     if not errors:
                         # Call the method to update CostTracking statistics

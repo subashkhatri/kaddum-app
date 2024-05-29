@@ -24,7 +24,7 @@ class DayTrackingForm(forms.ModelForm):
     )
 
     project_no = forms.ModelChoiceField(
-        queryset=Project.objects.all().order_by('-project_no'),
+        queryset=Project.objects.all().filter(is_active = True).order_by('project_no'),
         label="*Project",
         empty_label="Please select...",
         widget=forms.Select(attrs={'class': 'form-control'}),
@@ -98,7 +98,7 @@ class DayTrackingForm(forms.ModelForm):
 class DayTrackingEmployeeForm(forms.ModelForm):
     employee_total_hours = forms.FloatField(label='Employee Total Hours', required=False)
     employee_id = forms.ModelChoiceField(
-    queryset=UserAccount.objects.all(),
+    queryset=UserAccount.objects.all().filter(is_active = True).order_by('username'),
     label="*Employee",
     empty_label="Please select...",
     widget=forms.Select(attrs={'class': 'form-control'}),

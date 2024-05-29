@@ -188,8 +188,8 @@
                     <th scope="col" width="20%"></th>
                     <!-- Empty top-left corner cell -->
                     <th scope="col" width="25%">*Name</th>
-                    <th scope="col" width="40%">*Signature</th>
-                    <th scope="col" width="15%">*Date</th>
+                    <th scope="col" width="40%">*Date</th>
+                    <th scope="col" width="15%">*Signature</th>
                 </tr>
             </thead>
             <tbody>
@@ -433,23 +433,25 @@ function addEmployeeRow() {
 }
 
 function removeEmployeeRow(button) {
-    var totalFormsInput = document.getElementById('id_employee-TOTAL_FORMS');
-    var rowToRemove = button.closest('.employee-row');
-    var deleteCheckbox = rowToRemove.querySelector('.employee-delete-checkbox');
+    const confirmed = confirm('Are you sure you want to delete this employee?');
+    if (confirmed){
+        var totalFormsInput = document.getElementById('id_employee-TOTAL_FORMS');
+        var rowToRemove = button.closest('.employee-row');
+        var deleteCheckbox = rowToRemove.querySelector('.employee-delete-checkbox');
+        // Get the number of visible rows
+        var visibleRows = document.querySelectorAll('.employee-row:not([style*="display: none"])');
 
-    // Get the number of visible rows
-    var visibleRows = document.querySelectorAll('.employee-row:not([style*="display: none"])');
+        if (visibleRows.length > 1) {
+            // Mark the row for deletion
+            if (deleteCheckbox) {
+                deleteCheckbox.value = 'on';
+            }
+            rowToRemove.style.display = 'none';  // Optionally hide the row
 
-    if (visibleRows.length > 1) {
-        // Mark the row for deletion
-        if (deleteCheckbox) {
-            deleteCheckbox.value = 'on';
+            // Do not decrease the TOTAL_FORMS value
+        } else {
+            alert("Cannot delete the last row.");
         }
-        rowToRemove.style.display = 'none';  // Optionally hide the row
-
-        // Do not decrease the TOTAL_FORMS value
-    } else {
-        alert("Cannot delete the last row.");
     }
 }
 
@@ -492,23 +494,26 @@ function addEquipmentRow(type) {
 }
 
     function removeEquipmentRow(button, type) {
-        var totalFormsInput = document.getElementById('id_' + type + '-TOTAL_FORMS');
-        var rowToRemove = button.closest('.' + type + '-row');
-        var deleteCheckbox = rowToRemove.querySelector('.' + type + '-delete-checkbox');
-        var idField = rowToRemove.querySelector('input[name*="id"]');
+        const confirmed = confirm('Are you sure you want to delete this employee?');
+        if (confirmed){
+            var totalFormsInput = document.getElementById('id_' + type + '-TOTAL_FORMS');
+            var rowToRemove = button.closest('.' + type + '-row');
+            var deleteCheckbox = rowToRemove.querySelector('.' + type + '-delete-checkbox');
+            var idField = rowToRemove.querySelector('input[name*="id"]');
 
-        // Mark the row for deletion
-        if (deleteCheckbox) {
-            deleteCheckbox.value = 'on';
-        }
+            // Mark the row for deletion
+            if (deleteCheckbox) {
+                deleteCheckbox.value = 'on';
+            }
 
-        if (idField && idField.value) {
-            // If the row has an id, it means it's an existing record, so hide the row and mark for deletion
-            rowToRemove.style.display = 'none';
-        } else {
-            // If the row does not have an id, it means it's a new record, so remove the row and decrement TOTAL_FORMS
-            rowToRemove.remove();
-            totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
+            if (idField && idField.value) {
+                // If the row has an id, it means it's an existing record, so hide the row and mark for deletion
+                rowToRemove.style.display = 'none';
+            } else {
+                // If the row does not have an id, it means it's a new record, so remove the row and decrement TOTAL_FORMS
+                rowToRemove.remove();
+                totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
+            }
         }
     }
 

@@ -151,8 +151,8 @@
                             <td>{{ past_report.percentage_employee_local|floatformat:"2" }}%</td>
                         </tr>
                         {% endfor %}
-                        <tr>
-                            <td>{{ report.year_week }}</td>
+                        <tr style="color: red;">
+                            <td>*{{ report.year_week }}</td>
                             <td>{{ report.start_date|date:"d/m/Y" }} - {{ report.end_date|date:"d/m/Y" }}</td>
                             <td>{{ report.total_hours_employee |floatformat:"2"}}</td>
                             <td>{{ report.total_hours_employee_indigenous |floatformat:"2"}}</td>

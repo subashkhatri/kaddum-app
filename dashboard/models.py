@@ -101,7 +101,7 @@ class DairyRecord(models.Model):
             self.dairy_record_id = new_id
 
         # get year_week data like 202417
-        if not self.year_week and self.record_date:
+        if self.record_date:
             year, week, _ = self.record_date.isocalendar()  # Get ISO year and week
             self.year_week = f"{year}{week:02d}"  # Combine year and week, zero-padded
 
@@ -148,7 +148,7 @@ class CostTracking(models.Model):
             self.cost_tracking_id = new_id
 
         # get year_week data like 202417
-        if not self.year_week and self.record_date:
+        if self.record_date:
             year, week, _ = self.record_date.isocalendar()  # Get ISO year and week
             self.year_week = f"{year}{week:02d}"  # Combine year and week, zero-padded
 
@@ -202,7 +202,7 @@ class DayTracking(models.Model):
             self.day_tracking_id = new_id
 
         # get year_week data like 202417
-        if not self.year_week and self.record_date:
+        if self.record_date:
             year, week, _ = self.record_date.isocalendar()  # Get ISO year and week
             self.year_week = f"{year}{week:02d}"  # Combine year and week, zero-padded
 
