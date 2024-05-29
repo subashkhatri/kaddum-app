@@ -77,7 +77,7 @@
 				</tr>
 				<tr>
 					<td>{{ record.delay_industrial_matters|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Industrial Matters</td>
-					<td>{{ record.delay_other|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Other</td>
+					<td>{{ record.delay_other|yesno:"<i class='bi bi-check2-square'></i>,<i class='bi bi-square'></i>"|safe }} Other:{{ record.delay_other}}</td>
 				</tr>
 			</table>
 			<table class="table-bordered">

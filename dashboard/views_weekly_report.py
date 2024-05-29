@@ -28,7 +28,7 @@ def all_weekly_report(request):
     else:
         new_reports = WeeklyReportList.objects.all().order_by('-created_date')
 
-    projects = Project.objects.all()
+    projects = Project.objects.all().order_by('project_no')
     weeks = CostTracking.objects.all().values_list('year_week', flat=True).distinct()
     unique_projects = {(project.project_no, project.project_name) for project in projects}
     unique_weeks = sorted(set(weeks), reverse=True)
@@ -46,8 +46,10 @@ def all_weekly_report(request):
             # Check if a report already exists for the specified project and week
             if WeeklyReportList.objects.filter(project_no=project_instance, year_week=year_week).exists():
                 messages.error(request, "A report for this project and week already exists. Please delete the existing report if you wish to create a new one.")
+            elif not CostTracking.objects.filter(project_no=project_no, year_week=year_week, is_draft=False).exists():
+                messages.error(request, "No completed cost tracking records exist for the given project and week.")
             else:
-                dairy_records = DairyRecord.objects.filter(project_no=project_no, year_week=year_week)
+                dairy_records = DairyRecord.objects.filter(project_no=project_no, year_week=year_week, is_draft=False)
 
                 if dairy_records.exists():
                     aggregates = dairy_records.aggregate(
@@ -99,7 +101,7 @@ def all_weekly_report(request):
                     )
                     messages.success(request, "Weekly Report created or updated successfully.")
                 else:
-                    messages.error(request, "No dairy records exist for the given project and week.")
+                    messages.error(request, "No completed daily records exist for the given project and week.")
 
 
 
@@ -138,8 +140,9 @@ def view_weekly_report(request, report_id):
 
     # Fetch reports from the last three weeks excluding the current week
     past_reports = WeeklyReportList.objects.filter(
-        year_week__in=past_week_numbers
-    ).order_by('-year_week')[:3]  # Get the last three entries only
+        year_week__in=past_week_numbers,
+        project_no=report.project_no
+    ).order_by('year_week')[:3]  # Get the last three entries only
 
     context = {
         'report': report,

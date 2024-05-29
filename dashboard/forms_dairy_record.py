@@ -9,6 +9,7 @@ from .models import (
 from users.models import UserAccount
 
 SHIFT_CHOICES = [
+        ('', 'Please select...'),
         ('Day Shift', 'Day Shift'),
         ('Night Shift', 'Night Shift'),
     ]
@@ -19,14 +20,14 @@ def validate_non_negative(value):
 class DairyRecordForm(forms.ModelForm):
 
     project_no = forms.ModelChoiceField(
-        queryset=Project.objects.all().order_by('-project_no'),
+        queryset=Project.objects.all().filter(is_active = True).order_by('project_no'),
         label="*Project",
         empty_label="Select a Project",
         widget=forms.Select(attrs={'class': 'form-control'}),
         error_messages={'required': "This field is mandatory"}
     )
     supervisor_id = forms.ModelChoiceField(
-        queryset=UserAccount.objects.all(),
+        queryset=UserAccount.objects.all().filter(is_active = True).order_by('username'),
         label="*Supervisor",
         empty_label="Select a Supervisor",
         widget=forms.Select(attrs={'class': 'form-control'}),

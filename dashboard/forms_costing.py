@@ -23,7 +23,7 @@ class CostTrackingForm(forms.ModelForm):
         exclude = ['cost_tracking_id', 'project_no', 'year_week', 'created_date', 'last_modification_date', 'is_draft','total_amount_employee', 'total_amount_equipment' ]
         widgets = {
             'position_id': forms.Select(attrs={'class': 'form-control'}),
-            'record_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'disabled': True}),
+            'record_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'readonly': 'readonly', 'onkeydown':'return false;','onfocus':"this.blur();"}),
         }
 
     def __init__(self, *args, **kwargs):
