@@ -101,7 +101,7 @@ class DayTrackingEmployeeForm(forms.ModelForm):
     queryset=UserAccount.objects.all().filter(is_active = True).order_by('username'),
     label="*Employee",
     empty_label="Please select...",
-    widget=forms.Select(attrs={'class': 'form-control'}),
+    widget=forms.Select(attrs={'class': 'form-control','onchange': 'updatePosition(this);'}),
     error_messages={'required': "This field is mandatory"},
     required=True
     )

@@ -519,29 +519,36 @@ function addEquipmentRow(type) {
 
 
     function calculateEmployeeTotalHours() {
-        document.querySelectorAll('.employee-row').forEach(function(row, index) {
-            var startTime = row.querySelector('#id_employee-' + index + '-start_time').value;
-            var endTime = row.querySelector('#id_employee-' + index + '-end_time').value;
+        document.querySelectorAll('.employee-row').forEach(function(row) {
+            // Get the index from the row's input field name or id
+            var startTimeElement = row.querySelector('[id$="-start_time"]');
+            var endTimeElement = row.querySelector('[id$="-end_time"]');
+            var totalHoursElement = row.querySelector('[id$="-employee_total_hours"]');
 
-            // Check if start_time and end_time are not empty
-            if (startTime && endTime) {
-                // Convert start and end times to Date objects
-                var startDate = new Date('2000-01-01 ' + startTime);
-                var endDate = new Date('2000-01-01 ' + endTime);
+            if (startTimeElement && endTimeElement && totalHoursElement) {
+                var startTime = startTimeElement.value;
+                var endTime = endTimeElement.value;
 
-                // Check if end time is less than start time, adjust end date to next day
-                if (endDate < startDate) {
-                    endDate.setDate(endDate.getDate() + 1);
+                // Check if start_time and end_time are not empty
+                if (startTime && endTime) {
+                    // Convert start and end times to Date objects
+                    var startDate = new Date('2000-01-01 ' + startTime);
+                    var endDate = new Date('2000-01-01 ' + endTime);
+
+                    // Check if end time is less than start time, adjust end date to next day
+                    if (endDate < startDate) {
+                        endDate.setDate(endDate.getDate() + 1);
+                    }
+
+                    // Calculate the difference in milliseconds
+                    var timeDiff = Math.abs(endDate - startDate);
+
+                    // Convert milliseconds to hours
+                    var totalHours = timeDiff / (1000 * 3600);
+
+                    // Update the total hours input
+                    totalHoursElement.value = totalHours.toFixed(2);
                 }
-
-                // Calculate the difference in milliseconds
-                var timeDiff = Math.abs(endDate - startDate);
-
-                // Convert milliseconds to hours
-                var totalHours = timeDiff / (1000 * 3600);
-
-                // Update the total hours input
-                row.querySelector('#id_employee-' + index + '-employee_total_hours').value = totalHours.toFixed(2);
             }
         });
     }

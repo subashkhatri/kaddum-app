@@ -386,8 +386,32 @@ function updatePurchaseOrder(projectId, displayElement) {
     }
 }
 
+function updatePosition(employeeSelect) {
+    const employeeId = employeeSelect.value;
+    const index = employeeSelect.name.match(/employee-(\d+)-/)[1]; // Extracting the index from the name
+    if (employeeId) {
+        fetch(`/api/get_position/${employeeId}/`)
+        .then(response => response.json())
+        .then(data => {
+            // Target the corresponding position select using the extracted index
+            const positionSelect = document.querySelector(`select[name="employee-${index}-position_id"]`);
+            // Check if the default option already exists to avoid duplicates
+            let exists = Array.from(positionSelect.options).some(option => option.value == data.position_id);
+            if (!exists && data.position_id) {
+                // Add the default position as the first option and select it
+                let newOption = new Option(data.position_name, data.position_id, true, true);
+                positionSelect.prepend(newOption); // Adds the new option at the beginning
+            }
+
+            // Optionally, if you want the new option to be selected by default
+            positionSelect.value = data.position_id;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+
 function addRow(type) {
-    var templateRow = document.querySelector('.' + type + '-row');
+    var templateRow = document.querySelector('.' + type + '-row'); // Ensure the last row is cloned
     var newRow = templateRow.cloneNode(true);
     // Clear input values in the cloned row
     newRow.querySelectorAll('input').forEach(function(input) {
@@ -397,8 +421,22 @@ function addRow(type) {
     newRow.querySelectorAll('select').forEach(function(select) {
         select.selectedIndex = 0;
     });
+    // Get the highest current index
+    var highestIndex = 0;
+    var templateRows = document.querySelectorAll('.' + type + '-row');
+    templateRows.forEach(function(row) {
+        row.querySelectorAll('input, select').forEach(function(element) {
+            var match = element.id.match(/-(\d+)-/);
+            if (match) {
+                var index = parseInt(match[1]);
+                if (index > highestIndex) {
+                    highestIndex = index;
+                }
+            }
+        });
+    });
     // Update input field names with the appropriate index
-    var rowCount = document.querySelectorAll('.' + type + '-row').length;
+    var rowCount = highestIndex+1 ;
     newRow.querySelectorAll('input, select').forEach(function(element) {
         element.name = element.name.replace('-0-', '-' + rowCount + '-');
         element.id = element.id.replace('-0-', '-' + rowCount + '-');
@@ -418,6 +456,7 @@ function addRow(type) {
             removeRow(this, type);
         });
 }
+
 function removeRow(button, type) {
     var totalFormsInput = document.getElementById('id_' + type +
         '-TOTAL_FORMS');
@@ -490,29 +529,36 @@ function removeEquipmentRow(button, type) {
 }
 
 function calculateEmployeeTotalHours() {
-    document.querySelectorAll('.employee-row').forEach(function(row, index) {
-        var startTime = row.querySelector('#id_employee-' + index + '-start_time').value;
-        var endTime = row.querySelector('#id_employee-' + index + '-end_time').value;
+    document.querySelectorAll('.employee-row').forEach(function(row) {
+        // Get the index from the row's input field name or id
+        var startTimeElement = row.querySelector('[id$="-start_time"]');
+        var endTimeElement = row.querySelector('[id$="-end_time"]');
+        var totalHoursElement = row.querySelector('[id$="-employee_total_hours"]');
 
-        // Check if start_time and end_time are not empty
-        if (startTime && endTime) {
-            // Convert start and end times to Date objects
-            var startDate = new Date('2000-01-01 ' + startTime);
-            var endDate = new Date('2000-01-01 ' + endTime);
+        if (startTimeElement && endTimeElement && totalHoursElement) {
+            var startTime = startTimeElement.value;
+            var endTime = endTimeElement.value;
 
-            // Check if end time is less than start time, adjust end date to next day
-            if (endDate < startDate) {
-                endDate.setDate(endDate.getDate() + 1);
+            // Check if start_time and end_time are not empty
+            if (startTime && endTime) {
+                // Convert start and end times to Date objects
+                var startDate = new Date('2000-01-01 ' + startTime);
+                var endDate = new Date('2000-01-01 ' + endTime);
+
+                // Check if end time is less than start time, adjust end date to next day
+                if (endDate < startDate) {
+                    endDate.setDate(endDate.getDate() + 1);
+                }
+
+                // Calculate the difference in milliseconds
+                var timeDiff = Math.abs(endDate - startDate);
+
+                // Convert milliseconds to hours
+                var totalHours = timeDiff / (1000 * 3600);
+
+                // Update the total hours input
+                totalHoursElement.value = totalHours.toFixed(2);
             }
-
-            // Calculate the difference in milliseconds
-            var timeDiff = Math.abs(endDate - startDate);
-
-            // Convert milliseconds to hours
-            var totalHours = timeDiff / (1000 * 3600);
-
-            // Update the total hours input
-            row.querySelector('#id_employee-' + index + '-employee_total_hours').value = totalHours.toFixed(2);
         }
     });
 }

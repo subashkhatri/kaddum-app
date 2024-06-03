@@ -1,22 +1,20 @@
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.paginator import Paginator
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
-from django.core.exceptions import ValidationError
-from django.core.paginator import Paginator
-from django.http import JsonResponse
-import datetime
+from django.http import JsonResponse, HttpResponse
 from .forms_day_tracking import DayTrackingForm, DayTrackingEmployeeFormSet, DayTrackingEquipmentFormSet
 from .models import DayTracking,  CostTracking, DayTrackingEmployeeDetails,DayTrackingEquipmentDetails, Project
 from .models_resource_cost import ResourceCost
+from users.models import UserAccount
 from users.decorators import superuser_or_supervisor_required
 import base64
 import os
-from django.conf import settings
-from django.http import HttpResponse
-
+import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -227,3 +225,13 @@ def get_purchase_order(request, project_id):
         return JsonResponse({'purchase_order_no': project.purchase_order_no})
     except Project.DoesNotExist:
         return JsonResponse({'error': 'Project not found'}, status=404)
+
+def get_position(request, employee_id):
+    try:
+        user = UserAccount.objects.get(username=employee_id)
+        print(user.position_id.resource_id,user.position_id.item_name)
+        return JsonResponse({'position_id': user.position_id.resource_id, 'position_name': user.position_id.item_name})
+
+    except Project.DoesNotExist:
+        print('Position not found')
+        return JsonResponse({'error': 'Position not found'}, status=404)
