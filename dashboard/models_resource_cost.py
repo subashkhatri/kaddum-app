@@ -18,4 +18,6 @@ class ResourceCost(models.Model):
         db_table = 'dashboard-ResourceCost'
 
     def __str__(self):
-        return f"{self.item_type.upper()}-{self.item_name}"
+        if self.item_id:
+            return f"{self.item_id.upper()}-{self.item_name}"
+        return self.item_name

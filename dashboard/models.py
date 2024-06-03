@@ -13,7 +13,7 @@ class Project(models.Model):
     purchase_order_no = models.CharField(max_length=100, null=True, blank=True)
     project_name = models.CharField(max_length=255)
     client = models.CharField(max_length=100)
-    project_start_date = models.DateField()
+    project_start_date = models.DateField(null=True, blank=True)
     project_end_date = models.DateField(null=True, blank=True)
     project_budget = models.FloatField(null=True, blank=True)
     project_total_cost = models.FloatField(default=0)
