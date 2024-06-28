@@ -270,8 +270,7 @@ class DayTracking(models.Model):
             cost_tracking_instance.total_hours_employee_indigenous_percentage = indigenous_percentage
             cost_tracking_instance.last_modification_date = datetime.now()
             cost_tracking_instance.save()
-            print("cost_tracking_instance.total_amount_employee",cost_tracking_instance.total_amount_employee)
-            print("cost_tracking_instance",cost_tracking_instance)
+
 
     def __str__(self):
         return f"Day Tracking:{self.day_tracking_id} {self.record_date}"
