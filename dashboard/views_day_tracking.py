@@ -229,9 +229,7 @@ def get_purchase_order(request, project_id):
 def get_position(request, employee_id):
     try:
         user = UserAccount.objects.get(username=employee_id)
-        print(user.position_id.resource_id,user.position_id.item_name)
         return JsonResponse({'position_id': user.position_id.resource_id, 'position_name': user.position_id.item_name})
 
     except Project.DoesNotExist:
-        print('Position not found')
         return JsonResponse({'error': 'Position not found'}, status=404)
