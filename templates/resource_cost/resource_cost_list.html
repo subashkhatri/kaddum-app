@@ -37,8 +37,10 @@
                         <tr style="background-color: #dc3545;">
                             <th scope="col" class="align-middle"  style="color: #fff;"><small>No</small></th>
                             <th scope="col" class="align-middle"  style="color: #fff;"><small>Type</small></th>
+                            <th scope="col" class="align-middle"  style="color: #fff;"><small>ID</small></th>
                             <th scope="col" class="align-middle"  style="color: #fff;"><small>Name</small></th>
-                            <th scope="col" class="align-middle"  style="color: #fff;"><small>Cost Rate</small></th>
+                            <th scope="col" class="align-middle"  style="color: #fff;"><small>Location</small></th>
+                            <th scope="col" class="align-middle"  style="color: #fff;"><small>Rate</small></th>
                             <th scope="col" class="align-middle"  style="color: #fff;"><small>UOM</small></th>
                             <th scope="col" class="align-middle"  style="color: #fff;"><small>Modification</small></th>
                             <th scope="col" class="align-middle"  style="color: #fff;"><small></small></th>
@@ -49,7 +51,9 @@
                         <tr>
                             <td class="align-middle"><small>{{ resource.pk }}</small></td>
                             <td class="align-middle"><small>{{ resource.item_type|capfirst }}</small></td>
+                            <td class="align-middle"><small>{{ resource.item_id|capfirst }}</small></td>
                             <td class="align-middle"><small>{{ resource.item_name}}</small></td>
+                            <td class="align-middle"><small>{{ resource.item_location}}</small></td>
                             <td class="align-middle" style="text-align: right; padding-right: 15px;" ><small>{{ resource.item_rate |floatformat:"2" }}</small></td>
                             <td class="align-middle"><small>{{ resource.unit_of_measure|capfirst }}</small></td>
                             <td class="align-middle"><small>{{ resource.last_modification_date|date:"m/d/y H:i" }}</small></td>

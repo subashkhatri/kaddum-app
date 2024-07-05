@@ -29,12 +29,14 @@ class Project(models.Model):
         return f"{self.project_no} - {self.project_name}"
 
     # def save(self, *args, **kwargs):
-    #     if self.project_no is None:  # Only set if not already assigned
-    #         from django.db import connection
-    #         with connection.cursor() as cursor:
-    #             cursor.execute("SELECT nextval('project_project_no_seq')")
-    #             self.project_no = cursor.fetchone()[0]
-    #     super().save(*args, **kwargs)
+    #     if not self.project_no:
+    #         last_record = Project.objects.all().order_by('-project_no').first()
+    #         if last_record:
+    #             last_id = int(last_record.project_no[2:])  # Extract numeric part of ID
+    #             new_id = last_id+1  # Increment ID
+    #         else:
+    #             new_id = 1  # If no records exist, start from 1
+    #         self.project_no = new_id
 
 
 class DairyRecord(models.Model):

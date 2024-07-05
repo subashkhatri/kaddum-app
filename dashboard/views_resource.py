@@ -20,6 +20,7 @@ def resource_cost_list(request):
             date_query = None
 
         resources = ResourceCost.objects.filter(
+            Q(resource_id__icontains=query) |
             Q(item_type__icontains=query) |
             Q(item_name__icontains=query) |
             Q(item_id__icontains=query) |
@@ -28,7 +29,7 @@ def resource_cost_list(request):
             Q(mobilisation_desc__icontains=query) |
             Q(item_rate__icontains=query) |
             (Q(created_date__date=date_query) | Q(last_modification_date__date=date_query) if date_query else Q())
-        ).order_by('-created_date')
+        ).order_by('-last_modification_date')
     else:
         resources = ResourceCost.objects.all().order_by('-last_modification_date')
 

@@ -19,5 +19,5 @@ class ResourceCost(models.Model):
 
     def __str__(self):
         if self.item_id:
-            return f"{self.item_id.upper()}-{self.item_name}"
-        return self.item_name
+            return f"{self.item_type.capitalize()}-{self.item_id.upper()}-{self.item_name}"
+        return f"{self.item_type.capitalize()}-{self.item_name}"

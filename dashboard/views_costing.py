@@ -47,7 +47,7 @@ def edit_daily_costing(request, cost_tracking_id):
     instance = get_object_or_404(CostTracking, cost_tracking_id=cost_tracking_id)
     employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=instance).select_related('position_id', 'employee_id')
     equipment_details = DayTrackingEquipmentDetails.objects.filter(day_tracking_id__cost_tracking_id=instance)
-    positions = ResourceCost.objects.filter(item_type='personel').order_by('item_name')
+    positions = ResourceCost.objects.filter(item_type='personnel').order_by('item_name')
     record_PK = instance.cost_tracking_id
 
     if request.method == 'POST':

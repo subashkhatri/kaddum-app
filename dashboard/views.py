@@ -11,4 +11,4 @@ def index(request):
   return render(request, 'dashboard/index.html', {'dairy_records': dairy_records, 'day_trackings': day_trackings})
 
 def not_found(request, exception):
-   return redirect('index')
+   return render(request, '404.html')

@@ -120,14 +120,14 @@ class DayTrackingEmployeeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['employee_total_hours'].widget.attrs['readonly'] = True
         self.fields['employee_total_hours'].widget.attrs['class'] = 'form-control'
-        self.fields['position_id'].choices = [('', 'Please select...')]+[(position.resource_id, position.item_name) for position in ResourceCost.objects.filter(item_type='personel')]
+        self.fields['position_id'].choices = [('', 'Please select...')]+[(position.resource_id, position.item_name) for position in ResourceCost.objects.filter(item_type='personnel')]
 
 
 
 class DayTrackingEquipmentForm(forms.ModelForm):
     equipment_total_hours = forms.FloatField(label='Equipment Total Hours', required=False)
     resource_id = forms.ModelChoiceField(
-    queryset=ResourceCost.objects.exclude(item_type = 'personel').order_by('item_id'),
+    queryset=ResourceCost.objects.exclude(item_type = 'personnel').order_by('item_type'),
     label="*Equipment",
     empty_label="Please Select...",
     widget=forms.Select(attrs={'class': 'form-control'}),

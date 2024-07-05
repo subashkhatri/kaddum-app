@@ -97,12 +97,8 @@ class UserAccountForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        positions = ResourceCost.objects.filter(item_type="personel").values_list(
-            "resource_id", "item_name"
-        )
-        self.fields["position_id"].choices = [("", "Please select...")] + list(
-            positions
-        )
+        self.fields['position_id'].choices = [('', 'Please select...')]+[(position.resource_id, position.item_name) for position in ResourceCost.objects.filter(item_type='personnel')]
+
 
     class Meta:
         model = UserAccount
@@ -153,7 +149,7 @@ class UserAccountForm(forms.ModelForm):
         labels = {
             "first_name": "*First Name",
             "last_name": "*Last Name",
-            "email": "*Email",
+            "email": "Email",
             "is_indigenous": "*Indigenous",
             "is_local": "*Local",
             "position_id": "*Position",

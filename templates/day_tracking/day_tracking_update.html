@@ -494,7 +494,7 @@ function addEquipmentRow(type) {
 }
 
     function removeEquipmentRow(button, type) {
-        const confirmed = confirm('Are you sure you want to delete this employee?');
+        const confirmed = confirm('Are you sure you want to delete this equipment?');
         if (confirmed){
             var totalFormsInput = document.getElementById('id_' + type + '-TOTAL_FORMS');
             var rowToRemove = button.closest('.' + type + '-row');

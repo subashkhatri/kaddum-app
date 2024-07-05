@@ -438,8 +438,8 @@ function addRow(type) {
     // Update input field names with the appropriate index
     var rowCount = highestIndex+1 ;
     newRow.querySelectorAll('input, select').forEach(function(element) {
-        element.name = element.name.replace('-0-', '-' + rowCount + '-');
-        element.id = element.id.replace('-0-', '-' + rowCount + '-');
+        element.name = element.name.replace(/-\d+-/, '-' + rowCount + '-');
+        element.id = element.id.replace(/-\d+-/, '-' + rowCount + '-');
     });
     // Append the cloned row to the table body
     var tableBodyId = type === 'employee' ? 'EmployeeTableBody' :
@@ -470,63 +470,98 @@ function removeRow(button, type) {
     }
 }
 function addEquipmentRow(type) {
-    var totalFormsInput = document.getElementById('id_' + type +
-        '-TOTAL_FORMS');
-    if (parseInt(totalFormsInput.value) === 0) {
-        // Make the previously hidden row visible
-        var hiddenRow = document.querySelector('.' + type +
-            '-row[style="display: none;"]');
-        if (hiddenRow) {
-            hiddenRow.style.display = 'table-row';
-            totalFormsInput.value = 1;
-            return; // Exit the function if the hidden row is made visible
-        }
+    var templateRow = document.querySelector('.' + type + '-row'); // Ensure the last row is cloned
+    var templateRows = document.querySelectorAll('.' + type + '-row');
+    var rowCount = templateRows.length;
+    var totalFormsInput = document.getElementById('id_' + type + '-TOTAL_FORMS');
+
+    // Check if there is only one row and if it's hidden
+    if (rowCount === 1 && templateRow.style.display === 'none') {
+    templateRow.style.display = '';
+    return;
     }
-    var templateRow = document.querySelector('.' + type + '-row');
+
     var newRow = templateRow.cloneNode(true);
     // Clear input values in the cloned row
     newRow.querySelectorAll('input').forEach(function(input) {
         input.value = '';
     });
+
     // Clear select options in the cloned row
     newRow.querySelectorAll('select').forEach(function(select) {
         select.selectedIndex = 0;
     });
+
+    // Get the highest current index
+    var highestIndex = 0;
+    templateRows.forEach(function(row) {
+        row.querySelectorAll('input, select').forEach(function(element) {
+            var match = element.id.match(/-(\d+)-/);
+            if (match) {
+                var index = parseInt(match[1]);
+                if (index > highestIndex) {
+                    highestIndex = index;
+                }
+            }
+        });
+    });
+
     // Update input field names with the appropriate index
-    var rowCount = document.querySelectorAll('.' + type + '-row').length;
+    var newRowIndex  = highestIndex+1 ;
     newRow.querySelectorAll('input, select').forEach(function(element) {
-        element.name = element.name.replace('-0-', '-' + rowCount + '-');
-        element.id = element.id.replace('-0-', '-' + rowCount + '-');
+        element.name = element.name.replace(/-\d+-/, '-' + newRowIndex  + '-');
+        element.id = element.id.replace(/-\d+-/, '-' + newRowIndex  + '-');
     });
     // Append the cloned row to the table body
-    var tableBodyId = type === 'employee' ? 'EmployeeTableBody' :
-        'EquipmentTableBody';
+    var tableBodyId = type === 'employee' ? 'EmployeeTableBody' : 'EquipmentTableBody';
     document.getElementById(tableBodyId).appendChild(newRow);
+
     // Update TOTAL_FORMS value
-    var totalFormsInput = document.getElementById('id_' + type +
-        '-TOTAL_FORMS');
-    totalFormsInput.value = rowCount + 1;
+    totalFormsInput.value = newRowIndex + 1;
+
     // Attach event listener to the new remove button
     newRow.querySelector('.remove-' + type + '-row').addEventListener(
         'click',
         function(event) {
-            removeRow(this, type);
+            removeEquipmentRow(this, type);
         });
 }
+
 function removeEquipmentRow(button, type) {
-    var totalFormsInput = document.getElementById('id_' + type +
-        '-TOTAL_FORMS');
-    if (parseInt(totalFormsInput.value) > 1) {
+    // Get the current count of rows
+    var templateRows = document.querySelectorAll('.' + type + '-row');
+    var rowCount = templateRows.length;
+
+    // Get the total forms input element
+    var totalFormsInput = document.getElementById('id_' + type + '-TOTAL_FORMS');
+
+    if (rowCount > 1) {
         var rowToRemove = button.closest('.' + type + '-row');
         rowToRemove.remove();
         // Update TOTAL_FORMS value
+        totalFormsInput.value = rowCount - 1;
     } else {
-        // Hide the row if TOTAL_FORMS is 0
+        // Hide the row if it is the last one
         var rowToRemove = button.closest('.' + type + '-row');
         rowToRemove.style.display = 'none';
     }
-    totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
 }
+
+// function removeEquipmentRow(button, type) {
+    
+//     var totalFormsInput = document.getElementById('id_' + type +
+//         '-TOTAL_FORMS');
+//     if (parseInt(totalFormsInput.value) > 1) {
+//         var rowToRemove = button.closest('.' + type + '-row');
+//         rowToRemove.remove();
+//         // Update TOTAL_FORMS value
+//     } else {
+//         // Hide the row if TOTAL_FORMS is 0
+//         var rowToRemove = button.closest('.' + type + '-row');
+//         rowToRemove.style.display = 'none';
+//     }
+//     totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
+// }
 
 function calculateEmployeeTotalHours() {
     document.querySelectorAll('.employee-row').forEach(function(row) {
@@ -564,31 +599,39 @@ function calculateEmployeeTotalHours() {
 }
 
 function calculateEquipmentTotalHours() {
-    document.querySelectorAll('.equipment-row').forEach(function(row, index) {
-        var startTime = row.querySelector('#id_equipment-' + index + '-start_time').value;
-        var endTime = row.querySelector('#id_equipment-' + index + '-end_time').value;
+    document.querySelectorAll('.equipment-row').forEach(function(row) {
+        // Get the index from the row's input field name or id
+        var startTimeElement = row.querySelector('[id$="-start_time"]');
+        var endTimeElement = row.querySelector('[id$="-end_time"]');
+        var totalHoursElement = row.querySelector('[id$="-equipment_total_hours"]');
 
-        // Check if start_time and end_time are not empty
-        if (startTime && endTime) {
-            // Convert start and end times to Date objects
-            var startDate = new Date('2000-01-01 ' + startTime);
-            var endDate = new Date('2000-01-01 ' + endTime);
+        if (startTimeElement && endTimeElement && totalHoursElement) {
+            var startTime = startTimeElement.value;
+            var endTime = endTimeElement.value;
 
-            // Check if end time is less than start time, adjust end date to next day
-            if (endDate < startDate) {
-                endDate.setDate(endDate.getDate() + 1);
+            // Check if start_time and end_time are not empty
+            if (startTime && endTime) {
+                // Convert start and end times to Date objects
+                var startDate = new Date('2000-01-01 ' + startTime);
+                var endDate = new Date('2000-01-01 ' + endTime);
+
+                // Check if end time is less than start time, adjust end date to next day
+                if (endDate < startDate) {
+                    endDate.setDate(endDate.getDate() + 1);
+                }
+
+                // Calculate the difference in milliseconds
+                var timeDiff = Math.abs(endDate - startDate);
+
+                // Convert milliseconds to hours
+                var totalHours = timeDiff / (1000 * 3600);
+
+                // Update the total hours input
+                totalHoursElement.value = totalHours.toFixed(2);
             }
-
-            // Calculate the difference in milliseconds
-            var timeDiff = Math.abs(endDate - startDate);
-
-            // Convert milliseconds to hours
-            var totalHours = timeDiff / (1000 * 3600);
-
-            // Update the total hours input
-            row.querySelector('#id_equipment-' + index + '-equipment_total_hours').value = totalHours.toFixed(2);
         }
     });
 }
+
 </script>
 {% endblock page_content %}
