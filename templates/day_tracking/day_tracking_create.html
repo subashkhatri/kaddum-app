@@ -547,21 +547,6 @@ function removeEquipmentRow(button, type) {
     }
 }
 
-// function removeEquipmentRow(button, type) {
-    
-//     var totalFormsInput = document.getElementById('id_' + type +
-//         '-TOTAL_FORMS');
-//     if (parseInt(totalFormsInput.value) > 1) {
-//         var rowToRemove = button.closest('.' + type + '-row');
-//         rowToRemove.remove();
-//         // Update TOTAL_FORMS value
-//     } else {
-//         // Hide the row if TOTAL_FORMS is 0
-//         var rowToRemove = button.closest('.' + type + '-row');
-//         rowToRemove.style.display = 'none';
-//     }
-//     totalFormsInput.value = parseInt(totalFormsInput.value) - 1;
-// }
 
 function calculateEmployeeTotalHours() {
     document.querySelectorAll('.employee-row').forEach(function(row) {
