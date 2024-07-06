@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Sum, Q
-from .models import DairyRecord, Project, CostTracking, WeeklyReportList
+from .models import DairyRecord, Project, CostTracking, WeeklyReportList, DayTracking
 import datetime
 from users.decorators import superuser_or_supervisor_required
 
@@ -29,7 +29,7 @@ def all_weekly_report(request):
         new_reports = WeeklyReportList.objects.all().order_by('-created_date')
 
     projects = Project.objects.all().order_by('project_no')
-    weeks = CostTracking.objects.all().values_list('year_week', flat=True).distinct()
+    weeks = DayTracking.objects.all().values_list('year_week', flat=True).distinct()
     unique_projects = {(project.project_no, project.project_name) for project in projects}
     unique_weeks = sorted(set(weeks), reverse=True)
 
@@ -46,8 +46,8 @@ def all_weekly_report(request):
             # Check if a report already exists for the specified project and week
             if WeeklyReportList.objects.filter(project_no=project_instance, year_week=year_week).exists():
                 messages.error(request, "A report for this project and week already exists. Please delete the existing report if you wish to create a new one.")
-            elif not CostTracking.objects.filter(project_no=project_no, year_week=year_week, is_draft=False).exists():
-                messages.error(request, "No completed cost tracking records exist for the given project and week.")
+            elif not DayTracking.objects.filter(project_no=project_no, year_week=year_week, is_draft=False).exists():
+                messages.error(request, "No completed day tracking records exist for the given project and week.")
             else:
                 dairy_records = DairyRecord.objects.filter(project_no=project_no, year_week=year_week, is_draft=False)
 
@@ -69,27 +69,25 @@ def all_weekly_report(request):
                     )
                     aggregates = {key: value or 0 for key, value in aggregates.items()}
 
-                    cost_trackings = CostTracking.objects.filter(project_no=project_no, year_week=year_week)
-                    cost_aggregates = cost_trackings.aggregate(
+                    day_trackings = DayTracking.objects.filter(project_no=project_no, year_week=year_week)
+                    daytracking_aggregates = day_trackings.aggregate(
                         total_hours_employee=Sum('total_hours_employee'),
                         total_hours_employee_local=Sum('total_hours_employee_local'),
                         total_hours_employee_indigenous=Sum('total_hours_employee_indigenous'),
-                        total_amount_employee=Sum('total_amount_employee'),
                         total_hours_equipment=Sum('total_hours_equipment'),
-                        total_amount_equipment=Sum('total_amount_equipment')
                     )
-                    cost_aggregates = {key: value or 0 for key, value in cost_aggregates.items()}
+                    daytracking_aggregates = {key: value or 0 for key, value in daytracking_aggregates.items()}
 
                     # Calculate percentages
-                    total_hours_employee = cost_aggregates['total_hours_employee']
-                    total_hours_employee_local = cost_aggregates['total_hours_employee_local']
-                    total_hours_employee_indigenous = cost_aggregates['total_hours_employee_indigenous']
+                    total_hours_employee = daytracking_aggregates['total_hours_employee']
+                    total_hours_employee_local = daytracking_aggregates['total_hours_employee_local']
+                    total_hours_employee_indigenous = daytracking_aggregates['total_hours_employee_indigenous']
 
                     percentage_employee_local = (total_hours_employee_local / total_hours_employee * 100) if total_hours_employee > 0 else 0
                     percentage_employee_indigenous = (total_hours_employee_indigenous / total_hours_employee * 100) if total_hours_employee > 0 else 0
 
                     # Combine both aggregate dictionaries
-                    aggregates.update(cost_aggregates)
+                    aggregates.update(daytracking_aggregates)
                     aggregates['percentage_employee_local'] = percentage_employee_local
                     aggregates['percentage_employee_indigenous'] = percentage_employee_indigenous
 
@@ -108,7 +106,7 @@ def all_weekly_report(request):
         return redirect('all_weekly_report')
 
     context = {
-        'unique_projects': sorted(unique_projects, key=lambda x: x[1]),
+        'unique_projects': sorted(unique_projects, key=lambda x: x[0]),
         'unique_weeks': unique_weeks,
         'new_reports_page': new_reports_page,
     }

@@ -441,9 +441,7 @@ class WeeklyReportList(models.Model):
     total_hours_employee = models.FloatField(default=0)
     total_hours_employee_local = models.FloatField(default=0)
     total_hours_employee_indigenous= models.FloatField(default=0)
-    total_amount_employee = models.FloatField(null=True, blank= True,default=0)
     total_hours_equipment = models.FloatField(default=0)
-    total_amount_equipment = models.FloatField(default=0)
     percentage_employee_local = models.FloatField(default=0)
     percentage_employee_indigenous = models.FloatField(default=0)
 
