@@ -23,7 +23,7 @@ class UserAccountManager(BaseUserManager):
         # create user model   **kwargs means keyword variable arguments,
         user = self.model(username=username, **kwargs)
         if not password:
-            password = "kaddum123"
+            password = "Kaddum2024"
 
         user.set_password(password)  # hash the password
         user.save(using=self._db)

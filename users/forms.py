@@ -159,7 +159,7 @@ class UserAccountForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         if not self.instance.pk:  # Checking if it's a new instance
-            user.set_password(self.cleaned_data.get('password', 'kaddum123'))
+            user.set_password(self.cleaned_data.get('password', 'Kaddum2024'))
         if commit:
             user.save()
         return user
