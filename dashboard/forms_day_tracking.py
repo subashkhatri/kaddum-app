@@ -127,7 +127,7 @@ class DayTrackingEmployeeForm(forms.ModelForm):
 class DayTrackingEquipmentForm(forms.ModelForm):
     equipment_total_hours = forms.FloatField(label='Equipment Total Hours', required=False)
     resource_id = forms.ModelChoiceField(
-    queryset=ResourceCost.objects.exclude(item_type = 'personnel').filter(is_active = True).order_by('item_type'),
+    queryset=ResourceCost.objects.exclude(item_type = 'personnel').filter(is_active = True).order_by('item_type','item_id','item_name'),
     label="*Equipment",
     empty_label="Please Select...",
     widget=forms.Select(attrs={'class': 'form-control'}),

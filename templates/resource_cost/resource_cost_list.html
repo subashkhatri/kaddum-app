@@ -43,6 +43,7 @@
                             <th scope="col" class="align-middle"  style="color: #fff;"><small>Rate</small></th>
                             <th scope="col" class="align-middle"  style="color: #fff;"><small>UOM</small></th>
                             <th scope="col" class="align-middle"  style="color: #fff;"><small>Modification</small></th>
+                            <th scope="col" class="align-middle"  style="color: #fff;"><small>Status</small></th>
                             <th scope="col" class="align-middle"  style="color: #fff;"><small></small></th>
                         </tr>
                     </thead>
@@ -57,6 +58,7 @@
                             <td class="align-middle" style="text-align: right; padding-right: 15px;" ><small>{{ resource.item_rate |floatformat:"2" }}</small></td>
                             <td class="align-middle"><small>{{ resource.unit_of_measure|capfirst }}</small></td>
                             <td class="align-middle"><small>{{ resource.last_modification_date|date:"m/d/y H:i" }}</small></td>
+                            <td class="align-middle"><small>{% if resource.is_active %}Active{% else %} Inactive {% endif%}</small></td>
                             <td class="align-middle">
                                 <div class="d-flex justify-content-evenly">
                                     <a href="{% url 'edit_resource_cost' resource.resource_id %}" class="btn btn-outline-success btn-sm centered-btn">Edit</a>

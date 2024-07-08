@@ -84,7 +84,7 @@ def delete_resource_cost(request, resource_id):
             return redirect('resource_cost_list')
         except ProtectedError as e:
             # Extracting information from the ProtectedError
-            message = f"Cannot delete this resource because '{resource}' is referenced by other records."
+            message = f"Cannot delete this resource because '{resource}' is referenced by other records. Please set the resource status to inactive."
             messages.error(request, message)
             return redirect('resource_cost_list')  # Redirect to the list or some error page
 
