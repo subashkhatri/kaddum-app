@@ -144,9 +144,9 @@ class CostTracking(models.Model):
             last_record = CostTracking.objects.all().order_by('-cost_tracking_id').first()
             if last_record:
                 last_id = int(last_record.cost_tracking_id[2:])  # Extract numeric part of ID
-                new_id = f"CT{last_id + 1:05}"  # Increment ID
+                new_id = f"DC{last_id + 1:05}"  # Increment ID
             else:
-                new_id = "CT00001"  # If no records exist, start from 1
+                new_id = "DC00001"  # If no records exist, start from 1
             self.cost_tracking_id = new_id
 
         # get year_week data like 202417

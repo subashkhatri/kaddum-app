@@ -22,6 +22,7 @@ class ResourceCostForm(forms.ModelForm):
             'item_rate': forms.NumberInput(attrs={'class': 'form-control'}),
             'unit_of_measure': forms.TextInput(attrs={'class': 'form-control'}),
             'mobilisation_desc': forms.TextInput(attrs={'class': 'form-control'}),
+            'is_active':forms.Select(attrs={'class': 'form-control'}, choices=[(True, 'Active'), (False, 'Inactive')]),
         }
         labels = {
             'item_type': '*Item Type',
@@ -31,6 +32,7 @@ class ResourceCostForm(forms.ModelForm):
             'item_rate': '*Cost Rate',
             'unit_of_measure': '*Unit of Measure',
             'mobilisation_desc': 'Mobilisation Description',
+            'is_active': '*Resource Status',
         }
 
 

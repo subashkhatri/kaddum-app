@@ -12,6 +12,9 @@ import datetime
 @superuser_required
 def resource_cost_list(request):
     query = request.GET.get('q', '').strip().lower()
+    # Determine boolean value for "is_active" based on query
+    is_active_query = {'active': True, 'inactive': False}.get(query, None)
+
     if query:
         try:
             # Attempt to parse the query as a date
@@ -28,6 +31,7 @@ def resource_cost_list(request):
             Q(unit_of_measure__icontains=query) |
             Q(mobilisation_desc__icontains=query) |
             Q(item_rate__icontains=query) |
+            (Q(is_active=is_active_query) if is_active_query is not None else Q())|
             (Q(created_date__date=date_query) | Q(last_modification_date__date=date_query) if date_query else Q())
         ).order_by('-last_modification_date')
     else:
