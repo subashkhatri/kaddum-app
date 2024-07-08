@@ -28,7 +28,7 @@ def all_weekly_report(request):
     else:
         new_reports = WeeklyReportList.objects.all().order_by('-created_date')
 
-    projects = Project.objects.all().order_by('project_no')
+    projects = Project.objects.all().filter(is_active = True).order_by('project_no')
     weeks = DayTracking.objects.all().values_list('year_week', flat=True).distinct()
     unique_projects = {(project.project_no, project.project_name) for project in projects}
     unique_weeks = sorted(set(weeks), reverse=True)

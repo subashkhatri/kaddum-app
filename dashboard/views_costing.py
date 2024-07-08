@@ -14,8 +14,8 @@ from users.decorators import superuser_required
 def view_daily_costing(request, cost_tracking_id):
     # Fetch the specific instance of CostTracking using its ID
     costing = get_object_or_404(CostTracking, pk=cost_tracking_id)
-    employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=costing).select_related('position_id', 'employee_id')
-    equipment_details = DayTrackingEquipmentDetails.objects.filter(day_tracking_id__cost_tracking_id=costing)
+    employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=costing).select_related('position_id', 'employee_id').order_by('id')
+    equipment_details = DayTrackingEquipmentDetails.objects.filter(day_tracking_id__cost_tracking_id=costing).order_by('id')
 
     # Calculate day of the week from record_date
     day_of_week = costing.record_date.strftime('%A')
@@ -45,8 +45,8 @@ def view_daily_costing(request, cost_tracking_id):
 def edit_daily_costing(request, cost_tracking_id):
     # Fetch the specific instance of CostTracking using its ID
     instance = get_object_or_404(CostTracking, cost_tracking_id=cost_tracking_id)
-    employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=instance).select_related('position_id', 'employee_id')
-    equipment_details = DayTrackingEquipmentDetails.objects.filter(day_tracking_id__cost_tracking_id=instance)
+    employee_details = DayTrackingEmployeeDetails.objects.filter(day_tracking_id__cost_tracking_id=instance).select_related('position_id', 'employee_id').order_by('id')
+    equipment_details = DayTrackingEquipmentDetails.objects.filter(day_tracking_id__cost_tracking_id=instance).order_by('id')
     positions = ResourceCost.objects.filter(item_type='personnel').order_by('item_name')
     record_PK = instance.cost_tracking_id
 

@@ -209,8 +209,8 @@ def day_tracking_delete(request, day_tracking_id):
 @superuser_or_supervisor_required
 def day_tracking_view(request, day_tracking_id):
     day_tracking = get_object_or_404(DayTracking, pk=day_tracking_id)
-    employee_formset = DayTrackingEmployeeDetails.objects.all().filter(day_tracking_id=day_tracking)
-    equipment_formset = DayTrackingEquipmentDetails.objects.all().filter(day_tracking_id=day_tracking)
+    employee_formset = DayTrackingEmployeeDetails.objects.all().filter(day_tracking_id=day_tracking).order_by('id')
+    equipment_formset = DayTrackingEquipmentDetails.objects.all().filter(day_tracking_id=day_tracking).order_by('id')
 
     return render(request, 'day_tracking/day_tracking_view.html', {
         'day_tracking': day_tracking,
