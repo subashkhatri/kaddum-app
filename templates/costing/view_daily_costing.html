@@ -10,7 +10,7 @@
 <div id="print-content">
     <div class="header">
         <img src="{% static 'kaddum-logo1.svg' %}" alt="Kaddum Logo">
-        <h1>Daily Costing Report</h1>
+        <h1>Daily Costing Report: {{ costing.cost_tracking_id }}</h1>
     </div>
     <div class="view-container">
         <table>
@@ -98,7 +98,7 @@
                         {% for equipment in equipment_details %}
                         <tr>
                             <td class="align-middle">{{ equipment.resource_id.item_type|capfirst }}</td>
-                            <td class="align-middle">{{ equipment.resource_id.item_name }}</td>
+                            <td class="align-middle">{{ equipment.resource_id }}</td>
                             <td class="align-middle">{{ equipment.item_rate|floatformat:"2" }}</td>
                         </tr>
                         {% endfor %}

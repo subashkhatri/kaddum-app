@@ -13,7 +13,7 @@ class Project(models.Model):
     purchase_order_no = models.CharField(max_length=100, null=True, blank=True)
     project_name = models.CharField(max_length=255)
     client = models.CharField(max_length=100)
-    project_start_date = models.DateField()
+    project_start_date = models.DateField(null=True, blank=True)
     project_end_date = models.DateField(null=True, blank=True)
     project_budget = models.FloatField(null=True, blank=True)
     project_total_cost = models.FloatField(default=0)
@@ -29,12 +29,14 @@ class Project(models.Model):
         return f"{self.project_no} - {self.project_name}"
 
     # def save(self, *args, **kwargs):
-    #     if self.project_no is None:  # Only set if not already assigned
-    #         from django.db import connection
-    #         with connection.cursor() as cursor:
-    #             cursor.execute("SELECT nextval('project_project_no_seq')")
-    #             self.project_no = cursor.fetchone()[0]
-    #     super().save(*args, **kwargs)
+    #     if not self.project_no:
+    #         last_record = Project.objects.all().order_by('-project_no').first()
+    #         if last_record:
+    #             last_id = int(last_record.project_no[2:])  # Extract numeric part of ID
+    #             new_id = last_id+1  # Increment ID
+    #         else:
+    #             new_id = 1  # If no records exist, start from 1
+    #         self.project_no = new_id
 
 
 class DairyRecord(models.Model):
@@ -142,9 +144,9 @@ class CostTracking(models.Model):
             last_record = CostTracking.objects.all().order_by('-cost_tracking_id').first()
             if last_record:
                 last_id = int(last_record.cost_tracking_id[2:])  # Extract numeric part of ID
-                new_id = f"CT{last_id + 1:05}"  # Increment ID
+                new_id = f"DC{last_id + 1:05}"  # Increment ID
             else:
-                new_id = "CT00001"  # If no records exist, start from 1
+                new_id = "DC00001"  # If no records exist, start from 1
             self.cost_tracking_id = new_id
 
         # get year_week data like 202417
@@ -270,8 +272,7 @@ class DayTracking(models.Model):
             cost_tracking_instance.total_hours_employee_indigenous_percentage = indigenous_percentage
             cost_tracking_instance.last_modification_date = datetime.now()
             cost_tracking_instance.save()
-            print("cost_tracking_instance.total_amount_employee",cost_tracking_instance.total_amount_employee)
-            print("cost_tracking_instance",cost_tracking_instance)
+
 
     def __str__(self):
         return f"Day Tracking:{self.day_tracking_id} {self.record_date}"
@@ -440,9 +441,7 @@ class WeeklyReportList(models.Model):
     total_hours_employee = models.FloatField(default=0)
     total_hours_employee_local = models.FloatField(default=0)
     total_hours_employee_indigenous= models.FloatField(default=0)
-    total_amount_employee = models.FloatField(null=True, blank= True,default=0)
     total_hours_equipment = models.FloatField(default=0)
-    total_amount_equipment = models.FloatField(default=0)
     percentage_employee_local = models.FloatField(default=0)
     percentage_employee_indigenous = models.FloatField(default=0)
 

@@ -11,6 +11,7 @@ class ResourceCost(models.Model):
     unit_of_measure = models.CharField(max_length=10)
     mobilisation_desc = models.CharField(max_length=50, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
     last_modification_date = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -18,4 +19,6 @@ class ResourceCost(models.Model):
         db_table = 'dashboard-ResourceCost'
 
     def __str__(self):
-        return f"{self.item_type.upper()}-{self.item_name}"
+        if self.item_id:
+            return f"{self.item_type.capitalize()}-{self.item_id.upper()}-{self.item_name}"
+        return f"{self.item_type.capitalize()}-{self.item_name}"

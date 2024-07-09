@@ -12,6 +12,9 @@ import datetime
 @superuser_required
 def resource_cost_list(request):
     query = request.GET.get('q', '').strip().lower()
+    # Determine boolean value for "is_active" based on query
+    is_active_query = {'active': True, 'inactive': False}.get(query, None)
+
     if query:
         try:
             # Attempt to parse the query as a date
@@ -20,6 +23,7 @@ def resource_cost_list(request):
             date_query = None
 
         resources = ResourceCost.objects.filter(
+            Q(resource_id__icontains=query) |
             Q(item_type__icontains=query) |
             Q(item_name__icontains=query) |
             Q(item_id__icontains=query) |
@@ -27,8 +31,9 @@ def resource_cost_list(request):
             Q(unit_of_measure__icontains=query) |
             Q(mobilisation_desc__icontains=query) |
             Q(item_rate__icontains=query) |
+            (Q(is_active=is_active_query) if is_active_query is not None else Q())|
             (Q(created_date__date=date_query) | Q(last_modification_date__date=date_query) if date_query else Q())
-        ).order_by('-created_date')
+        ).order_by('-last_modification_date')
     else:
         resources = ResourceCost.objects.all().order_by('-last_modification_date')
 
@@ -79,7 +84,7 @@ def delete_resource_cost(request, resource_id):
             return redirect('resource_cost_list')
         except ProtectedError as e:
             # Extracting information from the ProtectedError
-            message = f"Cannot delete this resource because '{resource}' is referenced by other records."
+            message = f"Cannot delete this resource because '{resource}' is referenced by other records. Please set the resource status to inactive."
             messages.error(request, message)
             return redirect('resource_cost_list')  # Redirect to the list or some error page
 

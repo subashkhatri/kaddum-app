@@ -101,7 +101,7 @@ class DayTrackingEmployeeForm(forms.ModelForm):
     queryset=UserAccount.objects.all().filter(is_active = True).order_by('username'),
     label="*Employee",
     empty_label="Please select...",
-    widget=forms.Select(attrs={'class': 'form-control'}),
+    widget=forms.Select(attrs={'class': 'form-control','onchange': 'updatePosition(this);'}),
     error_messages={'required': "This field is mandatory"},
     required=True
     )
@@ -120,14 +120,14 @@ class DayTrackingEmployeeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['employee_total_hours'].widget.attrs['readonly'] = True
         self.fields['employee_total_hours'].widget.attrs['class'] = 'form-control'
-        self.fields['position_id'].choices = [('', 'Please select...')]+[(position.resource_id, position.item_name) for position in ResourceCost.objects.filter(item_type='personel')]
+        self.fields['position_id'].choices = [('', 'Please select...')]+[(position.resource_id, position.item_name) for position in ResourceCost.objects.filter(item_type='personnel')]
 
 
 
 class DayTrackingEquipmentForm(forms.ModelForm):
     equipment_total_hours = forms.FloatField(label='Equipment Total Hours', required=False)
     resource_id = forms.ModelChoiceField(
-    queryset=ResourceCost.objects.exclude(item_type = 'personel'),
+    queryset=ResourceCost.objects.exclude(item_type = 'personnel').filter(is_active = True).order_by('item_type','item_id','item_name'),
     label="*Equipment",
     empty_label="Please Select...",
     widget=forms.Select(attrs={'class': 'form-control'}),

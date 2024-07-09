@@ -22,24 +22,16 @@ def project_list(request):
     is_active_query = {'active': True, 'inactive': False}.get(query, None)
 
     if query:
-        try:
-            # Attempt to parse the query as a date
-            date_query = datetime.datetime.strptime(query, '%d/%m/%Y').date()
-        except ValueError:
-            date_query = None
-
         records_list = Project.objects.filter(
             Q(project_no__icontains=query) |
-            Q(purchase_order_no__icontains=query) |
             Q(project_name__icontains=query) |
             Q(client__icontains=query) |
-            Q(project_start_date=date_query) |
-            Q(project_end_date=date_query) |
+            Q(purchase_order_no__icontains=query) |
             Q(project_budget__icontains=query) |
             (Q(is_active=is_active_query) if is_active_query is not None else Q())
-        ).order_by('-created_date')
+        ).order_by('-project_no')
     else:
-        records_list = Project.objects.order_by('-created_date')
+        records_list = Project.objects.order_by('-project_no')
 
     paginator = Paginator(records_list, 15)  # Show 10 records per page.
     page_number = request.GET.get('page')

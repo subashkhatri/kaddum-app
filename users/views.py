@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User, auth
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.db.models import Q, ProtectedError
 from django.http import HttpResponse
 
@@ -61,7 +63,7 @@ def login(request):
             return redirect("/")
 
         else:
-            messages.info(request, "Invalid credentials")
+            messages.error(request, "Invalid credentials")
             # Render the login page again with the error message
             return render(
                 request, "users/login.html", {"username": username}
@@ -76,13 +78,18 @@ def reset_password(request):
         new_password = request.POST["password"]
         try:
             user = User.objects.get(username=username)
-            user.set_password(new_password)
-            user.save()
-            messages.success(request, 'Your password has been updated successfully!')
-            return redirect("employees_list")
+            try:
+                validate_password(new_password, user)
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Your password has been updated successfully!')
+                return redirect("employees_list")
+            except ValidationError as e:
+                for error in e.messages:
+                    messages.error(request, error)
         except User.DoesNotExist:
             messages.error(request, "User with this username does not exist.")
-            return redirect("reset_password")
+        return redirect("reset_password")
     else:
         return render(request, "users/reset_password.html")
 
@@ -97,20 +104,20 @@ def reset_password_initial(request, username):
         return HttpResponse("Invalid or expired token.")
 
     if request.method == "POST":
-        username = request.POST["username"]
         new_password = request.POST["password"]
         try:
-            user = User.objects.get(username=username)
+            validate_password(new_password, user)
             user.set_password(new_password)
             user.last_login = datetime.now(timezone.utc)
-            user.save(update_fields=['password','last_login'])
+            user.save(update_fields=['password', 'last_login'])
             messages.success(request, 'Your password has been updated successfully!')
             return redirect("login")
-        except User.DoesNotExist:
-            messages.info(request, "User with this username does not exist.")
-            return redirect("reset_password_initial")
-    else:
-        return render(request, "users/reset_password_intial.html", {'user': user})
+        except ValidationError as e:
+            for message in e.messages:
+                messages.error(request, message)
+        except get_user_model().DoesNotExist:
+            messages.error(request, "User does not exist.")
+    return render(request, "users/reset_password_intial.html", {'user': user})
 
 
 def logout(request):
