@@ -1,6 +1,6 @@
 # Kaddum App
 # Before you run the application
-pip install django python-decouple psycopg2-binary pillow
+pip install django python-decouple psycopg2-binary
 
 # create and activate env file
 # create together with readme file
@@ -35,7 +35,7 @@ python manage.py createsuperuser
 *Roles: super admin
 *Password: admin
 
-# Run Kaddum-app
+# Run Kaddumapp
 python manage.py runserver
 
 
