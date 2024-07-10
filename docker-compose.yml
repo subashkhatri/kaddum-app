@@ -1,0 +1,35 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: kaddumapp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin312
+
+  web:
+    build: .
+    command: >
+      sh -c "
+      python manage.py makemigrations dashboard users &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
